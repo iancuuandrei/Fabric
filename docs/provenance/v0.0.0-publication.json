@@ -1,0 +1,90 @@
+{
+  "source_generation": "R33",
+  "changes": [
+    {
+      "path": "docs/evaluation/model-access-gap.md",
+      "r33_sha256": "f35e977505fb84c316295f3ff3a5935d63ab791e193bb9312f8ba0488e0e4ed8",
+      "public_worktree_sha256": "de6192818b2993ced7e59dbd83bdb47d0fd5026dcfc26792676878d74bc38e65"
+    },
+    {
+      "path": "docs/evaluation/status.md",
+      "r33_sha256": "c261e94f35313ed29d8b7fc126dd408dc703e47429bc302156a9dc79977346fa",
+      "public_worktree_sha256": "caac197c86c2e721ff45ae06ffafdf21381f3d7ef9d935857ae112a18aa4213d"
+    },
+    {
+      "path": "docs/research/lexai-mechanism-audit.md",
+      "r33_sha256": "b206afc70a8d4991a27f20acec42ec1eda8d29da6875ca4e2706942c5d9ea837",
+      "public_worktree_sha256": "0b39dd6af946acc041efc444ffe279375ca27d19eb76fc553cf8b73aa5e0adef"
+    },
+    {
+      "path": "internal/providergateway/contracts_v2_test.go",
+      "r33_sha256": "41ff88f4dfcfe66056bd416d5006f6e1673be5061693623be7c0380becd92d39",
+      "public_worktree_sha256": "7bd606911637fda439459e16a145685903db2ddd95e71edd2533a73ded06aefe"
+    },
+    {
+      "path": "internal/providergateway/responses_sse_test.go",
+      "r33_sha256": "a8a18580957bfb8d1d026d26125ce01d837def31af807d783697f6824d96bffd",
+      "public_worktree_sha256": "252ac9c762954f16460cf294a47eddf8ffffb4579d9c0104c866a887359fc1b0"
+    },
+    {
+      "path": "internal/providergateway/testdata/m0g-live-system-02-response.raw",
+      "r33_sha256": "20e01248c780d60ce9aac515412059798b0d8e520b4d4e4fa983e7b8c45eede6",
+      "public_worktree_sha256": "f7ca0df6b90b03b3c6a9e8b20b9bfb41c0bc6b1d6c67f607753d18b6c9e177b4"
+    },
+    {
+      "path": "NOTICE",
+      "r33_sha256": "a915fd15057e102f1cb1c5f7a82276b7b0afda66dd5bdb16c703e7d901081edd",
+      "public_worktree_sha256": "61feb0a4e9f30eb72a5805e87c7932bb1b69d4446416977ab782be935371597d"
+    },
+    {
+      "path": "procedures/architect/SKILL.md",
+      "r33_sha256": "f12dfc8fd31c9258b51e04d93cb89ce1556187fbe2c6a17f0e65525f1c1f9179",
+      "public_worktree_sha256": "ba619593b9d45df10cef14d954738ee5961be09cfce0b5d0ca50c47e8b876791"
+    },
+    {
+      "path": "procedures/blast-radius/SKILL.md",
+      "r33_sha256": "71a5478082b7dda5403ad972ad2216fe530034d3826c2e26981cbc6406f75776",
+      "public_worktree_sha256": "c913e931e019671a7d10a41ee9e52eddd5e245891b56c3c0179940707fcaa3a8"
+    },
+    {
+      "path": "procedures/how/SKILL.md",
+      "r33_sha256": "7885bfed712247bfed8556320a426990622286705193d0ff217ef255a55cff3b",
+      "public_worktree_sha256": "70f9c647c6d98dc54dc0480cb8e1c852801d342ea6e7fdd63823e901f9f64cf8"
+    },
+    {
+      "path": "procedures/interrogate/SKILL.md",
+      "r33_sha256": "4475de789a0e2c75710a4546a2a3dff94d31d8558e244412f3bb9880731f2a83",
+      "public_worktree_sha256": "2c311992b5298b1545bf214f29d5ec863fa7f37c87c681489241373e6e25635d"
+    },
+    {
+      "path": "procedures/tdd/SKILL.md",
+      "r33_sha256": "53633696ebe9dcd1c0ead58d53cc552bca4186a8ec36b6dc305a27302c02c785",
+      "public_worktree_sha256": "9c146dc7daf4670261b16b8981e225d164c435d25f799447ce7e752bb12d0870"
+    },
+    {
+      "path": "procedures/verification-design/SKILL.md",
+      "r33_sha256": "a98fba2babe5c105bee0a73f66b7895a3b90b3507ff15372182f07181745bc36",
+      "public_worktree_sha256": "0c638a85fd1eeadbbed17cc39e591a1558ef40b5bf5735dfdaf65acbfc4cbe8d"
+    },
+    {
+      "path": "procedures/why/SKILL.md",
+      "r33_sha256": "5cff118d2762d51fe040e7af9d626bb5bc2c8c0a151341ab854ffaf11949b134",
+      "public_worktree_sha256": "055267eb6a425833047dc5555af6f2653f65ccce95e7d37fb2c52cd8aae05e46"
+    },
+    {
+      "path": "README.md",
+      "r33_sha256": "cbda93c1cc42cd23aa7bc2580371506b34cc7feb7e25e503695e1613625a8083",
+      "public_worktree_sha256": "da78432f135dcd444a36f008bdc97d28ab7b6997c566abcede1836668d639d5e"
+    },
+    {
+      "path": "THIRD_PARTY.md",
+      "r33_sha256": "360d1de5bd281e9288c083c0606078bc60b8c1260e4b54f7fa90bba3b2a776e6",
+      "public_worktree_sha256": "b0734261ec713871aeeeaa01895e536b8d58e2313ac97f7383b4416557df0e57"
+    }
+  ],
+  "qualification_note": "Runtime logic unchanged. Public docs sanitized; one fixture and matching tests use synthetic external values; procedure trailing blank lines normalized. Git text attributes normalize LF at staging.",
+  "public_gateway_test": {
+    "exit_code": 0,
+    "package_seconds": 2.462
+  }
+}

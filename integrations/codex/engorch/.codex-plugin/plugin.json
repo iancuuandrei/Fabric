@@ -1,0 +1,18 @@
+{
+  "name": "engorch",
+  "version": "0.1.0",
+  "description": "Operate the standalone EngOrch engineering harness from Codex through its public CLI.",
+  "author": {
+    "name": "EngOrch contributors"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "EngOrch",
+    "shortDescription": "Run and inspect governed engineering work.",
+    "longDescription": "A thin skill integration for the standalone EngOrch CLI. The harness retains orchestration, access policy, effect receipts and verification.",
+    "developerName": "EngOrch contributors",
+    "category": "Productivity",
+    "capabilities": [],
+    "defaultPrompt": "Use EngOrch to inspect my repository configuration and engineering runs."
+  }
+}

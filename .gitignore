@@ -1,0 +1,5 @@
+.local/
+target/
+/bin/
+.harness/
+__pycache__/

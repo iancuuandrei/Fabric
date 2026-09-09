@@ -1,0 +1,60 @@
+{
+  "checkpoint": "v0.0.0",
+  "classification": "experimental public source review snapshot",
+  "m2_verdict": "NO-GO",
+  "latest_attempt": "M2q",
+  "next_live_attempt": "NOT RUN; user suspended live requests",
+  "runner_generation": "R33",
+  "runner_source_manifest_sha256": "5cdc69920c81823dd16f999c9a0da5d813c61766cc204441d2699f15b31ca367",
+  "runner_binary_sha256": "a0ee5f0bebd6a0f9ac6bf72a3d7d4bb30656da224d959756f50ec893c9fb7a5c",
+  "runtime_binary_sha256": "8d46d1ba058b597f739a579ffd4b68f2fa06e9627c1f4f801405fde3db3c61b2",
+  "runtime_dependencies": [
+    "R29 OpenCode readback patch",
+    "R31 exact Muse provider/model tool_choice exception"
+  ],
+  "local_regression": {
+    "packages": [
+      "internal/control",
+      "internal/fileeffects",
+      "internal/cli"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 423.60926800000016,
+    "log_sha256": "aeb0b10e23671aa3923f9d36ebbd30229fba385f0dd52cf3d3acddef7d10cb0b"
+  },
+  "independent_review": "CLEAR, bounded writer replay fix",
+  "latest_writer": {
+    "model": "muse-spark-1.3-contributor-free",
+    "provider": "engorch-opencode-zen",
+    "runtime_result": "SETTLED",
+    "controller_proposal": "REJECTED: change-order comparison mismatch",
+    "provider_calls": 8,
+    "context_steps": 7,
+    "structured_captures": 1,
+    "observed_retries": 0,
+    "observed_fallbacks": 0,
+    "input_tokens": 311250,
+    "output_tokens": 23444,
+    "reasoning_tokens_subset_of_output": 14460,
+    "cache_read_tokens_subset_of_input": 248343,
+    "wall_seconds": 444.2505977153778
+  },
+  "candidate": "CLEAN at original bootstrap base; no apply/verification/fixer/reviewer/commit",
+  "qualification_limits": [
+    "No full-project suite rerun for this publication",
+    "No fresh live M2 attempt after R33",
+    "No production or OS sandbox claim",
+    "Patched runtime is not stock OpenCode",
+    "No trusted promotion or v0.0.1 release"
+  ],
+  "excluded": [
+    "canonical Git history",
+    "credentials",
+    "runtime configuration and state",
+    "SQLite databases and sidecars",
+    "raw prompts and provider responses",
+    "candidate and diagnostic worktrees",
+    "build artifacts",
+    "private design-reference identifiers"
+  ]
+}

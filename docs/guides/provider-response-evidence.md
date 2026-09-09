@@ -1,0 +1,13 @@
+# Provider response failure evidence
+
+The controller captures bounded HTTP response bytes before checking response media type or invoking the selected adapter. This does not change the adapter, route, output limits, accepted response variants, approval rules or retry policy.
+
+Evidence lives beside the controller-owned gateway journal in `<gateway-journal>.response-evidence/`. Names derive from the admitted call ID, never provider response identifiers. The raw artifact records the call identity, selected adapter/framing, HTTP status, content type/encoding and transfer encoding, plus the captured body. Base64 in this artifact is deterministic serialization by Go, never a model task. A separate immutable failure diagnostic retains the exact returned decoder error and a bounded classification, and pins the raw artifact by SHA256. The gateway failure journal stores only a basename and hash reference; public/runtime error messages remain generic.
+
+These private artifacts may contain source, provider text or credential echoes. Do not publish them or put them into model prompts. Ordinary artifact creation uses private file modes and the controller state's host access controls; Windows protection depends on the directory ACL. No claim of a separate Windows security sandbox is made.
+
+For responses within the admitted byte limit, capture is complete and the digest covers all returned bytes. For over-limit or read-error responses the client stops after at most `MaxResponseBytes + 1` bytes. The digest describes only that observed prefix; total body length and full-body SHA256 are UNKNOWN. The client does not drain an unlimited or stalled stream for a diagnostic hash. The truncated artifact cannot be mistaken for a full-body response. Small responses, including a 14,617-byte response under the 1 MiB route limit, are retained in full.
+
+Classification refines diagnostics only. Invalid JSON/framing, truncation, schema mismatch, unsupported variants, content-type mismatch and body-limit violations remain unsuccessful pending calls. Specific offsets/fields are retained when the underlying error supplies them. Ambiguous errors must not be relabeled as a proven provider defect. The exact decoder error and raw bytes support offline diagnosis even when the taxonomy remains coarse.
+
+A decode failure returns no provider content or successful receipt, invents no usage, releases no reservation and authorizes no resend. An evidence persistence failure also prevents successful settlement. Existing journal events without evidence references remain readable. Recovery must inspect existing evidence; it must not replay the HTTP request.

@@ -1,0 +1,69 @@
+Engineering harness
+Copyright 2026 Engineering harness contributors
+
+AgentTree topology and mailbox mechanisms adapt YoungseokCh/pi-multiagents-v2
+extensions/core.ts and extensions/team-manager.ts,
+revision fb056dd9ea65f32ee8e8da7b57e457d93bdd6ccd. MIT license retained in
+third_party/pi-multiagents-v2.
+
+TaskPool capacity and DAG admission adapt harms-haus/pi-subagent-tasks
+src/pools.ts and src/dag.ts,
+revision 2bae805c1a0bdd97e699e2c9601fb4e6624f6f53. Copyright (c) 2026 harms-haus.
+MIT license and modification record retained in third_party/pi-subagent-tasks.
+
+Anthropic protocol test payloads are adapted from vercel/ai revision
+85464f4e2026d9fc0274424c0171a25742836411. Copyright 2023 Vercel, Inc.
+Apache License, Version 2.0. License notice, full license and modification
+description are retained in third_party/vercel-ai.
+
+OpenCode schema projection adapts the OpenAI schema sanitizer from OpenCode
+v1.18.29, revision 16747470f976aca3d362ad730bcd3fe82ecc2c9a.
+Copyright (c) 2025 opencode. The MIT license and adaptation description are
+retained in third_party/opencode/LICENSE and third_party/opencode/README.md.
+
+Implementation and adapted mechanisms are documented in docs/research.
+LexAI source code is not included. Research sources retain their own licenses.
+
+Go dependency: github.com/pelletier/go-toml/v2 v2.4.3, MIT license.
+Dependency sources and their license remain in the Go module distribution;
+release packaging must preserve applicable notices for redistributed material.
+
+Additional Go dependencies: google/go-github v89.0.0 (BSD-3-Clause),
+santhosh-tekuri/jsonschema v6.0.3 (Apache-2.0), and modernc.org/sqlite
+v1.58.0 (BSD-3-Clause driver, with separate bundled SQLite and sqlite-vec
+notices). Unmodified license evidence is retained in third_party/dependencies.
+go.sum records the full resolved module graph; release packaging collects the
+transitive module notices as well as these direct-dependency notices.
+
+CodeGraph adaptation: crates/ri/src/identifiers.rs adapts identifier segmentation
+from colbymchenry/codegraph, revision b9ca4b7981116909900368cc1686a1074cd4d4c1.
+Copyright (c) 2026 Colby Mchenry. MIT license retained in
+third_party/codegraph/LICENSE. Changes described in third_party/codegraph/README.md.
+
+Rust direct dependencies: serde 1.0.229, serde_json 1.0.151 and sha2 0.11.0,
+each offered under MIT OR Apache-2.0. Cargo.lock records the full resolved graph.
+Release packaging must preserve licenses/notices for redistributed dependencies.
+
+Graphify adaptation: crates/ri/src/structural.rs adapts the Rust type walker from
+Graphify-Labs/graphify, revision c9f99018774e2e0380e9f65b3959944559a0d5f6.
+Copyright 2026 Safi Shamsi and the Graphify contributors. Retained upstream
+Apache-2.0 license, NOTICE and legacy MIT license are in third_party/graphify.
+Changes are described in third_party/graphify/README.md.
+
+Rust parsing dependencies: tree-sitter 0.27.0 and tree-sitter-rust 0.24.2,
+MIT licensed. Their resolved transitive dependencies are recorded in Cargo.lock.
+
+SCIP schema: sourcegraph/scip revision 1c2b6db7e560d5233c944f36e4ac1377cc6963fc,
+Apache-2.0, retained in third_party/scip with its upstream license.
+Bindings use prost/prost-build 0.14.4 (Apache-2.0) and protoc-bin-vendored
+3.2.0 (MIT wrapper; bundled protobuf compiler carries its upstream BSD license).
+Cargo.lock records resolved generator, compiler and runtime dependencies.
+
+Lexical candidate planning and in-memory posting dependency: microsoft/tgrep
+tgrep-core, revision e2007b52d2b8fe4176159d0da20c9ba4a46d5aab, MIT licensed,
+Copyright (c) Microsoft Corporation. Full upstream notice is retained in
+third_party/tgrep/LICENSE. Used as a pinned dependency without source modification.
+
+The qualification-only OpenCode R29/R31 patch under third_party/opencode/qualification
+is an adaptation of OpenCode revision 16747470f976aca3d362ad730bcd3fe82ecc2c9a.
+Copyright (c) 2025 opencode. MIT license retained in third_party/opencode/LICENSE.
