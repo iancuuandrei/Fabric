@@ -20,8 +20,16 @@ import (
 )
 
 const (
-	agentToolMaximumPage       = 64
-	agentToolMaximumWaitMillis = 5000
+	agentToolMaximumPage = 64
+	// Maximum single wait_agent timeout. R46 set 45000; R49 corrects to
+	// 25000. Full envelope (proven live R45-R48): the OpenCode MCP client
+	// kills tool calls at its 30s tools-config ceiling (-32001), so any
+	// admitted wait MUST resolve below 30s; the owned bridge ceiling is
+	// 60s; the turn budget is minutes. 25s sits below every ceiling with
+	// margin while keeping wait loops efficient (24 calls ≈ 10 min
+	// coverage). R48 proved a 45s admitted wait dies client-side at 30s.
+	// Single source of truth with the schema maximum below.
+	agentToolMaximumWaitMillis = 25000
 )
 
 type agentToolProjectionState struct {
@@ -581,7 +589,7 @@ func agentToolCatalog() ([]toolbridge.ToolDefinition, error) {
 	}{
 		{"spawn_agent", "Create one read-only explorer child with one durable scheduled turn.", `{"additionalProperties":false,"properties":{"name":{"maxLength":64,"minLength":1,"type":"string"},"nonce":{"maxLength":128,"minLength":1,"type":"string"},"question":{"maxLength":4096,"minLength":1,"type":"string"}},"required":["name","question","nonce"],"type":"object"}`},
 		{"list_agents", "List a bounded page in the caller's durable agent subtree.", `{"additionalProperties":false,"properties":{"after":{"maxLength":1024,"type":"string"},"limit":{"maximum":64,"minimum":1,"type":"integer"}},"required":["limit"],"type":"object"}`},
-		{"wait_agent", "Wait for bounded durable activity on the caller or one direct child.", `{"additionalProperties":false,"properties":{"after_sequence":{"minimum":0,"type":"integer"},"agent_id":{"maxLength":64,"minLength":64,"type":"string"},"limit":{"maximum":64,"minimum":1,"type":"integer"},"timeout_milliseconds":{"maximum":5000,"minimum":1,"type":"integer"}},"required":["agent_id","after_sequence","limit","timeout_milliseconds"],"type":"object"}`},
+		{"wait_agent", "Wait for bounded durable activity on the caller or one direct child. Timeout is 1 to 25000 milliseconds; larger values are rejected, so poll again with a shorter timeout when nothing is available yet.", `{"additionalProperties":false,"properties":{"after_sequence":{"minimum":0,"type":"integer"},"agent_id":{"maxLength":64,"minLength":64,"type":"string"},"limit":{"maximum":64,"minimum":1,"type":"integer"},"timeout_milliseconds":{"maximum":25000,"minimum":1,"type":"integer"}},"required":["agent_id","after_sequence","limit","timeout_milliseconds"],"type":"object"}`},
 		{"send_message", "Store one non-waking message to the caller's parent or direct child.", `{"additionalProperties":false,"properties":{"agent_id":{"maxLength":64,"minLength":64,"type":"string"},"body":{"maxLength":65536,"minLength":1,"type":"string"},"nonce":{"maxLength":128,"minLength":1,"type":"string"}},"required":["agent_id","nonce","body"],"type":"object"}`},
 		{"followup_task", "Store one waking message and schedule the next turn for a direct explorer child.", `{"additionalProperties":false,"properties":{"agent_id":{"maxLength":64,"minLength":64,"type":"string"},"body":{"maxLength":4096,"minLength":1,"type":"string"},"nonce":{"maxLength":128,"minLength":1,"type":"string"}},"required":["agent_id","nonce","body"],"type":"object"}`},
 		{"interrupt_agent", "Request interruption of one exact open turn belonging to a direct explorer child.", `{"additionalProperties":false,"properties":{"nonce":{"maxLength":128,"minLength":1,"type":"string"},"turn_id":{"maxLength":64,"minLength":64,"type":"string"}},"required":["turn_id","nonce"],"type":"object"}`},

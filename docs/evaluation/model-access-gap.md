@@ -15,7 +15,7 @@ Existing work remains local and LexAI remains read-only reference.
 | Invocation receipts | Runtime result binds requested profile and observations; unknown usage is nullable | Bind access, billing mode, privacy, attempt and admission identity; preserve unknown subscription cost |
 | Two real access/runtime paths | Config admits fake and codex-app-server only | Implement and qualify a materially different real adapter and mixed step routing |
 | Deterministic escalation | Route selects a role without escalation policy | Explicit permitted reason/target, renewed admission and plan approval boundaries |
-| Exact reference refresh | Earlier research does not establish current remote PR state | Read-only inspection of the private design reference; private identifiers omitted |
+| Exact reference refresh | Earlier research does not establish current remote PR state | Read-only inspection of LexAI PR 784 and merged 798/799/800 |
 
 Implementation order returns to the deterministic kernel before additional RI or
 complex real-model work. First define versioned access/profile/admission contracts

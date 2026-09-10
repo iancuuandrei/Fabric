@@ -12,13 +12,13 @@ import (
 	"testing"
 )
 
-func TestParseResponsesSSESanitizedM0gSystemResponse(t *testing.T) {
+func TestParseResponsesSSECapturedM0gSystemResponse(t *testing.T) {
 	raw, err := os.ReadFile("testdata/m0g-live-system-02-response.raw")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if got := sha256.Sum256(raw); got != [32]byte{0xf7, 0xca, 0x0d, 0xf6, 0xb9, 0x0b, 0x03, 0xb3, 0xc6, 0xa9, 0xe8, 0xb2, 0x0b, 0x9b, 0xfb, 0x41, 0xc0, 0xbc, 0x6b, 0x1d, 0x6c, 0x67, 0xf6, 0x07, 0x75, 0x3d, 0x18, 0xb6, 0xc9, 0xe1, 0x77, 0xb4} {
-		t.Fatalf("sanitized response fixture hash changed: %x", got)
+	if got := sha256.Sum256(raw); got != [32]byte{0x20, 0xe0, 0x12, 0x48, 0xc7, 0x80, 0xd6, 0x0c, 0xe9, 0xaa, 0xc5, 0x15, 0x41, 0x20, 0x59, 0x79, 0x8b, 0x0d, 0x8e, 0x52, 0x0b, 0x4d, 0x4e, 0x4f, 0xa9, 0x83, 0xe7, 0xb8, 0xc4, 0x5e, 0xed, 0xe6} {
+		t.Fatalf("captured response fixture hash changed: %x", got)
 	}
 	if _, err := ParseResponsesSSEWithOptions(raw, len(raw), 402, ResponsesSSEOptions{RequireTrailingCostPingV1: true}); err == nil {
 		t.Fatal("captured profile admitted without content-part completion capability")
@@ -27,7 +27,7 @@ func TestParseResponsesSSESanitizedM0gSystemResponse(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if observation.ResponseID != "resp_public_fixture" || observation.Model != "muse-spark-1.3-contributor-free" || observation.Status != "completed" || observation.OutputText != "M0_MUSE_ROUTE_OK" || observation.TotalTokens != 402 || observation.Usage.InputTokens != 153 || observation.Usage.OutputTokens != 249 || observation.Usage.ReasoningTokens == nil || *observation.Usage.ReasoningTokens != 233 || len(observation.Reasoning) != 1 || observation.TrailingCostPing == nil || observation.TrailingCostPing.CostDecimal != "0" {
+	if observation.ResponseID != "resp_6aa01e57f0a4468a1c374c43" || observation.Model != "muse-spark-1.3-contributor-free" || observation.Status != "completed" || observation.OutputText != "M0_MUSE_ROUTE_OK" || observation.TotalTokens != 402 || observation.Usage.InputTokens != 153 || observation.Usage.OutputTokens != 249 || observation.Usage.ReasoningTokens == nil || *observation.Usage.ReasoningTokens != 233 || len(observation.Reasoning) != 1 || observation.TrailingCostPing == nil || observation.TrailingCostPing.CostDecimal != "0" {
 		t.Fatal("captured response evidence differs", observation)
 	}
 }
@@ -41,7 +41,7 @@ func TestParseResponsesSSEContentPartCompletionRejectsContradictions(t *testing.
 	mismatched := strings.Replace(valid, `"part":{"type":"output_text","text":"M0_MUSE_ROUTE_OK"`, `"part":{"type":"output_text","text":"substituted"`, 1)
 	lateDone := strings.Replace(valid,
 		"event: response.output_item.done\ndata: {\"type\":\"response.output_item.done\",\"sequence_number\":8",
-		"event: response.output_text.done\ndata: {\"type\":\"response.output_text.done\",\"sequence_number\":8,\"output_index\":1,\"content_index\":0,\"item_id\":\"msg_public_fixture\",\"text\":\"M0_MUSE_ROUTE_OK\",\"logprobs\":[]}\n\nevent: response.output_item.done\ndata: {\"type\":\"response.output_item.done\",\"sequence_number\":9",
+		"event: response.output_text.done\ndata: {\"type\":\"response.output_text.done\",\"sequence_number\":8,\"output_index\":1,\"content_index\":0,\"item_id\":\"msg_01a081768bf876e1942383bc6f5cb435\",\"text\":\"M0_MUSE_ROUTE_OK\",\"logprobs\":[]}\n\nevent: response.output_item.done\ndata: {\"type\":\"response.output_item.done\",\"sequence_number\":9",
 		1)
 	lateDone = strings.Replace(lateDone, `"type":"response.completed","sequence_number":9`, `"type":"response.completed","sequence_number":10`, 1)
 	options := ResponsesSSEOptions{RequireTrailingCostPingV1: true, ContentPartCompletesText: true}

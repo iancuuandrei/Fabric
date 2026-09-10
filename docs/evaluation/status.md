@@ -1,10 +1,5 @@
 # Implementation and evidence status
 
-This file retains historical implementation notes. For the public v0.0.0
-checkpoint, the bounded current verdict and its limitations are recorded in
-[v0.0.0.md](v0.0.0.md). Historical package PASS statements are not a current
-full-project, live M2, or release-readiness verdict.
-
 ### Anthropic native refusal classification
 
 Anthropic decoders now retain non-content identity/accounting metadata on

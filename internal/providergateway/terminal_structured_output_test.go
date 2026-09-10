@@ -19,6 +19,37 @@ func terminalStructuredExpectationForTest(t *testing.T) TerminalStructuredOutput
 	return TerminalStructuredOutputExpectation{Version: 1, Name: StructuredOutputToolName, Schema: schema, SchemaSHA256: hex.EncodeToString(digest[:])}
 }
 
+// responsesMessageStructuredFixture mirrors responsesFunctionFixture with one
+// synthetic advisory message between reasoning and the terminal
+// StructuredOutput call (the M2r live shape: reasoning + short text +
+// StructuredOutput). No private provider content is embedded.
+func responsesMessageStructuredFixture() []byte {
+	messageItem := `{"id":"msg_advisory","type":"message","status":"completed","content":[{"type":"output_text","annotations":[],"logprobs":[],"text":"synthetic advisory note"}],"role":"assistant"}`
+	functionItem := `{"id":"fc_fixture","type":"function_call","status":"completed","arguments":"{\"city\":\"Iași\"}","call_id":"call_fixture","name":"StructuredOutput"}`
+	return responsesEvents(
+		`{"type":"response.created","response":`+responsesSnapshot("in_progress", `[]`, `null`)+`,"sequence_number":10}`,
+		`{"type":"response.in_progress","response":`+responsesSnapshot("in_progress", `[]`, `null`)+`,"sequence_number":20}`,
+		`{"type":"response.output_item.added","output_index":0,"item":{"id":"rs_fixture","type":"reasoning","encrypted_content":"added-cipher","summary":[]},"sequence_number":30}`,
+		`{"type":"response.reasoning_summary_part.added","item_id":"rs_fixture","output_index":0,"summary_index":0,"part":{"type":"summary_text","text":""},"sequence_number":31}`,
+		`{"type":"response.reasoning_summary_text.delta","item_id":"rs_fixture","output_index":0,"summary_index":0,"delta":"private plan","sequence_number":32}`,
+		`{"type":"response.reasoning_summary_text.done","item_id":"rs_fixture","output_index":0,"summary_index":0,"text":"private plan","sequence_number":33}`,
+		`{"type":"response.reasoning_summary_part.done","item_id":"rs_fixture","output_index":0,"summary_index":0,"part":{"type":"summary_text","text":"private plan"},"sequence_number":34}`,
+		`{"type":"response.output_item.done","output_index":0,"item":{"id":"rs_fixture","type":"reasoning","encrypted_content":"done-cipher","summary":[{"type":"summary_text","text":"private plan"}]},"sequence_number":40}`,
+		`{"type":"response.output_item.added","output_index":1,"item":{"id":"msg_advisory","type":"message","status":"in_progress","content":[],"role":"assistant"},"sequence_number":50}`,
+		`{"type":"response.content_part.added","content_index":0,"item_id":"msg_advisory","output_index":1,"part":{"type":"output_text","annotations":[],"logprobs":[],"text":""},"sequence_number":51}`,
+		`{"type":"response.output_text.delta","content_index":0,"delta":"synthetic advisory note","item_id":"msg_advisory","logprobs":[],"obfuscation":"x","output_index":1,"sequence_number":52}`,
+		`{"type":"response.output_text.done","content_index":0,"item_id":"msg_advisory","logprobs":[],"output_index":1,"sequence_number":53,"text":"synthetic advisory note"}`,
+		`{"type":"response.content_part.done","content_index":0,"item_id":"msg_advisory","output_index":1,"part":{"type":"output_text","annotations":[],"logprobs":[],"text":"synthetic advisory note"},"sequence_number":54}`,
+		`{"type":"response.output_item.done","output_index":1,"item":`+messageItem+`,"sequence_number":55}`,
+		`{"type":"response.output_item.added","output_index":2,"item":{"id":"fc_fixture","type":"function_call","status":"in_progress","arguments":"","call_id":"call_fixture","name":"StructuredOutput"},"sequence_number":60}`,
+		`{"type":"response.function_call_arguments.delta","delta":"{\"city\":","item_id":"fc_fixture","obfuscation":"x","output_index":2,"sequence_number":70}`,
+		`{"type":"response.function_call_arguments.delta","delta":"\"Iași\"}","item_id":"fc_fixture","obfuscation":"y","output_index":2,"sequence_number":80}`,
+		`{"type":"response.function_call_arguments.done","arguments":"{\"city\":\"Iași\"}","item_id":"fc_fixture","output_index":2,"sequence_number":90}`,
+		`{"type":"response.output_item.done","output_index":2,"item":`+functionItem+`,"sequence_number":95}`,
+		`{"type":"response.completed","response":`+responsesSnapshot("completed", `[{"id":"rs_fixture","type":"reasoning","encrypted_content":"terminal-cipher","summary":[{"type":"summary_text","text":"private plan"}]},`+messageItem+`,`+functionItem+`]`, `{"input_tokens":18,"input_tokens_details":{"cached_tokens":2},"output_tokens":2,"output_tokens_details":{"reasoning_tokens":2},"total_tokens":20}`)+`,"sequence_number":100}`,
+	)
+}
+
 func TestTerminalStructuredOutputBindsResponsesToolCatalogAndExplicitChoices(t *testing.T) {
 	capabilities := responsesCapabilities(true, true)
 	binding := responsesBinding(t, capabilities)
@@ -141,6 +172,15 @@ func TestTerminalStructuredOutputResponseAllowsEarlierBrokerCallAndBindsFinalCap
 		t.Fatal("terminal capture carried visible output text")
 	}
 
+	// R34: advisory message text may accompany exactly one valid terminal
+	// capture (M2r: reasoning + 52-char text + StructuredOutput, rejected
+	// before this fix). The text stays hashed in evidence and grants no
+	// effect authority; the single validated capture still closes the turn.
+	textTerminal, err := DecodeAdapterResponse(responsesMessageStructuredFixture(), binding, expected)
+	if err != nil || textTerminal.Semantic == nil || textTerminal.Semantic.TerminalTool == nil || len(textTerminal.Semantic.ToolCalls) != 1 || textTerminal.Semantic.TerminalTool.Name != StructuredOutputToolName || textTerminal.Semantic.OutputTextSHA256 == hex.EncodeToString(emptyDigest[:]) {
+		t.Fatalf("terminal capture with advisory text was not bound with text evidence: %#v, %v", textTerminal, err)
+	}
+
 	invalidArguments := strings.ReplaceAll(terminalRaw, `\"city\":\"Iași\"`, `\"city\":1`)
 	if _, err := DecodeAdapterResponse([]byte(invalidArguments), binding, expected); err == nil {
 		t.Fatal("schema-invalid terminal capture was admitted")
@@ -148,13 +188,17 @@ func TestTerminalStructuredOutputResponseAllowsEarlierBrokerCallAndBindsFinalCap
 	for name, content := range map[string]*ProviderResponseContent{
 		"mixed ordinary and terminal": {OutputText: "", ToolCalls: []ProviderToolCallContent{{ID: "ordinary", Name: "lookup", Arguments: json.RawMessage(`{"city":"Iași"}`)}, {ID: "terminal", Name: StructuredOutputToolName, Arguments: json.RawMessage(`{"city":"Iași"}`)}}},
 		"duplicate terminal":          {OutputText: "", ToolCalls: []ProviderToolCallContent{{ID: "terminal-1", Name: StructuredOutputToolName, Arguments: json.RawMessage(`{"city":"Iași"}`)}, {ID: "terminal-2", Name: StructuredOutputToolName, Arguments: json.RawMessage(`{"city":"Iași"}`)}}},
-		"terminal text":               {OutputText: "unexpected", ToolCalls: []ProviderToolCallContent{{ID: "terminal", Name: StructuredOutputToolName, Arguments: json.RawMessage(`{"city":"Iași"}`)}}},
 	} {
 		t.Run(name, func(t *testing.T) {
 			if _, err := terminalStructuredOutputIdentity(content, &expectation); err == nil {
 				t.Fatal("invalid terminal capture was admitted")
 			}
 		})
+	}
+	// Advisory text alongside the single valid capture is retained as evidence
+	// and does not block terminal identity.
+	if _, err := terminalStructuredOutputIdentity(&ProviderResponseContent{OutputText: "synthetic advisory note", ToolCalls: []ProviderToolCallContent{{ID: "terminal", Name: StructuredOutputToolName, Arguments: json.RawMessage(`{"city":"Iași"}`)}}}, &expectation); err != nil {
+		t.Fatal("terminal capture with advisory text was rejected", err)
 	}
 
 	tampered := *terminal.Semantic

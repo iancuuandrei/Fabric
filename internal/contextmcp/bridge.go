@@ -34,12 +34,23 @@ const (
 // arguments. A new ID is a new read; callers must not implement blind retries.
 // A stored response does not prove delivery after HTTP cancellation/write loss.
 func New(broker *contextbroker.Broker, bearer string, observe toolbridge.ObserveFunc) (*toolbridge.Server, error) {
+	return NewWithQueue(broker, bearer, observe, 0)
+}
+
+// NewWithQueue constructs the same context-only server with a bounded serial
+// FIFO waiting queue for simultaneous calls. Queuing is transport admission
+// only: at most one callback executes at a time, queued callers wait for a
+// running slot, and capacity beyond maxQueuedCalls keeps the exact immediate
+// rejection New applies. The served catalog is identical to New, so queue
+// depth changes transport behavior without granting any new tool authority.
+func NewWithQueue(broker *contextbroker.Broker, bearer string, observe toolbridge.ObserveFunc, maxQueuedCalls int) (*toolbridge.Server, error) {
 	projection, err := Projection(broker)
 	if err != nil {
 		return nil, err
 	}
 	return toolbridge.New(toolbridge.Config{
 		Token: bearer, Observe: observe, MaxConcurrentCalls: 1,
+		MaxQueuedCalls:  maxQueuedCalls,
 		MaxRequestBytes: 64 << 10, MaxResponseBytes: MaxWireResponseBytes,
 		CallTimeout: 15 * time.Second,
 		Catalog:     projection.Catalog, Call: projection.Call,

@@ -11,9 +11,11 @@ import (
 	"strings"
 	"unicode/utf8"
 
+	"harness.local/engorch/internal/candidatetools"
 	"harness.local/engorch/internal/canonical"
 	"harness.local/engorch/internal/contextbroker"
 	"harness.local/engorch/internal/providergateway"
+	"harness.local/engorch/internal/sourcetools"
 )
 
 const toolTurnMaximumExactInteger = int64(9007199254740991)
@@ -30,7 +32,10 @@ type ToolTurnTokens struct {
 
 // ToolCallObservation binds one provider tool part to one durable broker
 // request and response. ProviderCallID and BrokerCallID are separate identity
-// domains and are deliberately retained as separate fields.
+// domains and are deliberately retained as separate fields. ContentSHA256 is
+// empty if and only if the call is an admitted receipted terminal failure;
+// an empty value never denotes content (successful observations always carry
+// a 64-hex digest), so a failed read can never later count as observed data.
 type ToolCallObservation struct {
 	MessageID       string         `json:"message_id"`
 	PartID          string         `json:"part_id"`
@@ -265,9 +270,12 @@ func decodeToolTurnWithOptions(raw []byte, b Binding, prompt string, broker cont
 		}
 		if final {
 			if structured != nil {
-				if item.decoded.Finish != "tool-calls" || len(generation.Calls) != 0 || generation.StructuredOutputTool == nil || len(item.decoded.StructuredOutput) == 0 || generation.TextSHA256 != toolTurnDigest(nil) {
+				if item.decoded.Finish != "tool-calls" || len(generation.Calls) != 0 || generation.StructuredOutputTool == nil || len(item.decoded.StructuredOutput) == 0 {
 					return ToolTurnObservation{}, errors.New("invalid structured output terminal assistant")
 				}
+				// Advisory message text may accompany the single terminal
+				// capture (R34/R35). generation.TextSHA256 retains it as
+				// evidence; only the validated capture below closes the turn.
 				normalized, normalizeErr := normalizeStructuredOutputValue(item.decoded.StructuredOutput)
 				if normalizeErr != nil {
 					return ToolTurnObservation{}, normalizeErr
@@ -344,8 +352,8 @@ func validateToolBrokerState(state contextbroker.State) (map[string]brokerPair, 
 		}
 		response := state.Responses[index]
 		content, err := canonical.Normalize(response.Content)
-		if err != nil || len(content) < 2 || content[0] != '{' || !bytes.Equal(content, response.Content) || !response.Success || response.Version != 1 || response.BindingID != request.BindingID || response.InvocationID != request.InvocationID || response.RequestID != request.RequestID || response.CallID != request.CallID {
-			return nil, "", "", errors.New("broker response differs from request or is unsuccessful")
+		if err != nil || len(content) < 2 || content[0] != '{' || !bytes.Equal(content, response.Content) || response.Version != 1 || response.BindingID != request.BindingID || response.InvocationID != request.InvocationID || response.RequestID != request.RequestID || response.CallID != request.CallID {
+			return nil, "", "", errors.New("broker response differs from request")
 		}
 		responseBytes += len(content)
 		pairs[request.RequestID] = brokerPair{Request: request, Response: response}
@@ -648,6 +656,18 @@ func decodeToolPart(part map[string]json.RawMessage, assistant Assistant, pairs 
 	}
 	var status, output, title string
 	if field(state, "status", &status) != nil || status != "completed" || field(state, "output", &output) != nil || field(state, "title", &title) != nil || title != "" {
+		if status == "error" {
+			failed, failureErr := decodeToolFailurePart(part, state, assistant, pairs, seenRequests)
+			if failureErr != nil {
+				return result, failureErr
+			}
+			failed.MessageID = result.MessageID
+			failed.PartID = result.PartID
+			failed.ProviderCallID = result.ProviderCallID
+			failed.ProviderItemID = result.ProviderItemID
+			failed.Tool = result.Tool
+			return failed, nil
+		}
 		return result, errors.New("tool call is not a successful completed MCP result")
 	}
 	input, err := canonical.Normalize(state["input"])
@@ -687,6 +707,9 @@ func decodeToolPart(part map[string]json.RawMessage, assistant Assistant, pairs 
 	if !ok || seenRequests[receipt.RequestID] {
 		return result, errors.New("missing or duplicate broker response receipt")
 	}
+	if !pair.Response.Success {
+		return result, errors.New("successful tool part bound to failed broker receipt")
+	}
 	expected, err := canonical.Bytes(pair.Response)
 	if err != nil || !bytes.Equal(expected, canonicalOutput) || result.Tool != "engorch_"+pair.Request.Tool || !bytes.Equal(input, pair.Request.Arguments) {
 		return result, errors.New("tool part differs from exact broker request or response")
@@ -698,6 +721,88 @@ func decodeToolPart(part map[string]json.RawMessage, assistant Assistant, pairs 
 	result.BrokerCallID = receipt.CallID
 	result.ArgumentsSHA256 = toolTurnDigest(pair.Request.Arguments)
 	result.ContentSHA256 = toolTurnDigest(receipt.Content)
+	return result, nil
+}
+
+// receiptedFailureReadTools is the closed set of read-only context tools
+// whose broker failures may terminate as observed transcript failures.
+// Agent-control and future tools are excluded: their failures must keep
+// failing the turn until explicitly qualified, and a bound pair alone never
+// proves a failure carried no effect for a non-read tool.
+var receiptedFailureReadTools = map[string]bool{
+	sourcetools.ListName:    true,
+	sourcetools.ReadName:    true,
+	candidatetools.ListName: true,
+	candidatetools.ReadName: true,
+}
+
+// decodeToolFailurePart admits one exact receipted terminal tool-call
+// failure (CALL_TERMINAL_FAILURE). The MCP state must carry only status,
+// input, error and time: any output, title, metadata or attachments make
+// the part ambiguous and keep failing closed. The call must bind exactly
+// one durable unsuccessful broker response with identical tool and
+// arguments; zero matches (unreceipted) or several (ambiguous) reject.
+// The observation carries no content evidence: ContentSHA256 stays empty,
+// which never denotes content (successful observations always carry a
+// 64-hex digest), so a failed read can never later count as observed data.
+func decodeToolFailurePart(part map[string]json.RawMessage, state map[string]json.RawMessage, assistant Assistant, pairs map[string]brokerPair, seenRequests map[string]bool) (ToolCallObservation, error) {
+	var result ToolCallObservation
+	for _, key := range []string{"output", "title", "metadata", "attachments"} {
+		if _, present := state[key]; present {
+			return result, errors.New("failed tool result carries unexpected body")
+		}
+	}
+	input, err := canonical.Normalize(state["input"])
+	if err != nil || len(input) < 2 || input[0] != '{' {
+		return result, errors.New("invalid failed tool input")
+	}
+	var diagnostic string
+	if field(state, "error", &diagnostic) != nil || !utf8.ValidString(diagnostic) || len(diagnostic) == 0 || len(diagnostic) > 4096 {
+		return result, errors.New("invalid failed tool diagnostic")
+	}
+	var timing struct {
+		Start *int64 `json:"start"`
+		End   *int64 `json:"end"`
+	}
+	if field(state, "time", &timing) != nil || timing.Start == nil || timing.End == nil || *timing.Start < assistant.Created || *timing.End < *timing.Start || *timing.End > assistant.Completed {
+		return result, errors.New("invalid failed tool time")
+	}
+	var tool string
+	if field(part, "tool", &tool) != nil {
+		return result, errors.New("failed tool identity missing")
+	}
+	var match *brokerPair
+	for _, pair := range pairs {
+		candidate := pair
+		if candidate.Response.Success {
+			continue
+		}
+		if !receiptedFailureReadTools[candidate.Request.Tool] || "engorch_"+candidate.Request.Tool != tool {
+			continue
+		}
+		if seenRequests[candidate.Request.RequestID] {
+			continue
+		}
+		arguments, err := canonical.Bytes(candidate.Request.Arguments)
+		if err != nil || !bytes.Equal(arguments, input) {
+			continue
+		}
+		if match != nil {
+			return result, errors.New("ambiguous failed tool receipt")
+		}
+		duplicate := candidate
+		match = &duplicate
+	}
+	if match == nil {
+		return result, errors.New("failed tool call has no exact broker receipt")
+	}
+	seenRequests[match.Request.RequestID] = true
+	result.BindingID = match.Response.BindingID
+	result.InvocationID = match.Response.InvocationID
+	result.RequestID = match.Response.RequestID
+	result.BrokerCallID = match.Response.CallID
+	result.ArgumentsSHA256 = toolTurnDigest(match.Request.Arguments)
+	result.ContentSHA256 = ""
 	return result, nil
 }
 

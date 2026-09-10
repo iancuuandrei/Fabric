@@ -74,10 +74,16 @@ type ExecuteConfig struct {
 	ReadinessTimeout   time.Duration
 	SealTimeout        time.Duration
 	ReadbackTimeout    time.Duration
-	Diagnostic         bool
-	InterruptShutdown  InterruptShutdownLookup
-	Composite          *contextmcp.RecorderOwnedConfig
-	VerifyComposite    opencode.CompositeBackendVerifier
+	// MCPQueueDepth bounds the context-only MCP listener waiting queue for
+	// simultaneous tool calls. Zero preserves immediate rejection. It is a
+	// transport admission bound, not tool authority: the served catalog is
+	// unchanged. Composite turns ignore it; their queue comes from the
+	// receipts binding.
+	MCPQueueDepth     int
+	Diagnostic        bool
+	InterruptShutdown InterruptShutdownLookup
+	Composite         *contextmcp.RecorderOwnedConfig
+	VerifyComposite   opencode.CompositeBackendVerifier
 }
 
 // Execute starts one fresh provider-backed OpenCode tool turn. Durable partial

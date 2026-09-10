@@ -1,4 +1,4 @@
-# EngOrch — v0.0.0 experimental source checkpoint
+# Engineering harness
 
 A standalone engineering harness around coding agents: models supply judgment;
 deterministic code binds repository context, routing, approvals and outcomes.
@@ -10,16 +10,9 @@ planning/source-tool adapter and Rust SCIP intelligence. Explicit producer, impo
 and local publication lifecycles feed immutable runtime queries. Seven optional
 engineering procedures accompany the code.
 
-This is a public review snapshot, not a trusted bootstrap release. The latest
-heterogeneous M2 attempt remains **NO-GO**: Muse returned a settled structured
-proposal, but controller replay rejected the order of its file changes. The R33
-fix is qualified offline; no subsequent live attempt has run. Historical evidence
-is described in [the v0.0.0 qualification report](docs/evaluation/v0.0.0.md).
-
-The qualification runtime depends on two unupstreamed OpenCode patches. Stock
-OpenCode equivalence, full-product readiness and OS sandboxing are not claimed.
-No binaries, credentials, raw provider responses or private runtime state are
-distributed in this repository.
+The complete writer/reviewer model workflow, GitHub handoff and full product
+qualification remain unfinished. Local fixtures and bounded authenticated planning
+tests do not establish model quality or OS sandboxing. Nothing is published yet.
 
 ## Try a local plan
 
@@ -66,6 +59,7 @@ not yet been qualified.
 - [Contributing](CONTRIBUTING.md) and [documentation standard](docs/contributing/documentation-standard.md)
 - [Research provenance](docs/research/oss-mechanisms.md)
 - [Current evidence](docs/evaluation/status.md)
+- [v0.0.1 trusted bootstrap checkpoint](docs/evaluation/v0.0.1.md)
 
 LexAI is read-only design reference. This repository contains independently
 implemented contracts and code, with no LexAI runtime dependency or historical

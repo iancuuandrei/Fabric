@@ -101,11 +101,6 @@ func TestDecodeStructuredOutputRejectsAmbiguousOrNonterminalProjection(t *testin
 			duplicate["id"] = "part_structured_duplicate"
 			rows[2]["parts"] = append(finalParts[:len(finalParts)-1], duplicate, finalParts[len(finalParts)-1])
 		},
-		"commentary text": func(rows []map[string]any) {
-			finalParts := parts(rows[2])
-			text := mergePart(basePart("part_commentary", "msg_final", "text"), map[string]any{"text": "commentary"})
-			rows[2]["parts"] = append(finalParts[:len(finalParts)-1], text, finalParts[len(finalParts)-1])
-		},
 		"nonterminal structured tool": func(rows []map[string]any) {
 			structured := cloneMap(parts(rows[2])[1])
 			rows[1]["parts"] = append(parts(rows[1])[:len(parts(rows[1]))-1], structured, parts(rows[1])[len(parts(rows[1]))-1])
@@ -122,6 +117,27 @@ func TestDecodeStructuredOutputRejectsAmbiguousOrNonterminalProjection(t *testin
 				t.Fatal("ambiguous structured output transcript was admitted")
 			}
 		})
+	}
+}
+
+func TestDecodeStructuredOutputAcceptsAdvisoryCommentaryWithSingleCapture(t *testing.T) {
+	binding, state, transcript, expectation := structuredToolTurnFixture(t)
+	finalParts := parts(transcript[2])
+	text := mergePart(basePart("part_commentary", "msg_final", "text"), map[string]any{"text": "commentary"})
+	transcript[2]["parts"] = append(finalParts[:len(finalParts)-1], text, finalParts[len(finalParts)-1])
+	observation, err := decodeToolTurnWithStructuredOutput(marshalToolTranscript(t, transcript), binding, "use source_read", state, &expectation)
+	if err != nil {
+		t.Fatal("terminal capture with advisory commentary was rejected", err)
+	}
+	wantValue := json.RawMessage(`{"candidate_id":"candidate-1","changes":[]}`)
+	if observation.StructuredOutput == nil || !bytes.Equal(*observation.StructuredOutput, wantValue) || observation.StructuredOutputTool == nil {
+		t.Fatalf("advisory commentary changed the bound capture: %+v", observation)
+	}
+	if observation.Generations[1].TextSHA256 != toolTurnDigest([]byte("commentary")) {
+		t.Fatal("advisory commentary was not retained as generation evidence")
+	}
+	if len(observation.Calls) != 1 {
+		t.Fatalf("advisory commentary admitted broker work: %+v", observation)
 	}
 }
 
@@ -144,6 +160,26 @@ func TestStructuredOutputResponseReadbackMatchesTerminalTool(t *testing.T) {
 	changed.RetryCount = 1
 	if _, err := decodeSynchronousResponseWithStructuredOutput(raw, binding, changed); err == nil {
 		t.Fatal("changed structured expectation was admitted")
+	}
+}
+
+func TestStructuredOutputSyncResponseAcceptsAdvisoryCommentary(t *testing.T) {
+	binding, _, transcript, expectation := structuredToolTurnFixture(t)
+	final := transcript[len(transcript)-1]
+	finalParts := parts(final)
+	text := mergePart(basePart("part_commentary", "msg_final", "text"), map[string]any{"text": "commentary"})
+	final["parts"] = append(finalParts[:len(finalParts)-1], text, finalParts[len(finalParts)-1])
+	envelope := map[string]any{"info": final["info"], "parts": final["parts"]}
+	raw, err := json.Marshal(envelope)
+	if err != nil {
+		t.Fatal(err)
+	}
+	returned, err := decodeSynchronousResponseWithStructuredOutput(raw, binding, expectation)
+	if err != nil {
+		t.Fatal("synchronous terminal with advisory commentary was rejected", err)
+	}
+	if returned.StructuredOutput == nil || returned.StructuredOutputTool == nil {
+		t.Fatalf("advisory commentary changed the bound synchronous capture: %+v", returned)
 	}
 }
 

@@ -255,9 +255,13 @@ func decodeSynchronousResponseWithOptions(raw []byte, binding Binding, expectati
 	if err != nil {
 		return result, err
 	}
-	if len(generation.Calls) != 0 || generation.StructuredOutputTool == nil || generation.TextSHA256 != toolTurnDigest(nil) {
+	if len(generation.Calls) != 0 || generation.StructuredOutputTool == nil {
 		return result, errors.New("structured output response terminal projection mismatch")
 	}
+	// Advisory message text may accompany the single terminal capture (R34/R35:
+	// live Muse turns routinely pair short text with StructuredOutput under
+	// tool_choice=auto). The text stays hashed in generation evidence and
+	// grants no effect authority; only the validated capture below is returned.
 	normalized, err := normalizeStructuredOutputValue(assistant.StructuredOutput)
 	if err != nil {
 		return result, err

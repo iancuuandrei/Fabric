@@ -63,7 +63,13 @@ func newExecutionMCP(cfg ExecuteConfig, bearer string) (*contextmcp.OwnedServer,
 		}
 		return server, nil
 	}
-	return contextmcp.NewOwned(cfg.Broker, bearer, nil)
+	if cfg.MCPQueueDepth < 0 || cfg.MCPQueueDepth > 32 {
+		return nil, errors.New("invalid context MCP queue depth")
+	}
+	if cfg.MCPQueueDepth == 0 {
+		return contextmcp.NewOwned(cfg.Broker, bearer, nil)
+	}
+	return contextmcp.NewOwnedWithQueue(cfg.Broker, bearer, nil, cfg.MCPQueueDepth)
 }
 
 func validateExecutionMCPOwner(cfg ExecuteConfig, running *contextmcp.OwnedRunning, bearer string) error {

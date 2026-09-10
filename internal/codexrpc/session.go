@@ -289,7 +289,8 @@ func (c *Client) StartTurn(ctx context.Context, thread ThreadSettings, i runtime
 			got, e := canonical.Hash("writer-output-schema", envelope.OutputSchema)
 			want, _ := canonical.Hash("writer-output-schema", writercontract.Schema())
 			utf8, _ := canonical.Hash("writer-output-schema", writercontract.UTF8Schema())
-			if e != nil || (got != want && got != utf8) {
+			v2, _ := canonical.Hash("writer-output-schema", writercontract.ChangesJSONSchema())
+			if e != nil || (got != want && got != utf8 && got != v2) {
 				return wire.Turn, nil, errors.New("writer output schema substitution")
 			}
 			params["outputSchema"] = envelope.OutputSchema

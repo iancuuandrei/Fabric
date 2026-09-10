@@ -125,7 +125,7 @@ func (c Config) Validate() error {
 	if c.CandidateIdentity != "" && c.CandidateIdentity != "semantic-index-v2" {
 		return errors.New("unsupported candidate identity contract")
 	}
-	if c.WriterContract != "" && c.WriterContract != "nonempty-v1" && c.WriterContract != "utf8-v2" {
+	if c.WriterContract != "" && c.WriterContract != "nonempty-v1" && c.WriterContract != "utf8-v2" && c.WriterContract != writercontract.ContractChangesJSONV1 {
 		return errors.New("unsupported writer contract")
 	}
 	if c.PlannerContract != "" && c.PlannerContract != "plan-v1" {
@@ -315,13 +315,17 @@ func (c Config) OpenCodeWriterOutputExpectation(invocation runtime.Invocation) (
 	if err := json.Unmarshal([]byte(invocation.Input), &request); err != nil || len(request.OutputSchema) == 0 || string(request.OutputSchema) == "null" {
 		return nil, errors.New("native writer output schema missing from invocation")
 	}
-	want, err := canonical.Normalize(writercontract.UTF8Schema())
+	wantUTF8, err := canonical.Normalize(writercontract.UTF8Schema())
+	if err != nil {
+		return nil, err
+	}
+	wantJSON, err := canonical.Normalize(writercontract.ChangesJSONSchema())
 	if err != nil {
 		return nil, err
 	}
 	got, err := canonical.Normalize(request.OutputSchema)
-	if err != nil || !bytes.Equal(got, want) {
-		return nil, errors.New("native writer output schema differs from utf8-v2 contract")
+	if err != nil || !bytes.Equal(got, wantUTF8) && !bytes.Equal(got, wantJSON) {
+		return nil, errors.New("native writer output schema differs from admitted writer contract")
 	}
 	expectation, err := opencode.NewStructuredOutputExpectation(request.OutputSchema)
 	if err != nil {
@@ -352,6 +356,9 @@ func (c Config) nativeWriterSchemas() map[string]json.RawMessage {
 		return result
 	}
 	schema := writercontract.UTF8Schema()
+	if c.WriterContract == writercontract.ContractChangesJSONV1 {
+		schema = writercontract.ChangesJSONSchema()
+	}
 	for role, profile := range map[string]*runtime.Profile{"writer": c.Writer, "fixer": c.Fixer} {
 		if profile != nil && profile.Runtime == "opencode-http" {
 			result[role] = append(json.RawMessage(nil), schema...)
@@ -364,8 +371,8 @@ func (c Config) validateNativeWriterOutput() error {
 	if c.OpenCode == nil || !c.OpenCode.NativeWriterOutput {
 		return nil
 	}
-	if c.Version != 2 || c.WriterContract != "utf8-v2" {
-		return errors.New("native OpenCode writer output requires configuration v2 utf8-v2")
+	if c.Version != 2 || c.WriterContract != "utf8-v2" && c.WriterContract != writercontract.ContractChangesJSONV1 {
+		return errors.New("native OpenCode writer output requires configuration v2 utf8-v2 or changes-json-v1")
 	}
 	if c.Provider == nil {
 		return errors.New("native OpenCode writer output requires provider configuration")
