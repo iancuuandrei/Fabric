@@ -26,6 +26,13 @@ type OwnedServer struct {
 // NewOwned constructs a context bridge whose later running handle can prove
 // in-process ownership of the exact broker pointer and copied bearer.
 func NewOwned(broker *contextbroker.Broker, bearer string, observe toolbridge.ObserveFunc) (*OwnedServer, error) {
+	return NewOwnedWithQueue(broker, bearer, observe, 0)
+}
+
+// NewOwnedWithQueue constructs the same context-only bridge with a bounded
+// serial FIFO waiting queue. The served catalog and owner proof are identical
+// to NewOwned; only simultaneous-call transport admission changes.
+func NewOwnedWithQueue(broker *contextbroker.Broker, bearer string, observe toolbridge.ObserveFunc, maxQueuedCalls int) (*OwnedServer, error) {
 	if broker == nil {
 		return nil, errors.New("durable context broker required")
 	}
@@ -33,7 +40,7 @@ func NewOwned(broker *contextbroker.Broker, bearer string, observe toolbridge.Ob
 	if err != nil {
 		return nil, err
 	}
-	server, err := New(broker, bearer, observe)
+	server, err := NewWithQueue(broker, bearer, observe, maxQueuedCalls)
 	if err != nil {
 		return nil, err
 	}

@@ -27,9 +27,16 @@ func validateStructuredOutputIntent(intent Intent) error {
 	if err := intent.StructuredOutput.Validate(); err != nil {
 		return err
 	}
-	want, err := canonical.Normalize(writercontract.UTF8Schema())
-	if err != nil || !bytes.Equal(want, intent.StructuredOutput.Schema) {
-		return errors.New("native structured output schema differs from utf8-v2 contract")
+	wantUTF8, err := canonical.Normalize(writercontract.UTF8Schema())
+	if err != nil {
+		return err
+	}
+	wantJSON, err := canonical.Normalize(writercontract.ChangesJSONSchema())
+	if err != nil {
+		return err
+	}
+	if !bytes.Equal(wantUTF8, intent.StructuredOutput.Schema) && !bytes.Equal(wantJSON, intent.StructuredOutput.Schema) {
+		return errors.New("native structured output schema differs from admitted writer contract")
 	}
 	var request struct {
 		OutputSchema json.RawMessage `json:"output_schema"`
@@ -38,7 +45,7 @@ func validateStructuredOutputIntent(intent Intent) error {
 		return errors.New("native structured output schema missing from invocation")
 	}
 	got, err := canonical.Normalize(request.OutputSchema)
-	if err != nil || !bytes.Equal(got, intent.StructuredOutput.Schema) || !bytes.Equal(got, want) {
+	if err != nil || !bytes.Equal(got, intent.StructuredOutput.Schema) || !bytes.Equal(got, wantUTF8) && !bytes.Equal(got, wantJSON) {
 		return errors.New("native structured output invocation schema differs from contract")
 	}
 	return nil

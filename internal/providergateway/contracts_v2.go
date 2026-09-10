@@ -1265,7 +1265,12 @@ func terminalStructuredOutputIdentity(content *ProviderResponseContent, expectat
 		// tools. The reserved tool is the closure marker only when it appears.
 		return nil, nil
 	}
-	if content.OutputText != "" || len(content.ToolCalls) != 1 {
+	// Advisory message text may accompany the single terminal capture (as it
+	// already may for ordinary broker turns, and as tool_choice=auto permits
+	// for the Muse route). The text remains hashed in durable evidence and
+	// grants no effect authority; only the exactly-one validated structured
+	// capture below may close the turn.
+	if len(content.ToolCalls) != 1 {
 		return nil, errors.New("terminal structured output must be the sole provider tool result")
 	}
 	call := content.ToolCalls[terminalIndex]
@@ -1299,8 +1304,7 @@ func validateResponseSemanticProjection(projection ResponseSemanticProjection) e
 	}
 	if projection.TerminalTool != nil {
 		terminal := projection.TerminalTool
-		emptyDigest := sha256.Sum256(nil)
-		if terminal.Name != StructuredOutputToolName || len(projection.ToolCalls) != 1 || projection.OutputTextSHA256 != hex.EncodeToString(emptyDigest[:]) || safepath.RequireDigest(projection.TerminalSchemaSHA256) != nil || !reflect.DeepEqual(*terminal, projection.ToolCalls[0]) {
+		if terminal.Name != StructuredOutputToolName || len(projection.ToolCalls) != 1 || safepath.RequireDigest(projection.TerminalSchemaSHA256) != nil || !reflect.DeepEqual(*terminal, projection.ToolCalls[0]) {
 			return errors.New("invalid terminal provider response tool identity")
 		}
 	} else if projection.TerminalSchemaSHA256 != "" {

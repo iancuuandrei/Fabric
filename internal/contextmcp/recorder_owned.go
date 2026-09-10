@@ -28,6 +28,13 @@ type RecorderOwnedConfig struct {
 	MaxQueuedCalls      int
 }
 
+// RecorderOwnedBridgeCallTimeout is the ceiling for admitted agent tool callbacks on the recorder-owned MCP bridge.
+//
+// It must exceed the wait_agent controller cap with margin: the bridge abandons
+// and cancels the callback at this deadline, so a wait admitted near the cap
+// must resolve to its own finite timeout first. The server maximum is one minute.
+const RecorderOwnedBridgeCallTimeout = 60 * time.Second
+
 type recorderOwner struct {
 	value   *toolreceipts.Recorder
 	binding *toolreceipts.Binding
@@ -163,7 +170,12 @@ func NewRecorderOwned(broker *contextbroker.Broker, bearer string, config Record
 		Token: bearer, Observe: observe, MaxConcurrentCalls: 1,
 		MaxQueuedCalls:  config.MaxQueuedCalls,
 		MaxRequestBytes: 64 << 10, MaxResponseBytes: MaxWireResponseBytes,
-		CallTimeout: 15 * time.Second,
+		// R46: ceiling for admitted agent tool callbacks. Must exceed the
+		// wait_agent controller cap (45s) with margin: the bridge abandons
+		// and cancels the callback at this deadline, so a wait admitted
+		// near the cap must resolve to its own finite timeout first.
+		// Server maximum is one minute; fast tools are unaffected.
+		CallTimeout: RecorderOwnedBridgeCallTimeout,
 		Catalog:     recorder.Projection().Catalog, Call: recorder.Projection().Call,
 	})
 	if err != nil {
