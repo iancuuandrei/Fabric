@@ -9,6 +9,36 @@ import (
 	"harness.local/engorch/internal/writercontract"
 )
 
+// utf8WireChange is one validated UTF-8 wire item shared by the utf8-v2 and
+// changes-json-v1 decoders. The deterministic UTF-8 to Base64 conversion
+// happens once here, after all schema checks.
+type utf8WireChange struct {
+	Path       string          `json:"path"`
+	BeforeHash *string         `json:"before_hash"`
+	Content    json.RawMessage `json:"content_utf8"`
+	Executable bool            `json:"executable"`
+}
+
+// appendUTF8Change converts one validated wire item into its semantic change.
+// A JSON null content means deletion; any other value must be a JSON string
+// whose UTF-8 bytes are Base64-encoded deterministically.
+func appendUTF8Change(proposal *WriterProposal, c utf8WireChange) error {
+	if len(c.Content) == 0 {
+		return errors.New("writer content_utf8 is required; null means deletion")
+	}
+	var encoded *string
+	if string(c.Content) != "null" {
+		var text string
+		if err := json.Unmarshal(c.Content, &text); err != nil {
+			return err
+		}
+		value := base64.StdEncoding.EncodeToString([]byte(text))
+		encoded = &value
+	}
+	proposal.Changes = append(proposal.Changes, fileeffects.Change{Path: c.Path, BeforeHash: c.BeforeHash, ContentBase64: encoded, Executable: c.Executable})
+	return nil
+}
+
 // decodeWriterProposal preserves the observed model output. Only the approval
 // target uses Base64, generated deterministically from validated JSON text.
 // Contracts are disjoint: utf8-v2 accepts only candidate_id+changes array,
@@ -24,13 +54,8 @@ func decodeWriterProposal(contract, output string) (WriterProposal, error) {
 		return proposal, err
 	}
 	var wire struct {
-		CandidateID string `json:"candidate_id"`
-		Changes     []struct {
-			Path       string          `json:"path"`
-			BeforeHash *string         `json:"before_hash"`
-			Content    json.RawMessage `json:"content_utf8"`
-			Executable bool            `json:"executable"`
-		} `json:"changes"`
+		CandidateID string           `json:"candidate_id"`
+		Changes     []utf8WireChange `json:"changes"`
 	}
 	if err := canonical.Decode([]byte(output), &wire); err != nil {
 		return proposal, err
@@ -58,19 +83,9 @@ func decodeWriterProposal(contract, output string) (WriterProposal, error) {
 	}
 	proposal.CandidateID = wire.CandidateID
 	for _, c := range wire.Changes {
-		if len(c.Content) == 0 {
-			return WriterProposal{}, errors.New("writer content_utf8 is required; null means deletion")
+		if err := appendUTF8Change(&proposal, c); err != nil {
+			return WriterProposal{}, err
 		}
-		var encoded *string
-		if string(c.Content) != "null" {
-			var text string
-			if err := json.Unmarshal(c.Content, &text); err != nil {
-				return WriterProposal{}, err
-			}
-			value := base64.StdEncoding.EncodeToString([]byte(text))
-			encoded = &value
-		}
-		proposal.Changes = append(proposal.Changes, fileeffects.Change{Path: c.Path, BeforeHash: c.BeforeHash, ContentBase64: encoded, Executable: c.Executable})
 	}
 	return proposal, nil
 }
@@ -104,12 +119,7 @@ func decodeChangesJSONProposal(output string) (WriterProposal, error) {
 	if len(trimmed) == 0 || trimmed[0] != '[' {
 		return proposal, errors.New("writer changes_json must be a JSON array string")
 	}
-	var items []struct {
-		Path       string          `json:"path"`
-		BeforeHash *string         `json:"before_hash"`
-		Content    json.RawMessage `json:"content_utf8"`
-		Executable bool            `json:"executable"`
-	}
+	var items []utf8WireChange
 	if err := canonical.Decode([]byte(inner), &items); err != nil {
 		return proposal, err
 	}
@@ -135,19 +145,9 @@ func decodeChangesJSONProposal(output string) (WriterProposal, error) {
 	}
 	proposal.CandidateID = outer.CandidateID
 	for _, c := range items {
-		if len(c.Content) == 0 {
-			return WriterProposal{}, errors.New("writer content_utf8 is required; null means deletion")
+		if err := appendUTF8Change(&proposal, c); err != nil {
+			return WriterProposal{}, err
 		}
-		var encoded *string
-		if string(c.Content) != "null" {
-			var text string
-			if err := json.Unmarshal(c.Content, &text); err != nil {
-				return WriterProposal{}, err
-			}
-			value := base64.StdEncoding.EncodeToString([]byte(text))
-			encoded = &value
-		}
-		proposal.Changes = append(proposal.Changes, fileeffects.Change{Path: c.Path, BeforeHash: c.BeforeHash, ContentBase64: encoded, Executable: c.Executable})
 	}
 	return proposal, nil
 }

@@ -246,7 +246,7 @@ func TestResponsesAdapterPropagatesContentPartCompletionCapability(t *testing.T)
 	}
 	base.ContentPartCompletesText = true
 	metadata, err := decodeResponsesAdapterResponse(raw, responsesBinding(t, base), expected)
-	if err != nil || metadata.ResponseID != "resp_6aa01e57f0a4468a1c374c43" || metadata.Usage.InputTokens+metadata.Usage.OutputTokens != 402 {
+	if err != nil || metadata.ResponseID != "resp_public_fixture" || metadata.Usage.InputTokens+metadata.Usage.OutputTokens != 402 {
 		t.Fatal("bound content-part completion profile rejected", metadata, err)
 	}
 }

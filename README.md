@@ -10,9 +10,17 @@ planning/source-tool adapter and Rust SCIP intelligence. Explicit producer, impo
 and local publication lifecycles feed immutable runtime queries. Seven optional
 engineering procedures accompany the code.
 
-The complete writer/reviewer model workflow, GitHub handoff and full product
-qualification remain unfinished. Local fixtures and bounded authenticated planning
-tests do not establish model quality or OS sandboxing. Nothing is published yet.
+The bounded writer/reviewer model workflow (plan, implement, verify, review,
+commit) is qualified end to end at the v0.0.1 trusted bootstrap checkpoint
+(see below); the full product v1.0.0 program remains future work. Local
+fixtures and bounded authenticated planning tests do not establish model
+quality or OS sandboxing.
+
+## Checkpoint
+
+- [v0.0.1 trusted bootstrap checkpoint](docs/evaluation/v0.0.1.md): first
+  trusted pre-alpha checkpoint (M2at: Luna planning, recursive Muse research,
+  Muse writer, deterministic verification, Luna review, local commit).
 
 ## Try a local plan
 

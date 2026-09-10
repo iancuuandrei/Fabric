@@ -40,20 +40,28 @@
     "candidate_id": "b51d5f1f112a2c954343319e4c6674fa76cb0f2deb9c1581d8526f71cc3400cf",
     "observations": [
       {
-        "invocation_id": null,
-        "status": null
+        "name": "envelope-unit",
+        "invocation_id": "eb8258cadb2c3af9210e2c9786db710c645e81d65f52a4ee9d802c32c7db2fa8",
+        "status": "PASS",
+        "exit_code": 0
       },
       {
-        "invocation_id": null,
-        "status": null
+        "name": "hygiene",
+        "invocation_id": "14c6d0e570afc62b2088f3a6794ea75fd3e84a0a2339c9a7d50286ee2991bca5",
+        "status": "PASS",
+        "exit_code": 0
       },
       {
-        "invocation_id": null,
-        "status": null
+        "name": "git-diff-check",
+        "invocation_id": "9fae52e2817079cf059c07c3e3266941c3d62b4cdc3659f41a33df91e51315f9",
+        "status": "PASS",
+        "exit_code": 0
       },
       {
-        "invocation_id": null,
-        "status": null
+        "name": "changed-paths",
+        "invocation_id": "251e644b635f1480513fd2097b56e08662fd38f47c84f3aa6ea1f36accc57263",
+        "status": "PASS",
+        "exit_code": 0
       }
     ]
   },

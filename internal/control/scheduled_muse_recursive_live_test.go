@@ -760,6 +760,7 @@ func TestMuseScheduledRecursiveExplorer(t *testing.T) {
 		followCtx, followCancel := context.WithTimeout(dispatchCtx, 15*time.Minute)
 		defer followCancel()
 		pumpCtx2, stopPump2 := context.WithCancel(followCtx)
+		defer stopPump2()
 		pumpDone2 := make(chan error, 1)
 		go func() {
 			pumpDone2 <- taskscheduler.Pump(pumpCtx2, schedulerPath, adapter, taskscheduler.PumpOptions{Workers: 2, PollInterval: 100 * time.Millisecond})
