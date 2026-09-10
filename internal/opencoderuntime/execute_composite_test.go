@@ -18,19 +18,12 @@ func TestExecutionCompositeCatalogRequiresExactAdmittedBinding(t *testing.T) {
 	t.Run("queued", func(t *testing.T) { testExecutionCompositeBinding(t, 32) })
 }
 
-func testExecutionCompositeBinding(t *testing.T, maxQueued int) {
+// queuedCompositeFixture binds one queued recorder-owned composite intent and
+// derives its session plan and v2 journal paths. Shared by the composite
+// catalog and queue-fallback tests so the binding construction stays exact
+// in one place.
+func queuedCompositeFixture(t *testing.T, f runtimeFixture, agent toolbridge.Projection, maxQueued int) (Intent, toolreceipts.Binding, Paths) {
 	t.Helper()
-	f := newRuntimeFixture(t)
-	called := false
-	agent := toolbridge.Projection{
-		Catalog: func() ([]toolbridge.ToolDefinition, error) {
-			return []toolbridge.ToolDefinition{{Name: "list_agents", InputSchema: []byte(`{"type":"object","properties":{},"additionalProperties":false}`)}}, nil
-		},
-		Call: func(context.Context, toolbridge.Call) (toolbridge.Result, error) {
-			called = true
-			return toolbridge.Result{}, nil
-		},
-	}
 	binding, err := contextmcp.PrepareRecorderBindingWithQueue(f.broker, f.intent.Invocation.ID, strings.Repeat("d", 64), agent, maxQueued)
 	if err != nil {
 		t.Fatal(err)
@@ -50,6 +43,23 @@ func testExecutionCompositeBinding(t *testing.T, maxQueued int) {
 	paths := f.paths
 	paths.Version = 2
 	paths.ToolReceipts = filepath.Join(t.TempDir(), "receipts")
+	return intent, binding, paths
+}
+
+func testExecutionCompositeBinding(t *testing.T, maxQueued int) {
+	t.Helper()
+	f := newRuntimeFixture(t)
+	called := false
+	agent := toolbridge.Projection{
+		Catalog: func() ([]toolbridge.ToolDefinition, error) {
+			return []toolbridge.ToolDefinition{{Name: "list_agents", InputSchema: []byte(`{"type":"object","properties":{},"additionalProperties":false}`)}}, nil
+		},
+		Call: func(context.Context, toolbridge.Call) (toolbridge.Result, error) {
+			called = true
+			return toolbridge.Result{}, nil
+		},
+	}
+	intent, binding, paths := queuedCompositeFixture(t, f, agent, maxQueued)
 	cfg := ExecuteConfig{Intent: intent, Paths: paths, Broker: f.broker, Composite: &contextmcp.RecorderOwnedConfig{Path: paths.ToolReceipts, InvocationID: intent.Invocation.ID, CallerBindingSHA256: binding.CallerBindingSHA256, CatalogSHA256: binding.CatalogSHA256, AgentProjection: agent}, VerifyComposite: func(toolreceipts.Owner, toolbridge.Call, toolbridge.Result) error { called = true; return nil }}
 	cfg.Composite.MaxQueuedCalls = maxQueued
 	tools, err := executionProviderTools(cfg, *intent.SessionPlan)

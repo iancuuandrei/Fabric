@@ -98,17 +98,7 @@ func TestWriterReplayPreservesUnsortedObservedOutput(t *testing.T) {
 
 func unsortedUTF8WriterFixture(t *testing.T) (string, runtime.Invocation, utf8WriterReply, PreparedFiles, runtime.Result) {
 	t.Helper()
-	c := creation(t)
-	c.Config.WriterContract = "utf8-v2"
-	c.Config.Writer = &runtime.Profile{Runtime: "fake", Provider: "deterministic", Model: "explicit-writer", Effort: "high", Role: "writer"}
-	path, _ := approvedRepositoryCreation(t, c)
-	if _, err := StartWorkspace(context.Background(), path); err != nil {
-		t.Fatal(err)
-	}
-	invocation, err := PrepareWriterInvocation(path)
-	if err != nil {
-		t.Fatal(err)
-	}
+	path, invocation := utf8WriterInvocationFixture(t)
 	s, err := Inspect(path)
 	if err != nil || s.Candidate == nil {
 		t.Fatal("candidate unavailable", err)

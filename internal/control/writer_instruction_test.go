@@ -9,12 +9,12 @@ import (
 	"harness.local/engorch/internal/runtime"
 )
 
-// The M2ak/M2am writers produced valid proposals with one fatal nesting
-// error: the changes array stringified into a JSON string. The strict
-// decoder already rejects that shape; the utf8-v2 instruction must
-// additionally state the array requirement with a concrete minimal example
-// so the model does not repeat it.
-func TestUTF8WriterInstructionRequiresChangesArray(t *testing.T) {
+// utf8WriterInvocationFixture prepares one fake utf8-v2 writer invocation on
+// a fresh approved workspace. Shared by the writer instruction, transport and
+// journal tests so the explicit-writer fixture construction stays exact in
+// one place.
+func utf8WriterInvocationFixture(t *testing.T) (string, runtime.Invocation) {
+	t.Helper()
 	c := creation(t)
 	c.Config.WriterContract = "utf8-v2"
 	c.Config.Writer = &runtime.Profile{Runtime: "fake", Provider: "deterministic", Model: "explicit-writer", Effort: "high", Role: "writer"}
@@ -26,6 +26,16 @@ func TestUTF8WriterInstructionRequiresChangesArray(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	return path, invocation
+}
+
+// The M2ak/M2am writers produced valid proposals with one fatal nesting
+// error: the changes array stringified into a JSON string. The strict
+// decoder already rejects that shape; the utf8-v2 instruction must
+// additionally state the array requirement with a concrete minimal example
+// so the model does not repeat it.
+func TestUTF8WriterInstructionRequiresChangesArray(t *testing.T) {
+	_, invocation := utf8WriterInvocationFixture(t)
 	var input struct {
 		Instruction string `json:"instruction"`
 	}
@@ -41,17 +51,7 @@ func TestUTF8WriterInstructionRequiresChangesArray(t *testing.T) {
 }
 
 func TestNestedStringChangesReplyRejected(t *testing.T) {
-	c := creation(t)
-	c.Config.WriterContract = "utf8-v2"
-	c.Config.Writer = &runtime.Profile{Runtime: "fake", Provider: "deterministic", Model: "explicit-writer", Effort: "high", Role: "writer"}
-	path, _ := approvedRepositoryCreation(t, c)
-	if _, err := StartWorkspace(context.Background(), path); err != nil {
-		t.Fatal(err)
-	}
-	invocation, err := PrepareWriterInvocation(path)
-	if err != nil {
-		t.Fatal(err)
-	}
+	path, invocation := utf8WriterInvocationFixture(t)
 	s, err := Inspect(path)
 	if err != nil || s.Candidate == nil {
 		t.Fatal("candidate unavailable", err)
