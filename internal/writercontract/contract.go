@@ -8,6 +8,7 @@ import (
 	"strings"
 )
 
+// MaxChanges bounds the number of changes in one proposal.
 const MaxChanges = 64
 
 // ContractChangesJSONV1 is the R59 writer/fixer wire contract: the provider
@@ -27,9 +28,13 @@ func UTF8Schema() json.RawMessage {
 	return json.RawMessage(strings.ReplaceAll(string(Schema()), "content_base64", "content_utf8"))
 }
 
+// ErrEmptyChangeset reports a proposal with no changes.
 var ErrEmptyChangeset = errors.New("WRITER_PROPOSAL_INVALID: EMPTY_CHANGESET")
+
+// ErrTooManyChanges reports a proposal exceeding MaxChanges.
 var ErrTooManyChanges = errors.New("WRITER_PROPOSAL_INVALID: TOO_MANY_CHANGES")
 
+// ValidateCount validates that n is within one to MaxChanges.
 func ValidateCount(n int) error {
 	if n == 0 {
 		return fmt.Errorf("%w: one to 64 changes required", ErrEmptyChangeset)

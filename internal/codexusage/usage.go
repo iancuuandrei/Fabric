@@ -12,16 +12,21 @@ import (
 const (
 	// SourceCodexAppServer identifies the sole evidence source accepted here.
 	SourceCodexAppServer = "CODEX_APP_SERVER"
-
+	// CoverageObserved marks a clean bound observation with no anomalies.
 	CoverageObserved = "OBSERVED"
-	CoverageUnknown  = "UNKNOWN"
+	// CoverageUnknown marks the absence of a clean bound observation.
+	CoverageUnknown = "UNKNOWN"
 )
 
 var (
-	ErrUninitialized    = errors.New("codex usage tracker is uninitialized")
+	// ErrUninitialized reports use of an uninitialized tracker.
+	ErrUninitialized = errors.New("codex usage tracker is uninitialized")
+	// ErrIdentityMismatch reports a thread or turn identity mismatch.
 	ErrIdentityMismatch = errors.New("codex usage notification identity mismatch")
-	ErrInvalidUsage     = errors.New("codex usage notification is invalid")
-	ErrUsageRegression  = errors.New("codex cumulative token usage regressed")
+	// ErrInvalidUsage reports an invalid usage notification or baseline.
+	ErrInvalidUsage = errors.New("codex usage notification is invalid")
+	// ErrUsageRegression reports a cumulative token regression.
+	ErrUsageRegression = errors.New("codex cumulative token usage regressed")
 )
 
 // TokenUsage mirrors the app-server TokenUsageBreakdown. The component subsets
@@ -262,7 +267,6 @@ func (t *Tracker) Observe(notification Notification) (Receipt, error) {
 	if err := validateUsage(notification.TokenUsage.Total); err != nil {
 		return t.Receipt(), fmt.Errorf("%w: total: %v", ErrInvalidUsage, err)
 	}
-
 	t.cacheWriteObserved = notification.TokenUsage.Total.CacheWriteInputTokens != nil
 	mergeHighWater(&t.after, notification.TokenUsage.Total, t.anomaly)
 	t.observed = true

@@ -18,6 +18,7 @@ import (
 	"harness.local/engorch/internal/safepath"
 )
 
+// Capability confinement request values and attestation kinds observed in decisions.
 const (
 	CapabilityConfinementRequired   = "required"
 	CapabilityConfinementUnverified = "UNVERIFIED"
@@ -28,8 +29,10 @@ const (
 	maxAttestationLifetime          = 24 * time.Hour
 )
 
+// ErrCapabilityConfinementUnverified reports a requested capability that was not attested.
 var ErrCapabilityConfinementUnverified = errors.New("CAPABILITY_CONFINEMENT_UNVERIFIED")
 
+// CapabilityConfinementDecision records the requested and observed confinement values and admission.
 type CapabilityConfinementDecision struct {
 	Version       int    `json:"version"`
 	Requested     string `json:"requested"`
@@ -39,15 +42,19 @@ type CapabilityConfinementDecision struct {
 	AttestationID string `json:"attestation_id,omitempty"`
 }
 
+// CapabilityConfinementError carries the confinement decision with launch and receipt context.
 type CapabilityConfinementError struct {
 	Decision CapabilityConfinementDecision
 	Launch   Launch
 	Receipt  Receipt
 }
 
+// Error returns the confinement decision reason.
 func (e *CapabilityConfinementError) Error() string { return e.Decision.Reason }
+// Unwrap returns ErrCapabilityConfinementUnverified.
 func (e *CapabilityConfinementError) Unwrap() error { return ErrCapabilityConfinementUnverified }
 
+// CapabilityConfinementAttestation references the manifest and profile to validate.
 type CapabilityConfinementAttestation struct {
 	ManifestPath   string
 	ExpectedSHA256 string
@@ -117,6 +124,7 @@ type validatedAttestation struct {
 	observed      string
 }
 
+// AttestationBindingID derives the binding of a manifest digest and launch identity.
 func AttestationBindingID(manifestSHA256, launchID string) (string, error) {
 	if safepath.RequireDigest(manifestSHA256) != nil || safepath.RequireDigest(launchID) != nil {
 		return "", errors.New("invalid capability attestation binding")
@@ -132,6 +140,7 @@ func unverified(requested string) (CapabilityConfinementDecision, error) {
 	return decision, &CapabilityConfinementError{Decision: decision}
 }
 
+// DecideCapabilityConfinement records an unverified decision for any non-empty request.
 func DecideCapabilityConfinement(requested string) (CapabilityConfinementDecision, error) {
 	if requested == "" {
 		return CapabilityConfinementDecision{}, nil
@@ -139,12 +148,15 @@ func DecideCapabilityConfinement(requested string) (CapabilityConfinementDecisio
 	return unverified(requested)
 }
 
+// DynamicToolsHash hashes the dynamic tool set for attestation comparison.
 func DynamicToolsHash(tools []any) (string, error) {
 	return canonical.Hash("harness.codex-dynamic-tools.v1", tools)
 }
 
+// LaunchConfigHash returns the digest of the launch configuration.
 func LaunchConfigHash() string { return digest(configuration()) }
 
+// SelectedModelRecordHash hashes the canonical selected model record.
 func SelectedModelRecordHash(record any) (string, error) {
 	return canonical.Hash("harness.codex-model-record.r17.v1", record)
 }
@@ -169,6 +181,7 @@ func SelectedModelMetadataHash(record any) (string, error) {
 	return digest(raw.Bytes()), nil
 }
 
+// PreparedToolInventoryHash hashes the sorted prepared tool inventory after validation.
 func PreparedToolInventoryHash(names []string) (string, error) {
 	copyNames := append([]string{}, names...)
 	sort.Strings(copyNames)
@@ -180,6 +193,7 @@ func PreparedToolInventoryHash(names []string) (string, error) {
 	return canonical.Hash("harness.codex-prepared-tool-inventory.r17.v1", copyNames)
 }
 
+// LaunchControlsHash returns the digest of the launch arguments.
 func LaunchControlsHash() string {
 	hash, err := canonical.Hash("harness.codex-launch-controls.r17.v1", launchArguments())
 	if err != nil {
@@ -190,6 +204,7 @@ func LaunchControlsHash() string {
 
 type sliceWriter struct{ bytes *[]byte }
 
+// Write appends bytes to the referenced slice.
 func (w sliceWriter) Write(p []byte) (int, error) {
 	*w.bytes = append(*w.bytes, p...)
 	return len(p), nil
@@ -412,6 +427,7 @@ func validateTopologyAttestation(a CapabilityConfinementAttestation, launch Laun
 	return leaf, nil
 }
 
+// StartWithCapabilityConfinement starts a host and records the confinement decision for the request.
 func StartWithCapabilityConfinement(ctx context.Context, launch Launch, requested string, handler codexrpc.ToolHandler) (*Host, CapabilityConfinementDecision, error) {
 	host, err := StartWithToolHandler(ctx, launch, handler)
 	if err != nil {
@@ -428,6 +444,7 @@ func StartWithCapabilityConfinement(ctx context.Context, launch Launch, requeste
 	return host, decision, nil
 }
 
+// StartWithCapabilityConfinementAttested starts a host only after validating the referenced attestation.
 func StartWithCapabilityConfinementAttested(ctx context.Context, launch Launch, requested string, attestation CapabilityConfinementAttestation, handler codexrpc.ToolHandler) (*Host, CapabilityConfinementDecision, error) {
 	if requested != CapabilityConfinementRequired {
 		decision, deny := unverified(requested)

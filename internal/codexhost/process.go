@@ -48,6 +48,7 @@ func (r Receipt) Validate(l Launch) error {
 	return nil
 }
 
+// ValidateAttested validates the receipt and requires an admitted R17 or R19 decision whose attestation ID matches the receipt.
 func (r Receipt) ValidateAttested(l Launch, decision CapabilityConfinementDecision) error {
 	if err := r.Validate(l); err != nil {
 		return err

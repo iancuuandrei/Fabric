@@ -15,6 +15,7 @@ const providerItemIDMaximumBytes = 256
 // interpreted as an OpenCode locator, call identity, or filesystem path.
 type ProviderItemID string
 
+// UnmarshalJSON decodes a JSON string into a validated provider item ID.
 func (id *ProviderItemID) UnmarshalJSON(raw []byte) error {
 	if id == nil {
 		return errors.New("invalid provider item ID")

@@ -40,6 +40,7 @@ type FailureEvidenceRef struct {
 	SHA256   string `json:"sha256"`
 }
 
+// FailureObservation retains the bounded failure evidence for one admitted call.
 type FailureObservation struct {
 	Evidence             *FailureEvidenceRef `json:"evidence,omitempty"`
 	Version              int                 `json:"version"`

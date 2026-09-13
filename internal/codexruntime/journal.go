@@ -28,6 +28,7 @@ type RouteEvidence struct {
 	ContinuationStatus        string                   `json:"continuation_status"`
 }
 
+// State is the replayed runtime view derived from validated journal events.
 type State struct {
 	UsageTurnID    string              `json:"usage_turn_id,omitempty"`
 	UsageInterrupt bool                `json:"usage_interrupt_intent,omitempty"`

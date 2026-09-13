@@ -22,20 +22,29 @@ type UsagePolicy struct {
 	Qualified       bool                  `json:"qualified"`
 	Origin          string                `json:"origin"`
 }
+
+// UsageStart binds a usage tracker to the dispatched turn.
 type UsageStart struct {
 	TurnID string `json:"turn_id"`
 }
+
+// UsageNormalized is the normalized receipt and failure for one notification.
 type UsageNormalized struct {
 	Receipt codexusage.Receipt `json:"receipt"`
 	Failure string             `json:"failure"`
 }
+
+// UsageStop records the failure and turn binding for a usage stop.
 type UsageStop struct {
 	Reason   string `json:"reason"`
 	ThreadID string `json:"thread_id"`
 	TurnID   string `json:"turn_id"`
 }
 
-func (s *UsageStop) Error() string                     { return s.Reason }
+// Error returns the usage stop reason.
+func (s *UsageStop) Error() string { return s.Reason }
+
+// InterruptTarget returns the thread and turn bound to the usage stop.
 func (s *UsageStop) InterruptTarget() (string, string) { return s.ThreadID, s.TurnID }
 
 func (a *Adapter) beginUsage(thread codexrpc.ThreadSettings) error {

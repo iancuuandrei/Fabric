@@ -46,8 +46,10 @@ type RerouteError struct {
 	Continuation bool
 }
 
+// Error returns the reroute rejection message.
 func (*RerouteError) Error() string { return "provider model rerouting is not authorized" }
 
+// Unwrap returns ErrContinuationRouteMismatch for continuations and ErrRouteIdentityContradiction otherwise.
 func (e *RerouteError) Unwrap() error {
 	if e.Continuation {
 		return ErrContinuationRouteMismatch

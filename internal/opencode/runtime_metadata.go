@@ -15,6 +15,7 @@ import (
 	"harness.local/engorch/internal/safepath"
 )
 
+// Metadata authorities, patch classifications, and violation codes bound how pinned patch parts are interpreted.
 const (
 	MetadataAuthorityReadOnly     = "READ_ONLY"
 	MetadataAuthorityProposalOnly = "PROPOSAL_ONLY"
@@ -55,6 +56,7 @@ type PatchSnapshotReceipt struct {
 // claim that the model wrote a file and never authorizes retry or fallback.
 type RuntimeMetadataViolation struct{ Code string }
 
+// Error returns the violation code, or the generic violation message when empty.
 func (e *RuntimeMetadataViolation) Error() string {
 	if e == nil || e.Code == "" {
 		return "OpenCode runtime metadata violation"
