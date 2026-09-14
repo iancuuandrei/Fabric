@@ -68,7 +68,3 @@ not yet been qualified.
 - [Research provenance](docs/research/oss-mechanisms.md)
 - [Current evidence](docs/evaluation/status.md)
 - [v0.0.1 trusted bootstrap checkpoint](docs/evaluation/v0.0.1.md)
-
-LexAI is read-only design reference. This repository contains independently
-implemented contracts and code, with no LexAI runtime dependency or historical
-journal compatibility. See the [mechanism audit](docs/research/lexai-mechanism-audit.md).
