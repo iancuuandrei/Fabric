@@ -28,6 +28,9 @@ type Process struct {
 	cancel           context.CancelFunc
 	once             sync.Once
 	err              error
+	// mu guards admittedTools and admittedProvider, which are written once
+	// during readiness admission and read concurrently via identity.
+	mu               sync.RWMutex
 	launch           processLaunchIdentity
 	admittedTools    *ToolsConfigurationReceipt
 	admittedProvider *ProviderConfigurationReceipt
@@ -437,7 +440,6 @@ func startReadinessDiagnostics(ctx context.Context, admissionClient *Client) *re
 					}
 					observation.finalHealthErrorClass = healthClass
 				}
-				client.Close()
 			} else {
 				observation.finalHealthErrorClass = readinessErrorClass(readbackFailure{class: networkReadinessClass(probeCtx, dialErr), cause: probeCtx.Err()})
 			}
@@ -654,7 +656,12 @@ func toolsBearerDigest(bearer string) (string, error) {
 }
 
 func (p *Process) setAdmittedTools(receipt ToolsConfigurationReceipt) error {
-	if p == nil || p.launch.Tools == nil || p.admittedTools != nil {
+	if p == nil {
+		return errors.New("invalid OpenCode tools admission transition")
+	}
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	if p.launch.Tools == nil || p.admittedTools != nil {
 		return errors.New("invalid OpenCode tools admission transition")
 	}
 	launch := p.launch.Tools
@@ -668,7 +675,12 @@ func (p *Process) setAdmittedTools(receipt ToolsConfigurationReceipt) error {
 }
 
 func (p *Process) identity() (processLaunchIdentity, bool) {
-	if p == nil || safepath.RequireDigest(p.launch.ExecutableSHA256) != nil || safepath.RequireDigest(p.launch.AuthSHA256) != nil || p.launch.Root == "" || p.launch.WorkingDirectory == "" || p.launch.Endpoint == "" {
+	if p == nil {
+		return processLaunchIdentity{}, false
+	}
+	p.mu.RLock()
+	defer p.mu.RUnlock()
+	if safepath.RequireDigest(p.launch.ExecutableSHA256) != nil || safepath.RequireDigest(p.launch.AuthSHA256) != nil || p.launch.Root == "" || p.launch.WorkingDirectory == "" || p.launch.Endpoint == "" {
 		return processLaunchIdentity{}, false
 	}
 	result := p.launch

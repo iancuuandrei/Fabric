@@ -97,9 +97,12 @@ func TestSynchronousToolDispatchUncertainPostRecoversGetOnly(t *testing.T) {
 	intent, brokerPath, broker := synchronousToolFixture(t)
 	path := filepath.Join(t.TempDir(), "sync-tool.jsonl")
 	var posts, gets atomic.Int32
+	var mu sync.Mutex
 	var transcript string
 	release := make(chan struct{})
 	postDone := make(chan struct{})
+	postArrived := make(chan struct{})
+	var arriveOnce sync.Once
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost {
 			defer close(postDone)
@@ -110,13 +113,19 @@ func TestSynchronousToolDispatchUncertainPostRecoversGetOnly(t *testing.T) {
 				return
 			}
 			response, full := synchronousToolWire(t, intent.Dispatch, receipt)
+			mu.Lock()
 			transcript = full
+			mu.Unlock()
+			arriveOnce.Do(func() { close(postArrived) })
 			<-release
 			writeSynchronousJSON(w, response)
 			return
 		}
 		gets.Add(1)
-		writeSynchronousJSON(w, transcript)
+		mu.Lock()
+		body := transcript
+		mu.Unlock()
+		writeSynchronousJSON(w, body)
 	}))
 	defer server.Close()
 	client, err := NewClient(server.URL, "fixture", "secret")
@@ -124,13 +133,28 @@ func TestSynchronousToolDispatchUncertainPostRecoversGetOnly(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer client.Close()
-	short, stopShort := context.WithTimeout(context.Background(), 30*time.Millisecond)
-	_, err = client.SubmitSynchronousToolTurn(short, path, brokerPath, intent)
-	stopShort()
+	uncertain, stopUncertain := context.WithTimeout(context.Background(), 10*time.Second)
+	submitErr := make(chan error, 1)
+	go func() {
+		_, err := client.SubmitSynchronousToolTurn(uncertain, path, brokerPath, intent)
+		submitErr <- err
+	}()
+	var submitFailed error
+	arrived := false
+	select {
+	case <-postArrived:
+		arrived = true
+		stopUncertain()
+		submitFailed = <-submitErr
+	case submitFailed = <-submitErr:
+		stopUncertain()
+	}
 	close(release)
-	<-postDone
-	if err == nil || posts.Load() != 1 {
-		t.Fatal("uncertain tool POST was admitted", err)
+	if arrived {
+		<-postDone
+	}
+	if submitFailed == nil || posts.Load() != 1 {
+		t.Fatal("uncertain tool POST was admitted", submitFailed)
 	}
 	retry, stopRetry := context.WithTimeout(context.Background(), time.Second)
 	if _, err := client.SubmitSynchronousToolTurn(retry, path, brokerPath, intent); err == nil || posts.Load() != 1 {

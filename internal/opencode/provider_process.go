@@ -207,7 +207,12 @@ func newProcessProviderLaunchIdentity(spec ProviderConfigurationSpec, content st
 }
 
 func (p *Process) setAdmittedProvider(receipt ProviderConfigurationReceipt) error {
-	if p == nil || p.launch.Provider == nil || p.admittedProvider != nil || p.admittedTools == nil {
+	if p == nil {
+		return errors.New("invalid OpenCode provider admission transition")
+	}
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	if p.launch.Provider == nil || p.admittedProvider != nil || p.admittedTools == nil {
 		return errors.New("invalid OpenCode provider admission transition")
 	}
 	launch := p.launch.Provider

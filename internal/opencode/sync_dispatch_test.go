@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -67,9 +68,12 @@ func TestSynchronousDispatchUncertainPostRecoversGetOnly(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "sync.jsonl")
 	var posts, gets atomic.Int32
 	releasePost := make(chan struct{})
+	postArrived := make(chan struct{})
+	var arriveOnce sync.Once
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost {
 			posts.Add(1)
+			arriveOnce.Do(func() { close(postArrived) })
 			<-releasePost
 			return
 		}
@@ -86,12 +90,23 @@ func TestSynchronousDispatchUncertainPostRecoversGetOnly(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer client.Close()
-	short, stopShort := context.WithTimeout(context.Background(), 20*time.Millisecond)
-	_, err = client.SubmitSynchronousTextTurn(short, path, intent)
-	stopShort()
+	uncertain, stopUncertain := context.WithTimeout(context.Background(), 10*time.Second)
+	submitErr := make(chan error, 1)
+	go func() {
+		_, err := client.SubmitSynchronousTextTurn(uncertain, path, intent)
+		submitErr <- err
+	}()
+	var submitFailed error
+	select {
+	case <-postArrived:
+		stopUncertain()
+		submitFailed = <-submitErr
+	case submitFailed = <-submitErr:
+		stopUncertain()
+	}
 	close(releasePost)
-	if err == nil || posts.Load() != 1 {
-		t.Fatal("uncertain POST was admitted", err)
+	if submitFailed == nil || posts.Load() != 1 {
+		t.Fatal("uncertain POST was admitted", submitFailed)
 	}
 	retry, stopRetry := context.WithTimeout(context.Background(), time.Second)
 	if _, err := client.SubmitSynchronousTextTurn(retry, path, intent); err == nil || posts.Load() != 1 {
@@ -154,7 +169,7 @@ func TestSynchronousDispatchRejectsUnboundedAndDivergentEvidence(t *testing.T) {
 
 func TestSynchronousDispatchRejectsCombinedEvidenceBeyondJournalBound(t *testing.T) {
 	intent, response, _ := synchronousFixture()
-	padding := strings.Repeat("x", 520<<10)
+	padding := strings.Repeat("y", 520<<10)
 	response = strings.Replace(response, `},"parts"`, `},"padding":"`+padding+`","parts"`, 1)
 	_, _, baseTranscript := synchronousFixture()
 	transcript := strings.Replace(baseTranscript, `},"parts"`, `},"padding":"`+padding+`","parts"`, 1)
