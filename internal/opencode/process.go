@@ -23,11 +23,11 @@ import (
 // Process owns one local OpenCode root process. It grants no dispatch authority
 // and does not claim descendant confinement or server configuration admission.
 type Process struct {
-	command          *exec.Cmd
-	done             chan struct{}
-	cancel           context.CancelFunc
-	once             sync.Once
-	err              error
+	command *exec.Cmd
+	done    chan struct{}
+	cancel  context.CancelFunc
+	once    sync.Once
+	err     error
 	// mu guards admittedTools and admittedProvider, which are written once
 	// during readiness admission and read concurrently via identity.
 	mu               sync.RWMutex
