@@ -63,6 +63,7 @@ not yet been qualified.
 - [CLI reference](docs/reference/cli.md)
 - [Local task schedules](docs/guides/task-schedules.md)
 - [Apply file changes](docs/guides/file-changes.md)
+- [Build and verify a local package](docs/guides/local-packaging.md): local directory only; never a signed, tagged, or published release.
 - [Optional engineering procedures](docs/guides/procedures.md)
 - [Contributing](CONTRIBUTING.md) and [documentation standard](docs/contributing/documentation-standard.md)
 - [Research provenance](docs/research/oss-mechanisms.md)
