@@ -13,8 +13,41 @@ param(
 $ErrorActionPreference = 'Stop'
 $PSNativeCommandUseErrorActionPreference = $false
 
+function Test-PathFullyQualified([string]$Value) {
+    if ([string]::IsNullOrWhiteSpace($Value)) { return $false }
+    if (-not [System.IO.Path]::IsPathRooted($Value)) { return $false }
+    if ([System.IO.Path]::DirectorySeparatorChar -eq '\') {
+        if ($Value -match '^[A-Za-z]:[\\/]') { return $true }
+        if ($Value -match '^[\\/]{2}[^\\/]+[\\/][^\\/]+') { return $true }
+        return $false
+    }
+    return $true
+}
+
+function Get-RelativePathCustom([string]$Base, [string]$Target) {
+    $baseFull = [System.IO.Path]::GetFullPath($Base)
+    $targetFull = [System.IO.Path]::GetFullPath($Target)
+    $comparison = [System.StringComparison]::OrdinalIgnoreCase
+    if ([System.IO.Path]::DirectorySeparatorChar -ne '\') {
+        $comparison = [System.StringComparison]::Ordinal
+    }
+    $baseRoot = [System.IO.Path]::GetPathRoot($baseFull)
+    $targetRoot = [System.IO.Path]::GetPathRoot($targetFull)
+    if (-not [string]::Equals($baseRoot, $targetRoot, $comparison)) {
+        return '..' + [System.IO.Path]::DirectorySeparatorChar + $targetFull
+    }
+    if ([string]::Equals($baseFull.TrimEnd('\', '/'), $targetFull.TrimEnd('\', '/'), $comparison)) {
+        return '.'
+    }
+    $basePrefix = $baseFull.TrimEnd('\', '/') + [System.IO.Path]::DirectorySeparatorChar
+    if ($targetFull.StartsWith($basePrefix, $comparison)) {
+        return $targetFull.Substring($basePrefix.Length)
+    }
+    return '..' + [System.IO.Path]::DirectorySeparatorChar + $targetFull
+}
+
 function Resolve-FreshAbsolutePath([string]$Value, [string]$Name) {
-    if (-not [System.IO.Path]::IsPathFullyQualified($Value)) {
+    if (-not (Test-PathFullyQualified $Value)) {
         throw "$Name must be an absolute path"
     }
     $resolved = [System.IO.Path]::GetFullPath($Value)
@@ -25,7 +58,7 @@ function Resolve-FreshAbsolutePath([string]$Value, [string]$Name) {
 }
 
 function Resolve-Tool([string]$Value, [string]$Name) {
-    if (-not [System.IO.Path]::IsPathFullyQualified($Value)) {
+    if (-not (Test-PathFullyQualified $Value)) {
         throw "$Name must be an absolute executable path"
     }
     $resolved = [System.IO.Path]::GetFullPath($Value)
@@ -138,7 +171,7 @@ foreach ($value in @($GoOS, $GoArch, $RustTarget)) {
 
 # Package/build directories inside the source repository must already be ignored.
 foreach ($candidate in @($output, $build)) {
-    $relative = [System.IO.Path]::GetRelativePath($root, $candidate)
+    $relative = Get-RelativePathCustom $root $candidate
     if (-not $relative.StartsWith('..' + [System.IO.Path]::DirectorySeparatorChar) -and $relative -ne '..') {
         & $gitExe -C $root check-ignore -q -- $relative
         if ($LASTEXITCODE -ne 0) { throw "repository-local package paths must be ignored: $candidate" }
@@ -261,7 +294,7 @@ if (($sourceBefore | ConvertTo-Json -Compress) -ne ($sourceAfter | ConvertTo-Jso
 $relativeFiles = @(
     "bin/$goName", "bin/$riName", 'LICENSE', 'NOTICE', 'THIRD_PARTY.md', 'docs/guides/local-packaging.md'
 ) + $thirdParty + @(Get-ChildItem -LiteralPath $dependencyLicenseDirectory -Recurse -File | ForEach-Object {
-    [System.IO.Path]::GetRelativePath($output, $_.FullName).Replace('\', '/')
+    (Get-RelativePathCustom $output $_.FullName).Replace('\', '/')
 })
 $records = @($relativeFiles | Sort-Object | ForEach-Object { Get-FileRecord $output $_ })
 $sumLines = @($records | ForEach-Object { "$($_.sha256)  $($_.path)" })

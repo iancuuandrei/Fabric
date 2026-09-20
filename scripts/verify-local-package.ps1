@@ -3,7 +3,40 @@ param([Parameter(Mandatory = $true)][string]$PackageDirectory)
 $ErrorActionPreference = 'Stop'
 $PSNativeCommandUseErrorActionPreference = $false
 
-if (-not [System.IO.Path]::IsPathFullyQualified($PackageDirectory)) {
+function Test-PathFullyQualified([string]$Value) {
+    if ([string]::IsNullOrWhiteSpace($Value)) { return $false }
+    if (-not [System.IO.Path]::IsPathRooted($Value)) { return $false }
+    if ([System.IO.Path]::DirectorySeparatorChar -eq '\') {
+        if ($Value -match '^[A-Za-z]:[\\/]') { return $true }
+        if ($Value -match '^[\\/]{2}[^\\/]+[\\/][^\\/]+') { return $true }
+        return $false
+    }
+    return $true
+}
+
+function Get-RelativePathCustom([string]$Base, [string]$Target) {
+    $baseFull = [System.IO.Path]::GetFullPath($Base)
+    $targetFull = [System.IO.Path]::GetFullPath($Target)
+    $comparison = [System.StringComparison]::OrdinalIgnoreCase
+    if ([System.IO.Path]::DirectorySeparatorChar -ne '\') {
+        $comparison = [System.StringComparison]::Ordinal
+    }
+    $baseRoot = [System.IO.Path]::GetPathRoot($baseFull)
+    $targetRoot = [System.IO.Path]::GetPathRoot($targetFull)
+    if (-not [string]::Equals($baseRoot, $targetRoot, $comparison)) {
+        return '..' + [System.IO.Path]::DirectorySeparatorChar + $targetFull
+    }
+    if ([string]::Equals($baseFull.TrimEnd('\', '/'), $targetFull.TrimEnd('\', '/'), $comparison)) {
+        return '.'
+    }
+    $basePrefix = $baseFull.TrimEnd('\', '/') + [System.IO.Path]::DirectorySeparatorChar
+    if ($targetFull.StartsWith($basePrefix, $comparison)) {
+        return $targetFull.Substring($basePrefix.Length)
+    }
+    return '..' + [System.IO.Path]::DirectorySeparatorChar + $targetFull
+}
+
+if (-not (Test-PathFullyQualified $PackageDirectory)) {
     throw 'PackageDirectory must be absolute'
 }
 $root = [System.IO.Path]::GetFullPath($PackageDirectory)
@@ -41,7 +74,7 @@ switch ($manifest.source.mode) {
 $seen = @{}
 foreach ($record in $manifest.files) {
     $relative = [string]$record.path
-    if ([string]::IsNullOrWhiteSpace($relative) -or [System.IO.Path]::IsPathFullyQualified($relative) -or
+    if ([string]::IsNullOrWhiteSpace($relative) -or (Test-PathFullyQualified $relative) -or
         $relative -match '(^|/)\.\.(/|$)' -or $relative.Contains('\')) {
         throw "invalid manifest path: $relative"
     }
@@ -60,7 +93,7 @@ foreach ($record in $manifest.files) {
 }
 
 $actualFiles = @(Get-ChildItem -LiteralPath $root -Recurse -File | ForEach-Object {
-    [System.IO.Path]::GetRelativePath($root, $_.FullName).Replace('\', '/')
+    (Get-RelativePathCustom $root $_.FullName).Replace('\', '/')
 } | Sort-Object)
 $expectedFiles = @($seen.Keys + 'manifest.json' | Sort-Object)
 if (($actualFiles -join "`n") -ne ($expectedFiles -join "`n")) { throw 'package contains unlisted or missing files' }
