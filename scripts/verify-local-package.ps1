@@ -3,38 +3,7 @@ param([Parameter(Mandatory = $true)][string]$PackageDirectory)
 $ErrorActionPreference = 'Stop'
 $PSNativeCommandUseErrorActionPreference = $false
 
-function Test-PathFullyQualified([string]$Value) {
-    if ([string]::IsNullOrWhiteSpace($Value)) { return $false }
-    if (-not [System.IO.Path]::IsPathRooted($Value)) { return $false }
-    if ([System.IO.Path]::DirectorySeparatorChar -eq '\') {
-        if ($Value -match '^[A-Za-z]:[\\/]') { return $true }
-        if ($Value -match '^[\\/]{2}[^\\/]+[\\/][^\\/]+') { return $true }
-        return $false
-    }
-    return $true
-}
-
-function Get-RelativePathCustom([string]$Base, [string]$Target) {
-    $baseFull = [System.IO.Path]::GetFullPath($Base)
-    $targetFull = [System.IO.Path]::GetFullPath($Target)
-    $comparison = [System.StringComparison]::OrdinalIgnoreCase
-    if ([System.IO.Path]::DirectorySeparatorChar -ne '\') {
-        $comparison = [System.StringComparison]::Ordinal
-    }
-    $baseRoot = [System.IO.Path]::GetPathRoot($baseFull)
-    $targetRoot = [System.IO.Path]::GetPathRoot($targetFull)
-    if (-not [string]::Equals($baseRoot, $targetRoot, $comparison)) {
-        return '..' + [System.IO.Path]::DirectorySeparatorChar + $targetFull
-    }
-    if ([string]::Equals($baseFull.TrimEnd('\', '/'), $targetFull.TrimEnd('\', '/'), $comparison)) {
-        return '.'
-    }
-    $basePrefix = $baseFull.TrimEnd('\', '/') + [System.IO.Path]::DirectorySeparatorChar
-    if ($targetFull.StartsWith($basePrefix, $comparison)) {
-        return $targetFull.Substring($basePrefix.Length)
-    }
-    return '..' + [System.IO.Path]::DirectorySeparatorChar + $targetFull
-}
+. (Join-Path $PSScriptRoot 'package-local-compat.ps1')
 
 if (-not (Test-PathFullyQualified $PackageDirectory)) {
     throw 'PackageDirectory must be absolute'
@@ -70,18 +39,17 @@ switch ($manifest.source.mode) {
     }
     default { throw 'invalid source mode' }
 }
-
 $seen = @{}
 foreach ($record in $manifest.files) {
     $relative = [string]$record.path
     if ([string]::IsNullOrWhiteSpace($relative) -or (Test-PathFullyQualified $relative) -or
-        $relative -match '(^|/)\.\.(/|$)' -or $relative.Contains('\')) {
+        $relative -match '(^|/)\\.\\.(/|$)' -or $relative.Contains('\')) {
         throw "invalid manifest path: $relative"
     }
     if ($seen.ContainsKey($relative)) { throw "duplicate manifest path: $relative" }
     $seen[$relative] = $true
     $path = [System.IO.Path]::GetFullPath((Join-Path $root $relative))
-    $prefix = $root.TrimEnd('\', '/') + [System.IO.Path]::DirectorySeparatorChar
+    $prefix = $root.TrimEnd([char[]](92, 47)) + [System.IO.Path]::DirectorySeparatorChar
     if (-not $path.StartsWith($prefix, [System.StringComparison]::OrdinalIgnoreCase)) {
         throw "manifest path escapes package: $relative"
     }
@@ -91,13 +59,11 @@ foreach ($record in $manifest.files) {
     $actual = (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant()
     if ($actual -ne [string]$record.sha256) { throw "package hash mismatch: $relative" }
 }
-
 $actualFiles = @(Get-ChildItem -LiteralPath $root -Recurse -File | ForEach-Object {
     (Get-RelativePathCustom $root $_.FullName).Replace('\', '/')
 } | Sort-Object)
 $expectedFiles = @($seen.Keys + 'manifest.json' | Sort-Object)
 if (($actualFiles -join "`n") -ne ($expectedFiles -join "`n")) { throw 'package contains unlisted or missing files' }
-
 $sumPath = Join-Path $root 'SHA256SUMS'
 $sumEntries = @((Get-Content -LiteralPath $sumPath) | Where-Object { $_ -ne '' })
 $sumSeen = @{}
@@ -117,7 +83,6 @@ foreach ($relative in $seen.Keys) {
         throw "SHA256SUMS omits payload: $relative"
     }
 }
-
 $goBinary = Join-Path $root (Join-Path 'bin' $manifest.components.go_binary)
 $riBinary = Join-Path $root (Join-Path 'bin' $manifest.components.rust_binary)
 $help = & $goBinary help 2>&1
@@ -128,5 +93,4 @@ $riEnvelope = (($riWire | Out-String).Trim()) | ConvertFrom-Json
 if ($riEnvelope.version -ne 1 -or $riEnvelope.ok -ne $false -or $riEnvelope.error -notmatch '^usage:') {
     throw 'packaged engorch-ri usage smoke returned an unexpected envelope'
 }
-
 Write-Output "PASS local package verification: $root"

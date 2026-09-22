@@ -33,8 +33,9 @@ try {
 
     $packText = Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'package-local.ps1')
     $verifyText = Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'verify-local-package.ps1')
-    foreach ($text in @($packText, $verifyText)) {
-        if ($text -match '\.local/toolchains') { throw 'packaging scripts must not reference .local/toolchains' }
+    $compatText = Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'package-local-compat.ps1')
+    foreach ($text in @($packText, $verifyText, $compatText)) {
+        if ($text -match '\\.local/toolchains') { throw 'packaging scripts must not reference .local/toolchains' }
         if ($text -match 'USERPROFILE') { throw 'packaging scripts must not reference USERPROFILE' }
         if ($text -match 'Get-Command') { throw 'packaging scripts must not discover tools from PATH' }
     }
@@ -60,7 +61,7 @@ try {
         RustTarget = 'x86_64-pc-windows-msvc'
     }
     Expect-Failure 'reject relative Go path' {
-        & $packageScript -OutputDirectory (Join-Path $fixture 'pkg-relative') -BuildDirectory (Join-Path $fixture 'build-relative') -Go 'relative\go.exe' @common
+        & $packageScript -OutputDirectory (Join-Path $fixture 'pkg-relative') -BuildDirectory (Join-Path $fixture 'build-relative') -Go 'relative\\go.exe' @common
     } 'absolute executable path'
     Expect-Failure 'reject missing Cargo tool' {
         & $packageScript -OutputDirectory (Join-Path $fixture 'pkg-missing') -BuildDirectory (Join-Path $fixture 'build-missing') -Go $fakeGo -Git $fakeGit -Cargo $missingCargo -Rustc $fakeRustc -GoOS 'windows' -GoArch 'amd64' -RustTarget 'x86_64-pc-windows-msvc'
@@ -114,6 +115,9 @@ try {
     }
     Write-Utf8 (Join-Path $template 'manifest.json') (($manifest | ConvertTo-Json -Depth 8) + "`n")
     $verifyScript = Join-Path $PSScriptRoot 'verify-local-package.ps1'
+    Expect-Failure 'verifier rejects relative package directory' {
+        & $verifyScript -PackageDirectory 'relative\\package'
+    } 'must be absolute'
     function Copy-Template([string]$Name) {
         $destination = Join-Path $fixture $Name
         Copy-Item -LiteralPath $template -Destination $destination -Recurse -Force
@@ -151,7 +155,7 @@ try {
     Write-Output 'PASS tampered package is never a signed or published release'
 } finally {
     $resolvedFixture = [IO.Path]::GetFullPath($fixture)
-    $prefix = $localRoot.TrimEnd('\', '/') + [IO.Path]::DirectorySeparatorChar
+    $prefix = $localRoot.TrimEnd([char[]](92, 47)) + [IO.Path]::DirectorySeparatorChar
     if ($resolvedFixture.StartsWith($prefix, [StringComparison]::OrdinalIgnoreCase) -and (Test-Path -LiteralPath $resolvedFixture)) {
         Remove-Item -LiteralPath $resolvedFixture -Recurse -Force
     }
