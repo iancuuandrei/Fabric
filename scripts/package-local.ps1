@@ -49,18 +49,17 @@ function Get-ToolVersion([string]$Program, [string[]]$Arguments) {
     return (($output | Out-String).Trim())
 }
 
-function Add-HashBytes($Hash, [byte[]]$Bytes) {
-    $Hash.AppendData($Bytes)
+function Add-HashBytes($Stream, [byte[]]$Bytes) {
+    $Stream.Write($Bytes, 0, $Bytes.Length)
 }
 
 function Get-SourceIdentity([string]$RepositoryRoot, [string]$GitExecutable) {
     $listed = & $GitExecutable -C $RepositoryRoot ls-files -z --cached --others --exclude-standard
     if ($LASTEXITCODE -ne 0) { throw 'git source inventory failed' }
     $paths = @($listed -split "`0" | Where-Object { $_ -ne '' } | Sort-Object -Unique)
-    $hash = [System.Security.Cryptography.IncrementalHash]::CreateHash(
-        [System.Security.Cryptography.HashAlgorithmName]::SHA256)
+    $stream = New-Object System.IO.MemoryStream
     try {
-        Add-HashBytes $hash ([System.Text.Encoding]::UTF8.GetBytes("engorch.development-source.v1`n"))
+        Add-HashBytes $stream ([System.Text.Encoding]::UTF8.GetBytes("engorch.development-source.v1`n"))
         foreach ($relative in $paths) {
             if ($relative.Contains("`n") -or $relative.Contains("`r")) {
                 throw 'source inventory rejects newline-containing paths'
@@ -72,17 +71,27 @@ function Get-SourceIdentity([string]$RepositoryRoot, [string]$GitExecutable) {
             }
             $relativeBytes = [System.Text.Encoding]::UTF8.GetBytes($relative.Replace('\', '/'))
             $length = [System.BitConverter]::GetBytes([System.Net.IPAddress]::HostToNetworkOrder([int64]$relativeBytes.Length))
-            Add-HashBytes $hash $length
-            Add-HashBytes $hash $relativeBytes
-            $contentDigest = [System.Security.Cryptography.SHA256]::HashData(
-                [System.IO.File]::ReadAllBytes($path))
-            Add-HashBytes $hash $contentDigest
+            Add-HashBytes $stream $length
+            Add-HashBytes $stream $relativeBytes
+            $sha = [System.Security.Cryptography.SHA256]::Create()
+            try {
+                $contentDigest = $sha.ComputeHash([System.IO.File]::ReadAllBytes($path))
+            } finally {
+                $sha.Dispose()
+            }
+            Add-HashBytes $stream $contentDigest
         }
-        $digest = [System.Convert]::ToHexString($hash.GetHashAndReset()).ToLowerInvariant()
+        $outer = [System.Security.Cryptography.SHA256]::Create()
+        try {
+            $digestBytes = $outer.ComputeHash($stream.ToArray())
+        } finally {
+            $outer.Dispose()
+        }
+        $digest = (($digestBytes | ForEach-Object { $_.ToString('x2') }) -join '')
     } finally {
-        $hash.Dispose()
+        $stream.Dispose()
     }
-    & $GitExecutable -C $RepositoryRoot rev-parse --verify HEAD *> $null
+    & $GitExecutable -C $RepositoryRoot rev-parse --quiet --verify HEAD *> $null
     $hasHead = $LASTEXITCODE -eq 0
     $head = $null
     $tree = $null
