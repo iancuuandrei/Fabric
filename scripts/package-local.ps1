@@ -43,6 +43,29 @@ function Invoke-Checked([string]$Program, [string[]]$Arguments) {
     }
 }
 
+function Invoke-GoPackageBuild([string]$SelectedGo, [string]$SourceRoot, [string]$OutputGo, [string]$Windows, [string]$Amd64) {
+    $oldGoOS, $oldGoArch, $oldCGO = $env:GOOS, $env:GOARCH, $env:CGO_ENABLED
+    try {
+        $env:GOOS, $env:GOARCH, $env:CGO_ENABLED = $Windows, $Amd64, '0'
+        Invoke-Checked $SelectedGo @('-C', $SourceRoot, 'build', '-trimpath', '-buildvcs=false', '-o', $OutputGo, './cmd/harness')
+    } finally {
+        $env:GOOS, $env:GOARCH, $env:CGO_ENABLED = $oldGoOS, $oldGoArch, $oldCGO
+    }
+}
+
+function Invoke-RustPackageBuild([string]$SelectedCargo, [string]$SelectedRustc, [string]$SourceRoot, [string]$TargetDir, [string]$TestTarget) {
+    $manifestPath = Join-Path $SourceRoot 'Cargo.toml'
+    $oldRustc, $oldWrapper, $oldWsWrapper = $env:RUSTC, $env:RUSTC_WRAPPER, $env:RUSTC_WORKSPACE_WRAPPER
+    try {
+        $env:RUSTC = $SelectedRustc
+        $env:RUSTC_WRAPPER = $null
+        $env:RUSTC_WORKSPACE_WRAPPER = $null
+        Invoke-Checked $SelectedCargo @('build', '--locked', '--release', '--manifest-path', $manifestPath, '--config', "build.rustc-wrapper=''", '--config', "build.rustc-workspace-wrapper=''", '--target-dir', $TargetDir, '--target', $TestTarget, '--bin', 'engorch-ri')
+    } finally {
+        $env:RUSTC, $env:RUSTC_WRAPPER, $env:RUSTC_WORKSPACE_WRAPPER = $oldRustc, $oldWrapper, $oldWsWrapper
+    }
+}
+
 function Get-ToolVersion([string]$Program, [string[]]$Arguments) {
     $output = & $Program @Arguments 2>&1
     if ($LASTEXITCODE -ne 0) { throw "failed to inspect tool: $Program" }
@@ -167,16 +190,8 @@ $goName = if ($GoOS -eq 'windows') { 'engorch.exe' } else { 'engorch' }
 $riName = if ($RustTarget -match 'windows') { 'engorch-ri.exe' } else { 'engorch-ri' }
 $goOutput = Join-Path $bin.FullName $goName
 $riOutput = Join-Path $bin.FullName $riName
-$oldGoOS, $oldGoArch, $oldCGO = $env:GOOS, $env:GOARCH, $env:CGO_ENABLED
-try {
-    $env:GOOS, $env:GOARCH, $env:CGO_ENABLED = $GoOS, $GoArch, '0'
-    Invoke-Checked $goExe @('build', '-trimpath', '-buildvcs=false', '-o', $goOutput, './cmd/harness')
-} finally {
-    $env:GOOS, $env:GOARCH, $env:CGO_ENABLED = $oldGoOS, $oldGoArch, $oldCGO
-}
-Invoke-Checked $cargoExe @(
-    'build', '--locked', '--release', '--manifest-path', (Join-Path $root 'Cargo.toml'),
-    '--target-dir', $cargoTarget.FullName, '--target', $RustTarget, '--bin', 'engorch-ri')
+Invoke-GoPackageBuild $goExe $root $goOutput $GoOS $GoArch
+Invoke-RustPackageBuild $cargoExe $rustcExe $root $cargoTarget.FullName $RustTarget
 $builtRI = Join-Path $cargoTarget.FullName (Join-Path $RustTarget (Join-Path 'release' $riName))
 if (-not (Test-Path -LiteralPath $builtRI -PathType Leaf)) { throw "Rust binary missing: $builtRI" }
 Copy-Item -LiteralPath $builtRI -Destination $riOutput
