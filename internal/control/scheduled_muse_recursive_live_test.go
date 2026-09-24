@@ -83,7 +83,7 @@ func museRecursiveQualificationBinary(t *testing.T) (string, string) {
 	return path, digest
 }
 
-func museRecursiveCreation(t *testing.T, stateRoot, taskPoolPath string) Creation {
+func museRecursiveCommonCreation(t *testing.T, stateRoot, taskPoolPath string) Creation {
 	t.Helper()
 	// R43: FunctionCallDoneNameV1 reflects observed Go-endpoint behavior: the
 	// paid route includes `name` in response.function_call_arguments.done
@@ -152,6 +152,13 @@ func museRecursiveCreation(t *testing.T, stateRoot, taskPoolPath string) Creatio
 		Models: []config.ProviderModel{model},
 		Roles:  map[string]config.ProviderRole{"explorer": {Endpoint: "muse-zen-responses", Model: "muse-recursive-explorer", AdapterControlsJSON: string(controls), Variant: config.ProviderVariant{Effort: "none", SystemRole: "system"}, RequiredCapabilities: &config.ProviderRequiredCapabilities{Tools: true, Reasoning: true, StructuredOutput: providergateway.StructuredOutputUnsupported}}},
 	}
+	return creation
+}
+
+func museRecursiveCreation(t *testing.T, stateRoot, taskPoolPath string) Creation {
+	t.Helper()
+	creation := museRecursiveCommonCreation(t, stateRoot, taskPoolPath)
+	var err error
 	executable, digest := museRecursiveQualificationBinary(t)
 	creation.Config.OpenCode = &config.OpenCodeHost{Version: 1, Executable: executable, ExecutableHash: digest, StateRoot: stateRoot}
 	creation.Config.TaskPool = &config.TaskPool{Version: 1, Path: taskPoolPath, Limits: taskpool.Limits{Total: 2}}
