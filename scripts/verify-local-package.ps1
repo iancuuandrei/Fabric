@@ -3,7 +3,9 @@ param([Parameter(Mandatory = $true)][string]$PackageDirectory)
 $ErrorActionPreference = 'Stop'
 $PSNativeCommandUseErrorActionPreference = $false
 
-if (-not [System.IO.Path]::IsPathFullyQualified($PackageDirectory)) {
+. (Join-Path $PSScriptRoot 'package-local-compat.ps1')
+
+if (-not (Test-PathFullyQualified $PackageDirectory)) {
     throw 'PackageDirectory must be absolute'
 }
 $root = [System.IO.Path]::GetFullPath($PackageDirectory)
@@ -37,18 +39,17 @@ switch ($manifest.source.mode) {
     }
     default { throw 'invalid source mode' }
 }
-
 $seen = @{}
 foreach ($record in $manifest.files) {
     $relative = [string]$record.path
-    if ([string]::IsNullOrWhiteSpace($relative) -or [System.IO.Path]::IsPathFullyQualified($relative) -or
-        $relative -match '(^|/)\.\.(/|$)' -or $relative.Contains('\')) {
+    if ([string]::IsNullOrWhiteSpace($relative) -or (Test-PathFullyQualified $relative) -or
+        $relative -match '(^|/)\\.\\.(/|$)' -or $relative.Contains('\')) {
         throw "invalid manifest path: $relative"
     }
     if ($seen.ContainsKey($relative)) { throw "duplicate manifest path: $relative" }
     $seen[$relative] = $true
     $path = [System.IO.Path]::GetFullPath((Join-Path $root $relative))
-    $prefix = $root.TrimEnd('\', '/') + [System.IO.Path]::DirectorySeparatorChar
+    $prefix = $root.TrimEnd([char[]](92, 47)) + [System.IO.Path]::DirectorySeparatorChar
     if (-not $path.StartsWith($prefix, [System.StringComparison]::OrdinalIgnoreCase)) {
         throw "manifest path escapes package: $relative"
     }
@@ -58,13 +59,11 @@ foreach ($record in $manifest.files) {
     $actual = (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant()
     if ($actual -ne [string]$record.sha256) { throw "package hash mismatch: $relative" }
 }
-
 $actualFiles = @(Get-ChildItem -LiteralPath $root -Recurse -File | ForEach-Object {
-    [System.IO.Path]::GetRelativePath($root, $_.FullName).Replace('\', '/')
+    (Get-RelativePathCustom $root $_.FullName).Replace('\', '/')
 } | Sort-Object)
 $expectedFiles = @($seen.Keys + 'manifest.json' | Sort-Object)
 if (($actualFiles -join "`n") -ne ($expectedFiles -join "`n")) { throw 'package contains unlisted or missing files' }
-
 $sumPath = Join-Path $root 'SHA256SUMS'
 $sumEntries = @((Get-Content -LiteralPath $sumPath) | Where-Object { $_ -ne '' })
 $sumSeen = @{}
@@ -84,7 +83,6 @@ foreach ($relative in $seen.Keys) {
         throw "SHA256SUMS omits payload: $relative"
     }
 }
-
 $goBinary = Join-Path $root (Join-Path 'bin' $manifest.components.go_binary)
 $riBinary = Join-Path $root (Join-Path 'bin' $manifest.components.rust_binary)
 $help = & $goBinary help 2>&1
@@ -95,5 +93,4 @@ $riEnvelope = (($riWire | Out-String).Trim()) | ConvertFrom-Json
 if ($riEnvelope.version -ne 1 -or $riEnvelope.ok -ne $false -or $riEnvelope.error -notmatch '^usage:') {
     throw 'packaged engorch-ri usage smoke returned an unexpected envelope'
 }
-
 Write-Output "PASS local package verification: $root"

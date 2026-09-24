@@ -13,8 +13,10 @@ param(
 $ErrorActionPreference = 'Stop'
 $PSNativeCommandUseErrorActionPreference = $false
 
+. (Join-Path $PSScriptRoot 'package-local-compat.ps1')
+
 function Resolve-FreshAbsolutePath([string]$Value, [string]$Name) {
-    if (-not [System.IO.Path]::IsPathFullyQualified($Value)) {
+    if (-not (Test-PathFullyQualified $Value)) {
         throw "$Name must be an absolute path"
     }
     $resolved = [System.IO.Path]::GetFullPath($Value)
@@ -25,7 +27,7 @@ function Resolve-FreshAbsolutePath([string]$Value, [string]$Name) {
 }
 
 function Resolve-Tool([string]$Value, [string]$Name) {
-    if (-not [System.IO.Path]::IsPathFullyQualified($Value)) {
+    if (-not (Test-PathFullyQualified $Value)) {
         throw "$Name must be an absolute executable path"
     }
     $resolved = [System.IO.Path]::GetFullPath($Value)
@@ -41,24 +43,46 @@ function Invoke-Checked([string]$Program, [string[]]$Arguments) {
     }
 }
 
+function Invoke-GoPackageBuild([string]$SelectedGo, [string]$SourceRoot, [string]$OutputGo, [string]$Windows, [string]$Amd64) {
+    $oldGoOS, $oldGoArch, $oldCGO = $env:GOOS, $env:GOARCH, $env:CGO_ENABLED
+    try {
+        $env:GOOS, $env:GOARCH, $env:CGO_ENABLED = $Windows, $Amd64, '0'
+        Invoke-Checked $SelectedGo @('-C', $SourceRoot, 'build', '-trimpath', '-buildvcs=false', '-o', $OutputGo, './cmd/harness')
+    } finally {
+        $env:GOOS, $env:GOARCH, $env:CGO_ENABLED = $oldGoOS, $oldGoArch, $oldCGO
+    }
+}
+
+function Invoke-RustPackageBuild([string]$SelectedCargo, [string]$SelectedRustc, [string]$SourceRoot, [string]$TargetDir, [string]$TestTarget) {
+    $manifestPath = Join-Path $SourceRoot 'Cargo.toml'
+    $oldRustc, $oldWrapper, $oldWsWrapper = $env:RUSTC, $env:RUSTC_WRAPPER, $env:RUSTC_WORKSPACE_WRAPPER
+    try {
+        $env:RUSTC = $SelectedRustc
+        $env:RUSTC_WRAPPER = $null
+        $env:RUSTC_WORKSPACE_WRAPPER = $null
+        Invoke-Checked $SelectedCargo @('build', '--locked', '--release', '--manifest-path', $manifestPath, '--config', "build.rustc-wrapper=''", '--config', "build.rustc-workspace-wrapper=''", '--target-dir', $TargetDir, '--target', $TestTarget, '--bin', 'engorch-ri')
+    } finally {
+        $env:RUSTC, $env:RUSTC_WRAPPER, $env:RUSTC_WORKSPACE_WRAPPER = $oldRustc, $oldWrapper, $oldWsWrapper
+    }
+}
+
 function Get-ToolVersion([string]$Program, [string[]]$Arguments) {
     $output = & $Program @Arguments 2>&1
     if ($LASTEXITCODE -ne 0) { throw "failed to inspect tool: $Program" }
     return (($output | Out-String).Trim())
 }
 
-function Add-HashBytes($Hash, [byte[]]$Bytes) {
-    $Hash.AppendData($Bytes)
+function Add-HashBytes($Stream, [byte[]]$Bytes) {
+    $Stream.Write($Bytes, 0, $Bytes.Length)
 }
 
 function Get-SourceIdentity([string]$RepositoryRoot, [string]$GitExecutable) {
     $listed = & $GitExecutable -C $RepositoryRoot ls-files -z --cached --others --exclude-standard
     if ($LASTEXITCODE -ne 0) { throw 'git source inventory failed' }
     $paths = @($listed -split "`0" | Where-Object { $_ -ne '' } | Sort-Object -Unique)
-    $hash = [System.Security.Cryptography.IncrementalHash]::CreateHash(
-        [System.Security.Cryptography.HashAlgorithmName]::SHA256)
+    $stream = New-Object System.IO.MemoryStream
     try {
-        Add-HashBytes $hash ([System.Text.Encoding]::UTF8.GetBytes("engorch.development-source.v1`n"))
+        Add-HashBytes $stream ([System.Text.Encoding]::UTF8.GetBytes("engorch.development-source.v1`n"))
         foreach ($relative in $paths) {
             if ($relative.Contains("`n") -or $relative.Contains("`r")) {
                 throw 'source inventory rejects newline-containing paths'
@@ -70,18 +94,27 @@ function Get-SourceIdentity([string]$RepositoryRoot, [string]$GitExecutable) {
             }
             $relativeBytes = [System.Text.Encoding]::UTF8.GetBytes($relative.Replace('\', '/'))
             $length = [System.BitConverter]::GetBytes([System.Net.IPAddress]::HostToNetworkOrder([int64]$relativeBytes.Length))
-            Add-HashBytes $hash $length
-            Add-HashBytes $hash $relativeBytes
-            $contentDigest = [System.Security.Cryptography.SHA256]::HashData(
-                [System.IO.File]::ReadAllBytes($path))
-            Add-HashBytes $hash $contentDigest
+            Add-HashBytes $stream $length
+            Add-HashBytes $stream $relativeBytes
+            $sha = [System.Security.Cryptography.SHA256]::Create()
+            try {
+                $contentDigest = $sha.ComputeHash([System.IO.File]::ReadAllBytes($path))
+            } finally {
+                $sha.Dispose()
+            }
+            Add-HashBytes $stream $contentDigest
         }
-        $digest = [System.Convert]::ToHexString($hash.GetHashAndReset()).ToLowerInvariant()
+        $outer = [System.Security.Cryptography.SHA256]::Create()
+        try {
+            $digestBytes = $outer.ComputeHash($stream.ToArray())
+        } finally {
+            $outer.Dispose()
+        }
+        $digest = (($digestBytes | ForEach-Object { $_.ToString('x2') }) -join '')
     } finally {
-        $hash.Dispose()
+        $stream.Dispose()
     }
-
-    & $GitExecutable -C $RepositoryRoot rev-parse --verify HEAD *> $null
+    & $GitExecutable -C $RepositoryRoot rev-parse --quiet --verify HEAD *> $null
     $hasHead = $LASTEXITCODE -eq 0
     $head = $null
     $tree = $null
@@ -121,13 +154,12 @@ $root = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $output = Resolve-FreshAbsolutePath $OutputDirectory 'OutputDirectory'
 $build = Resolve-FreshAbsolutePath $BuildDirectory 'BuildDirectory'
 if ($output -eq $build) { throw 'output and build directories must differ' }
-$outputPrefix = $output.TrimEnd('\', '/') + [System.IO.Path]::DirectorySeparatorChar
-$buildPrefix = $build.TrimEnd('\', '/') + [System.IO.Path]::DirectorySeparatorChar
+$outputPrefix = $output.TrimEnd([char[]](92, 47)) + [System.IO.Path]::DirectorySeparatorChar
+$buildPrefix = $build.TrimEnd([char[]](92, 47)) + [System.IO.Path]::DirectorySeparatorChar
 if ($output.StartsWith($buildPrefix, [System.StringComparison]::OrdinalIgnoreCase) -or
     $build.StartsWith($outputPrefix, [System.StringComparison]::OrdinalIgnoreCase)) {
     throw 'output and build directories must not contain one another'
 }
-
 $goExe = Resolve-Tool $Go 'Go'
 $gitExe = Resolve-Tool $Git 'Git'
 $cargoExe = Resolve-Tool $Cargo 'Cargo'
@@ -135,22 +167,18 @@ $rustcExe = Resolve-Tool $Rustc 'Rustc'
 foreach ($value in @($GoOS, $GoArch, $RustTarget)) {
     if ($value -notmatch '^[A-Za-z0-9_.-]+$') { throw "invalid build target: $value" }
 }
-
-# Package/build directories inside the source repository must already be ignored.
 foreach ($candidate in @($output, $build)) {
-    $relative = [System.IO.Path]::GetRelativePath($root, $candidate)
+    $relative = Get-RelativePathCustom $root $candidate
     if (-not $relative.StartsWith('..' + [System.IO.Path]::DirectorySeparatorChar) -and $relative -ne '..') {
         & $gitExe -C $root check-ignore -q -- $relative
         if ($LASTEXITCODE -ne 0) { throw "repository-local package paths must be ignored: $candidate" }
     }
 }
-
 $sourceBefore = Get-SourceIdentity $root $gitExe
 New-Item -ItemType Directory -Path $build | Out-Null
 New-Item -ItemType Directory -Path $output | Out-Null
 $bin = New-Item -ItemType Directory -Path (Join-Path $output 'bin')
 $cargoTarget = New-Item -ItemType Directory -Path (Join-Path $build 'cargo-target')
-
 $metadataText = & $cargoExe metadata --manifest-path (Join-Path $root 'Cargo.toml') --format-version 1 --no-deps
 if ($LASTEXITCODE -ne 0) { throw 'cargo metadata failed' }
 $metadata = $metadataText | ConvertFrom-Json
@@ -158,27 +186,15 @@ $workspaceRoot = [System.IO.Path]::GetFullPath([string]$metadata.workspace_root)
 if ($workspaceRoot -ne $root) { throw 'Cargo workspace root differs from package source root' }
 $riPackage = @($metadata.packages | Where-Object { $_.targets.name -contains 'engorch-ri' })
 if ($riPackage.Count -ne 1) { throw 'Cargo metadata must identify exactly one engorch-ri package' }
-
 $goName = if ($GoOS -eq 'windows') { 'engorch.exe' } else { 'engorch' }
 $riName = if ($RustTarget -match 'windows') { 'engorch-ri.exe' } else { 'engorch-ri' }
 $goOutput = Join-Path $bin.FullName $goName
 $riOutput = Join-Path $bin.FullName $riName
-
-$oldGoOS, $oldGoArch, $oldCGO = $env:GOOS, $env:GOARCH, $env:CGO_ENABLED
-try {
-    $env:GOOS, $env:GOARCH, $env:CGO_ENABLED = $GoOS, $GoArch, '0'
-    Invoke-Checked $goExe @('build', '-trimpath', '-buildvcs=false', '-o', $goOutput, './cmd/harness')
-} finally {
-    $env:GOOS, $env:GOARCH, $env:CGO_ENABLED = $oldGoOS, $oldGoArch, $oldCGO
-}
-
-Invoke-Checked $cargoExe @(
-    'build', '--locked', '--release', '--manifest-path', (Join-Path $root 'Cargo.toml'),
-    '--target-dir', $cargoTarget.FullName, '--target', $RustTarget, '--bin', 'engorch-ri')
+Invoke-GoPackageBuild $goExe $root $goOutput $GoOS $GoArch
+Invoke-RustPackageBuild $cargoExe $rustcExe $root $cargoTarget.FullName $RustTarget
 $builtRI = Join-Path $cargoTarget.FullName (Join-Path $RustTarget (Join-Path 'release' $riName))
 if (-not (Test-Path -LiteralPath $builtRI -PathType Leaf)) { throw "Rust binary missing: $builtRI" }
 Copy-Item -LiteralPath $builtRI -Destination $riOutput
-
 $payload = @(
     'LICENSE', 'NOTICE', 'THIRD_PARTY.md', 'docs/guides/local-packaging.md',
     'docs/provenance/go-module-license-inventory.md',
@@ -229,7 +245,6 @@ foreach ($relative in $payload + $thirdParty) {
     New-Item -ItemType Directory -Path (Split-Path -Parent $destination) -Force | Out-Null
     Copy-Item -LiteralPath $source -Destination $destination
 }
-
 $dependencyLicenseDirectory = Join-Path $output 'dependency-licenses'
 & (Join-Path $PSScriptRoot 'collect-dependency-licenses.ps1') `
     -RepositoryRoot $root `
@@ -243,7 +258,6 @@ if ($dependencyLicenseManifest.qualification.dependency_evidence_qualified -ne $
     $dependencyLicenseManifest.qualification.package_compliance_qualified -ne $false) {
     throw 'dependency license inventory returned unexpected qualification labels'
 }
-
 $help = & $goOutput help 2>&1
 if ($LASTEXITCODE -ne 0 -or (($help | Out-String).Trim()).Length -eq 0) { throw 'engorch help smoke failed' }
 $riWire = & $riOutput 2>$null
@@ -252,23 +266,19 @@ $riEnvelope = (($riWire | Out-String).Trim()) | ConvertFrom-Json
 if ($riEnvelope.version -ne 1 -or $riEnvelope.ok -ne $false -or $riEnvelope.error -notmatch '^usage:') {
     throw 'engorch-ri usage smoke returned an unexpected envelope'
 }
-
 $sourceAfter = Get-SourceIdentity $root $gitExe
 if (($sourceBefore | ConvertTo-Json -Compress) -ne ($sourceAfter | ConvertTo-Json -Compress)) {
     throw 'source changed during package build; package identity is not admissible'
 }
-
-$relativeFiles = @(
-    "bin/$goName", "bin/$riName", 'LICENSE', 'NOTICE', 'THIRD_PARTY.md', 'docs/guides/local-packaging.md'
-) + $thirdParty + @(Get-ChildItem -LiteralPath $dependencyLicenseDirectory -Recurse -File | ForEach-Object {
-    [System.IO.Path]::GetRelativePath($output, $_.FullName).Replace('\', '/')
+$relativeFiles = @("bin/$goName", "bin/$riName") + $payload + $thirdParty + @(Get-ChildItem -LiteralPath $dependencyLicenseDirectory -Recurse -File | ForEach-Object {
+    (Get-RelativePathCustom $output $_.FullName).Replace('\', '/')
 })
+if ((@($relativeFiles | Sort-Object -Unique)).Count -ne $relativeFiles.Count) { throw 'duplicate package file entries detected' }
 $records = @($relativeFiles | Sort-Object | ForEach-Object { Get-FileRecord $output $_ })
 $sumLines = @($records | ForEach-Object { "$($_.sha256)  $($_.path)" })
 $utf8 = [System.Text.UTF8Encoding]::new($false)
 [System.IO.File]::WriteAllText((Join-Path $output 'SHA256SUMS'), (($sumLines -join "`n") + "`n"), $utf8)
 $records += Get-FileRecord $output 'SHA256SUMS'
-
 $artifactKind = if ($sourceBefore.mode -eq 'commit-clean') { 'local-commit-package' } else { 'local-development-package' }
 $manifest = [ordered]@{
     schema_version = 1
@@ -302,6 +312,5 @@ $manifest = [ordered]@{
 }
 [System.IO.File]::WriteAllText((Join-Path $output 'manifest.json'),
     (($manifest | ConvertTo-Json -Depth 12) + "`n"), $utf8)
-
-Invoke-Checked -Program (Join-Path $PSScriptRoot 'verify-local-package.ps1') -Arguments @('-PackageDirectory', $output)
+& (Join-Path $PSScriptRoot 'verify-local-package.ps1') -PackageDirectory $output
 Write-Output ($manifest | ConvertTo-Json -Depth 12 -Compress)

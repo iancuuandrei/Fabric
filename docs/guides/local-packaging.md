@@ -10,28 +10,48 @@ inside the source repository, Git must already ignore it. Cargo uses the supplie
 build directory as a separate target directory, so packaging does not replace
 the repository's `target/release` binary.
 
-Supply every tool and target explicitly. This Windows example uses the repository's
-local Go toolchain and the host target reported by `rustc --version --verbose`:
+Supply every tool and target explicitly as absolute executable paths. A clean
+source checkout has no `.local/toolchains`; packaging neither creates nor
+requires that directory, performs no `PATH` discovery, and applies no
+`$env:USERPROFILE` default. Pass the exact absolute `Go`, `Git`, `Cargo`, and
+`Rustc` executable paths on every invocation; each may live anywhere on the
+host, including outside the repository. Derive the Rust target from the supplied
+`Rustc` executable (`rustc --version --verbose`), never from a fixed profile
+path. Use the actual absolute `Git` path on the host; any example path is
+illustrative only and never a discovery rule.
+
+This portable Windows example builds a clean checkout from temporary
+directories outside the repository with explicitly supplied executables:
 
 ```powershell
-$root = (Resolve-Path .).Path
-$rustHost = (& "$env:USERPROFILE\.cargo\bin\rustc.exe" --version --verbose |
+$goExe    = "C:\Tools\go\bin\go.exe"
+$gitExe   = "C:\Program Files\Git\cmd\git.exe"
+$cargoExe = "C:\Tools\rust\bin\cargo.exe"
+$rustcExe = "C:\Tools\rust\bin\rustc.exe"
+$rustHost = (& $rustcExe --version --verbose |
     Select-String '^host: ' | ForEach-Object { $_.Line.Substring(6) })
 
-& "$root\scripts\package-local.ps1" `
-  -OutputDirectory "$root\.local\packages\windows-amd64" `
-  -BuildDirectory "$root\.local\package-build\windows-amd64" `
-  -Go "$root\.local\toolchains\go\bin\go.exe" `
-  -Git "C:\Program Files\Git\cmd\git.exe" `
-  -Cargo "$env:USERPROFILE\.cargo\bin\cargo.exe" `
-  -Rustc "$env:USERPROFILE\.cargo\bin\rustc.exe" `
+& "C:\src\engorch\scripts\package-local.ps1" `
+  -OutputDirectory "C:\Temp\engorch-package\windows-amd64" `
+  -BuildDirectory "C:\Temp\engorch-package-build\windows-amd64" `
+  -Go $goExe `
+  -Git $gitExe `
+  -Cargo $cargoExe `
+  -Rustc $rustcExe `
   -GoOS windows `
   -GoArch amd64 `
   -RustTarget $rustHost
 ```
 
-Use the actual absolute Git path on the host; the example path is not a discovery
-rule. The script checks Cargo metadata for the workspace root, package name and
+The invocation is rejected unless every rule holds: tool paths are absolute
+files (relative or missing tools fail), the output and build directories are
+new absolute paths that differ and contain neither one another (pre-existing
+paths fail), and any repository-local output or build path is already ignored
+by Git (`git check-ignore`). For the clean-copy proof, prefer temporary paths
+outside the repository. The build performs no download; offline verification
+makes zero provider calls.
+
+The script checks Cargo metadata for the workspace root, package name and
 version, builds with `Cargo.lock`, and records the selected tool paths, tool hashes,
 versions and targets in `manifest.json`.
 
@@ -53,11 +73,12 @@ manifest.json
 
 Names omit `.exe` for non-Windows targets. `SHA256SUMS` covers every payload file;
 `manifest.json` records its own bounded schema plus source, build, component,
-smoke and payload identities. Verify an existing directory without rebuilding:
+smoke and payload identities. `release_qualified` is always `false`; the result
+is never a signed or published release. Verify an existing directory without rebuilding:
 
 ```powershell
-& "$root\scripts\verify-local-package.ps1" `
-  -PackageDirectory "$root\.local\packages\windows-amd64"
+& "C:\src\engorch\scripts\verify-local-package.ps1" `
+  -PackageDirectory "C:\Temp\engorch-package\windows-amd64"
 ```
 
 The verifier rejects missing, additional, linked, path-escaping, size-mismatched
@@ -87,16 +108,17 @@ retained r-efi, protoc, protobuf, or tgrep evidence under `third_party`.
 Normal Rust and Go dependencies without local or retained evidence fail closed.
 Build and development evidence have independent status fields.
 
-Run the collector without building binaries when reviewing a resolved graph:
+Run the collector without building binaries when reviewing a resolved graph,
+using the same explicitly supplied executables:
 
 ```powershell
-& "$root\scripts\collect-dependency-licenses.ps1" `
-  -RepositoryRoot $root `
-  -Cargo "$env:USERPROFILE\.cargo\bin\cargo.exe" `
-  -Go "$root\.local\toolchains\go\bin\go.exe" `
+& "C:\src\engorch\scripts\collect-dependency-licenses.ps1" `
+  -RepositoryRoot "C:\src\engorch" `
+  -Cargo $cargoExe `
+  -Go $goExe `
   -RustTarget $rustHost `
   -RustPackage engorch-ri `
-  -OutputDirectory "$root\.local\dependency-licenses\windows-amd64"
+  -OutputDirectory "C:\Temp\engorch-dependency-licenses\windows-amd64"
 ```
 
 The output directory must be new. Its JSON has no timestamp or host-specific
