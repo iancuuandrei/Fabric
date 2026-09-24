@@ -270,11 +270,10 @@ $sourceAfter = Get-SourceIdentity $root $gitExe
 if (($sourceBefore | ConvertTo-Json -Compress) -ne ($sourceAfter | ConvertTo-Json -Compress)) {
     throw 'source changed during package build; package identity is not admissible'
 }
-$relativeFiles = @(
-    "bin/$goName", "bin/$riName", 'LICENSE', 'NOTICE', 'THIRD_PARTY.md', 'docs/guides/local-packaging.md'
-) + $thirdParty + @(Get-ChildItem -LiteralPath $dependencyLicenseDirectory -Recurse -File | ForEach-Object {
+$relativeFiles = @("bin/$goName", "bin/$riName") + $payload + $thirdParty + @(Get-ChildItem -LiteralPath $dependencyLicenseDirectory -Recurse -File | ForEach-Object {
     (Get-RelativePathCustom $output $_.FullName).Replace('\', '/')
 })
+if ((@($relativeFiles | Sort-Object -Unique)).Count -ne $relativeFiles.Count) { throw 'duplicate package file entries detected' }
 $records = @($relativeFiles | Sort-Object | ForEach-Object { Get-FileRecord $output $_ })
 $sumLines = @($records | ForEach-Object { "$($_.sha256)  $($_.path)" })
 $utf8 = [System.Text.UTF8Encoding]::new($false)
@@ -313,5 +312,5 @@ $manifest = [ordered]@{
 }
 [System.IO.File]::WriteAllText((Join-Path $output 'manifest.json'),
     (($manifest | ConvertTo-Json -Depth 12) + "`n"), $utf8)
-Invoke-Checked -Program (Join-Path $PSScriptRoot 'verify-local-package.ps1') -Arguments @('-PackageDirectory', $output)
+& (Join-Path $PSScriptRoot 'verify-local-package.ps1') -PackageDirectory $output
 Write-Output ($manifest | ConvertTo-Json -Depth 12 -Compress)
