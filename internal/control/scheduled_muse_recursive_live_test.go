@@ -446,10 +446,21 @@ func TestMuseRecursiveFixturePreflight(t *testing.T) {
 	defer plannerUpstream.Close()
 	root := t.TempDir()
 	controllerPath, schedulerPath := filepath.Join(root, "controller.jsonl"), filepath.Join(root, "scheduler.jsonl")
-	creation := museRecursiveCreation(t, filepath.Join(root, "opencode-state"), filepath.Join(root, "task-pool.jsonl"))
+	creation := museRecursiveFixtureCreation(t, filepath.Join(root, "opencode-state"), filepath.Join(root, "task-pool.jsonl"))
 	creation = museRecursiveScriptedPlannerCreation(t, creation, plannerUpstream.URL+"/v1/responses", filepath.Join(root, "task-pool.jsonl"))
-	if creation.Repository.Commit != museRecursiveBaseCommit {
-		t.Fatal("S0 candidate commit changed")
+	out, err := exec.Command("git", "-C", creation.Repository.Root, "rev-parse", "HEAD").CombinedOutput()
+	if err != nil {
+		t.Fatalf("fixture rev-parse failed: %v: %s", err, out)
+	}
+	actual := strings.TrimSpace(string(out))
+	if actual == "" {
+		t.Fatal("empty fixture HEAD")
+	}
+	if creation.Repository.Commit != actual {
+		t.Fatalf("fixture HEAD mismatch: %s != %s", creation.Repository.Commit, actual)
+	}
+	if creation.Repository.Commit == museRecursiveBaseCommit {
+		t.Fatal("fixture still at historical S0 commit")
 	}
 	explorer := creation.Config.Explorer
 	if explorer == nil || explorer.Runtime == "fake" {
