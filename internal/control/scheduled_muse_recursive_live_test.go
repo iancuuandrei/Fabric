@@ -183,6 +183,49 @@ func museRecursiveCreation(t *testing.T, stateRoot, taskPoolPath string) Creatio
 	return creation
 }
 
+func museRecursiveFixtureCreation(t *testing.T, stateRoot, taskPoolPath string) Creation {
+	t.Helper()
+	creation := museRecursiveCommonCreation(t, stateRoot, taskPoolPath)
+	absent := filepath.Join(t.TempDir(), "opencode-absent")
+	creation.Config.OpenCode = &config.OpenCodeHost{Version: 1, Executable: absent, ExecutableHash: "8d46d1ba058b597f739a579ffd4b68f2fa06e9627c1f4f801405fde3db3c61b2", StateRoot: stateRoot}
+	creation.Config.TaskPool = &config.TaskPool{Version: 1, Path: taskPoolPath, Limits: taskpool.Limits{Total: 2}}
+	repoRoot := t.TempDir()
+	if output, err := exec.Command("git", "init", repoRoot).CombinedOutput(); err != nil {
+		t.Fatalf("fixture git init failed: %v: %s", err, output)
+	}
+	for _, args := range [][]string{{"-C", repoRoot, "config", "user.email", "fixture@example.com"}, {"-C", repoRoot, "config", "user.name", "fixture"}} {
+		if output, err := exec.Command("git", args...).CombinedOutput(); err != nil {
+			t.Fatalf("fixture git config failed: %v: %s", err, output)
+		}
+	}
+	if err := os.WriteFile(filepath.Join(repoRoot, "fixture.txt"), []byte("offline fixture\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if output, err := exec.Command("git", "-C", repoRoot, "add", "fixture.txt").CombinedOutput(); err != nil {
+		t.Fatalf("fixture git add failed: %v: %s", err, output)
+	}
+	if output, err := exec.Command("git", "-C", repoRoot, "commit", "-m", "offline fixture").CombinedOutput(); err != nil {
+		t.Fatalf("fixture git commit failed: %v: %s", err, output)
+	}
+	var err error
+	creation.Repository, err = repository.Discover(context.Background(), repoRoot, creation.Config.Repository)
+	if err != nil {
+		t.Fatal(err)
+	}
+	output, err := exec.Command("git", "-C", creation.Repository.Root, "rev-parse", "HEAD").CombinedOutput()
+	if err != nil {
+		t.Fatalf("fixture rev-parse failed: %v: %s", err, output)
+	}
+	head := strings.TrimSpace(string(output))
+	if head != creation.Repository.Commit {
+		t.Fatalf("fixture HEAD mismatch: %q vs %q", head, creation.Repository.Commit)
+	}
+	if head == museRecursiveBaseCommit {
+		t.Fatalf("fixture HEAD equals base commit: %s", head)
+	}
+	return creation
+}
+
 // museRecursiveScriptedPlannerCreation attaches the planner scaffolding leg
 // using the pinned blueprint's canned local planner (one fixed SSE plan,
 // zero live model calls). R38 proved a live OpenCode+Muse *text* planner
