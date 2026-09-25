@@ -302,4 +302,69 @@ func TestOpenCodeLinkedParentFixture(t *testing.T) {
 			t.Fatalf("public JSON leaks %q", n)
 		}
 	}
+	if _, err := os.Lstat(aliasChild); err != nil {
+		t.Fatal(err)
+	}
+	plainDir := t.TempDir()
+	plainExe := filepath.Join(plainDir, "opencode")
+	plainBytes := []byte("#!/bin/sh\nexit 0\n")
+	if err := os.WriteFile(plainExe, plainBytes, 0755); err != nil {
+		t.Fatal(err)
+	}
+	fiPlain, err := os.Lstat(plainExe)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !fiPlain.Mode().IsRegular() || fiPlain.Mode()&(os.ModeSymlink|os.ModeIrregular) != 0 {
+		t.Fatalf("plain exe not ordinary regular: %v", fiPlain.Mode())
+	}
+	readPlain, err := os.ReadFile(plainExe)
+	if err != nil {
+		t.Fatal(err)
+	}
+	writtenPlain := sha256.Sum256(plainBytes)
+	readPlainHash := sha256.Sum256(readPlain)
+	if readPlainHash != writtenPlain {
+		t.Fatalf("plain executable readback hash mismatch")
+	}
+	cfgState := &config.Config{Planner: runtime.Profile{Runtime: "opencode-http", Provider: "synthetic", Model: "synthetic-model"}, OpenCode: &config.OpenCodeHost{Executable: plainExe, ExecutableHash: hex.EncodeToString(writtenPlain[:]), StateRoot: aliasChild}}
+	gotState := openCodeRouteReadiness(cfgState)
+	bodyState, err := json.Marshal(gotState)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(bodyState) == 0 || len(bodyState) >= 8192 {
+		t.Fatalf("body len = %d", len(bodyState))
+	}
+	var decodedState struct {
+		Status string              `json:"status"`
+		Reason string              `json:"reason"`
+		Roles  []map[string]string `json:"roles"`
+	}
+	if err := json.Unmarshal(bodyState, &decodedState); err != nil {
+		t.Fatal(err)
+	}
+	if decodedState.Status != "NOT_READY" {
+		t.Fatalf("status = %q", decodedState.Status)
+	}
+	if decodedState.Reason != "opencode state unavailable" {
+		t.Fatalf("reason = %q", decodedState.Reason)
+	}
+	if len(decodedState.Roles) != 1 {
+		t.Fatalf("roles = %v", decodedState.Roles)
+	}
+	roleState := decodedState.Roles[0]
+	if len(roleState) != 4 || roleState["role"] != "planner" || roleState["provider"] != "synthetic" || roleState["model"] != "synthetic-model" || roleState["runtime"] != "opencode-http" {
+		t.Fatalf("role = %v", roleState)
+	}
+	lowerState := bytes.ToLower(bodyState)
+	needlesState := []string{root, target, alias, aliasChild, plainExe, plainDir, "link", "syscall", "privilege", "1314", "junction", "powershell"}
+	for _, n := range needlesState {
+		if len(n) == 0 {
+			t.Fatalf("empty privacy needle")
+		}
+		if bytes.Contains(lowerState, bytes.ToLower([]byte(n))) {
+			t.Fatalf("public JSON leaks %q", n)
+		}
+	}
 }
