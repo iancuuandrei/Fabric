@@ -14,6 +14,7 @@ import (
 	"harness.local/engorch/internal/hostenvironment"
 	"harness.local/engorch/internal/repository"
 	"harness.local/engorch/internal/runtime"
+	"harness.local/engorch/internal/safepath"
 )
 
 type hostObserver func(context.Context) (hostenvironment.Observation, error)
@@ -124,6 +125,12 @@ func openCodeRouteReadiness(cfg *config.Config) map[string]any {
 	want := strings.ToLower(strings.TrimSpace(cfg.OpenCode.ExecutableHash))
 	if !openCodeCleanAbsoluteNonVolumeRoot(exe) || !openCodeCleanAbsoluteNonVolumeRoot(state) {
 		return map[string]any{"status": "NOT_READY", "reason": "opencode host path invalid", "roles": roles}
+	}
+	if err := safepath.Directory(filepath.Dir(exe)); err != nil {
+		return map[string]any{"status": "NOT_READY", "reason": "opencode executable unavailable", "roles": roles}
+	}
+	if err := safepath.Directory(state); err != nil {
+		return map[string]any{"status": "NOT_READY", "reason": "opencode state unavailable", "roles": roles}
 	}
 	fi, err := os.Lstat(exe)
 	if err != nil || !fi.Mode().IsRegular() || fi.Mode()&os.ModeSymlink != 0 || fi.Mode()&os.ModeCharDevice != 0 || fi.Mode()&os.ModeDir != 0 {
