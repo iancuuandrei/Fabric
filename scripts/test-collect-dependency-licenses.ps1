@@ -1,6 +1,8 @@
 param()
 
 $ErrorActionPreference = 'Stop'
+
+. (Join-Path $PSScriptRoot 'package-local-compat.ps1')
 $root = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $localRoot = [IO.Path]::GetFullPath((Join-Path $root '.local'))
 $fixture = Join-Path $localRoot ('collector-fixture-' + [guid]::NewGuid().ToString('N'))
@@ -12,7 +14,7 @@ function Write-Utf8([string]$Path, [string]$Content) {
 
 function Get-TreeIdentity([string]$Path) {
     return @((Get-ChildItem -LiteralPath $Path -Recurse -File | ForEach-Object {
-        $relative = [IO.Path]::GetRelativePath($Path, $_.FullName).Replace('\', '/')
+        $relative = (Get-RelativePathCustom $Path $_.FullName).Replace('\', '/')
         "$relative $((Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant())"
     } | Sort-Object) -join "`n")
 }

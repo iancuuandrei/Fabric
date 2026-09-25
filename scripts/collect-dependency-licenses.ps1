@@ -10,8 +10,10 @@ param(
 $ErrorActionPreference = 'Stop'
 $PSNativeCommandUseErrorActionPreference = $false
 
+. (Join-Path $PSScriptRoot 'package-local-compat.ps1')
+
 function Resolve-ExistingAbsolutePath([string]$Value, [string]$Name, [bool]$Container) {
-    if (-not [IO.Path]::IsPathFullyQualified($Value)) { throw "$Name must be an absolute path" }
+    if (-not (Test-PathFullyQualified $Value)) { throw "$Name must be an absolute path" }
     $resolved = [IO.Path]::GetFullPath($Value)
     $item = Get-Item -LiteralPath $resolved -ErrorAction Stop
     if ([bool]$item.PSIsContainer -ne $Container) { throw "$Name has the wrong path type: $resolved" }
@@ -19,7 +21,7 @@ function Resolve-ExistingAbsolutePath([string]$Value, [string]$Name, [bool]$Cont
 }
 
 function Resolve-FreshAbsolutePath([string]$Value, [string]$Name) {
-    if (-not [IO.Path]::IsPathFullyQualified($Value)) { throw "$Name must be an absolute path" }
+    if (-not (Test-PathFullyQualified $Value)) { throw "$Name must be an absolute path" }
     $resolved = [IO.Path]::GetFullPath($Value)
     if (Test-Path -LiteralPath $resolved) { throw "$Name must not already exist: $resolved" }
     return $resolved
@@ -38,7 +40,9 @@ function Get-SafeSegment([string]$Value) {
 
 function Get-StringSha256([string]$Value) {
     $bytes = [Text.Encoding]::UTF8.GetBytes($Value)
-    return [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes)).ToLowerInvariant()
+    $sha = [Security.Cryptography.SHA256]::Create()
+    try { $hash = $sha.ComputeHash($bytes) } finally { $sha.Dispose() }
+    return (-join ($hash | ForEach-Object { $_.ToString('x2') }))
 }
 
 function Get-LockRecords([string]$LockPath) {
@@ -146,7 +150,7 @@ function Copy-Evidence($Candidates, [string]$DestinationRoot, [string]$OutputRoo
         $item = Get-Item -LiteralPath $candidate.path -Force -ErrorAction Stop
         if ($item.PSIsContainer -or $item.LinkType) { throw "license evidence must be an ordinary file: $($candidate.path)" }
         Copy-Item -LiteralPath $item.FullName -Destination $destination
-        $relative = [IO.Path]::GetRelativePath($OutputRoot, $destination).Replace('\', '/')
+        $relative = (Get-RelativePathCustom $OutputRoot $destination).Replace('\', '/')
         $records += [ordered]@{
             path = $relative
             origin = [string]$candidate.origin
@@ -280,13 +284,13 @@ $retainedFiles = @()
 foreach ($relativeRoot in @('third_party/codegraph', 'third_party/graphify', 'third_party/scip', 'third_party/tgrep', 'third_party/opencode', 'third_party/vercel-ai', 'third_party/pi-subagent-tasks')) {
     $sourceRoot = Join-Path $repo $relativeRoot
     foreach ($file in @(Get-ChildItem -LiteralPath $sourceRoot -File | Where-Object { $_.Name -ne 'scip.proto' } | Sort-Object Name)) {
-        $relative = [IO.Path]::GetRelativePath($repo, $file.FullName).Replace('\', '/')
+        $relative = (Get-RelativePathCustom $repo $file.FullName).Replace('\', '/')
         $destination = Join-Path $retainedEvidenceRoot.FullName $relative
         New-Item -ItemType Directory -Path (Split-Path -Parent $destination) -Force | Out-Null
         Copy-Item -LiteralPath $file.FullName -Destination $destination
         $retainedFiles += [ordered]@{
             source = $relative
-            path = [IO.Path]::GetRelativePath($output, $destination).Replace('\', '/')
+            path = (Get-RelativePathCustom $output $destination).Replace('\', '/')
             bytes = [int64]$file.Length
             sha256 = Get-Sha256 $destination
         }
@@ -298,7 +302,7 @@ foreach ($relative in @('NOTICE', 'THIRD_PARTY.md')) {
     Copy-Item -LiteralPath $file.FullName -Destination $destination
     $retainedFiles += [ordered]@{
         source = $relative
-        path = [IO.Path]::GetRelativePath($output, $destination).Replace('\', '/')
+        path = (Get-RelativePathCustom $output $destination).Replace('\', '/')
         bytes = [int64]$file.Length
         sha256 = Get-Sha256 $destination
     }
@@ -336,7 +340,7 @@ $utf8 = [Text.UTF8Encoding]::new($false)
 
 $listed = @($manifest.rust_packages.evidence.path) + @($manifest.go_modules.evidence.path) + @($manifest.retained_evidence.path) + 'dependency-licenses.json'
 $listed = @($listed | Sort-Object -Unique)
-$actual = @(Get-ChildItem -LiteralPath $output -Recurse -File | ForEach-Object { [IO.Path]::GetRelativePath($output, $_.FullName).Replace('\', '/') } | Sort-Object)
+$actual = @(Get-ChildItem -LiteralPath $output -Recurse -File | ForEach-Object { (Get-RelativePathCustom $output $_.FullName).Replace('\', '/') } | Sort-Object)
 if (($listed -join "`n") -ne ($actual -join "`n")) { throw 'collector output contains unlisted or missing files' }
 
 Write-Output ($manifest | ConvertTo-Json -Depth 15 -Compress)
