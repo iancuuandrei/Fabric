@@ -7,8 +7,11 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"os"
+	"os/exec"
 	"path/filepath"
+	stdruntime "runtime"
 	"testing"
+	"time"
 
 	"harness.local/engorch/internal/canonical"
 	"harness.local/engorch/internal/config"
@@ -170,5 +173,71 @@ func TestOpenCodeRouteReadinessConfiguredHostTruthTable(t *testing.T) {
 		if row.name != "neither" && status == "NOT_CHECKED" {
 			t.Fatalf("%s must not be NOT_CHECKED", row.name)
 		}
+	}
+}
+
+func TestOpenCodeLinkedParentFixture(t *testing.T) {
+	root := t.TempDir()
+	target := filepath.Join(root, "target")
+	child := filepath.Join(target, "child")
+	alias := filepath.Join(root, "alias")
+	if err := os.MkdirAll(child, 0755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(child, "sentinel"), []byte("linked"), 0644); err != nil {
+		t.Fatal(err)
+	}
+	if stdruntime.GOOS == "windows" {
+		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+		defer cancel()
+		cmd := exec.CommandContext(ctx, "powershell.exe", "-NoProfile", "-NonInteractive", "-Command", "New-Item -ItemType Junction -Path $env:EO_ALIAS -Target $env:EO_TARGET | Out-Null")
+		cmd.Env = append(os.Environ(), "EO_ALIAS="+alias, "EO_TARGET="+target)
+		if err := cmd.Run(); err != nil {
+			t.Fatal(err)
+		}
+		if err := ctx.Err(); err != nil {
+			t.Fatal(err)
+		}
+	} else {
+		if err := os.Symlink(target, alias); err != nil {
+			t.Fatal(err)
+		}
+	}
+	defer os.Remove(alias)
+	fi, err := os.Lstat(alias)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if fi.Mode()&(os.ModeSymlink|os.ModeIrregular) == 0 {
+		t.Fatalf("alias is ordinary directory: %v", fi.Mode())
+	}
+	aliasChild := filepath.Join(alias, "child")
+	st, err := os.Stat(aliasChild)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !st.IsDir() {
+		t.Fatalf("alias child is not a directory")
+	}
+	li, err := os.Lstat(aliasChild)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if li.Mode()&(os.ModeSymlink|os.ModeIrregular) != 0 {
+		t.Fatalf("alias child is a link: %v", li.Mode())
+	}
+	entries, err := os.ReadDir(aliasChild)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(entries) != 1 {
+		t.Fatalf("entries = %v", entries)
+	}
+	data, err := os.ReadFile(filepath.Join(aliasChild, "sentinel"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(data) != "linked" {
+		t.Fatalf("sentinel = %q", data)
 	}
 }
