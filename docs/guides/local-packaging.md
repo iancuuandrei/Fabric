@@ -64,12 +64,15 @@ LICENSE
 NOTICE
 THIRD_PARTY.md
 docs/guides/local-packaging.md
+docs/getting-started/local-plan.md
 third_party/... retained licenses, notices and provenance notes
 dependency-licenses/dependency-licenses.json
 dependency-licenses/evidence/... target-filtered dependency license evidence
 SHA256SUMS
 manifest.json
 ```
+
+The included local planning guide walks through the governed fixture workflow.
 
 Names omit `.exe` for non-Windows targets. `SHA256SUMS` covers every payload file;
 `manifest.json` records its own bounded schema plus source, build, component,
