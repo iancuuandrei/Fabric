@@ -196,7 +196,7 @@ $builtRI = Join-Path $cargoTarget.FullName (Join-Path $RustTarget (Join-Path 're
 if (-not (Test-Path -LiteralPath $builtRI -PathType Leaf)) { throw "Rust binary missing: $builtRI" }
 Copy-Item -LiteralPath $builtRI -Destination $riOutput
 $payload = @(
-    'LICENSE', 'NOTICE', 'THIRD_PARTY.md', 'docs/guides/local-packaging.md',
+    'LICENSE', 'NOTICE', 'THIRD_PARTY.md', 'docs/guides/local-packaging.md', 'docs/getting-started/local-plan.md',
     'docs/provenance/go-module-license-inventory.md',
     'integrations/codex/engorch/.codex-plugin/plugin.json',
     'integrations/codex/engorch/README.md',
