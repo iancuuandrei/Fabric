@@ -193,7 +193,7 @@ $oldProxy, $oldSum = $env:GOPROXY, $env:GOSUMDB
 try {
     $env:GOPROXY = 'off'
     $env:GOSUMDB = 'off'
-    $goTemplate = '{{if not .Main}}{{.Path}}{{"\t"}}{{.Version}}{{"\t"}}{{.Dir}}{{"\t"}}{{.Sum}}{{"\t"}}{{.GoModSum}}{{"\n"}}{{end}}'
+    $goTemplate = "{{if not .Main}}{{.Path}}`t{{.Version}}`t{{.Dir}}`t{{.Sum}}`t{{.GoModSum}}`n{{end}}"
     $goLines = @(& $goExe list -m -f $goTemplate all)
     if ($LASTEXITCODE -ne 0) { throw 'offline Go module query failed' }
 } finally {
