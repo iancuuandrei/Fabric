@@ -240,4 +240,66 @@ func TestOpenCodeLinkedParentFixture(t *testing.T) {
 	if string(data) != "linked" {
 		t.Fatalf("sentinel = %q", data)
 	}
+	exeBytes := []byte("#!/bin/sh\nexit 0\n")
+	if err := os.WriteFile(filepath.Join(child, "opencode"), exeBytes, 0755); err != nil {
+		t.Fatal(err)
+	}
+	writtenHash := sha256.Sum256(exeBytes)
+	aliasExe := filepath.Join(aliasChild, "opencode")
+	fiExe, err := os.Lstat(aliasExe)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !fiExe.Mode().IsRegular() || fiExe.Mode()&(os.ModeSymlink|os.ModeIrregular) != 0 {
+		t.Fatalf("alias exe not ordinary regular: %v", fiExe.Mode())
+	}
+	readback, err := os.ReadFile(aliasExe)
+	if err != nil {
+		t.Fatal(err)
+	}
+	readHash := sha256.Sum256(readback)
+	if readHash != writtenHash {
+		t.Fatalf("executable readback hash mismatch")
+	}
+	stateRoot := t.TempDir()
+	cfg := &config.Config{Planner: runtime.Profile{Runtime: "opencode-http", Provider: "synthetic", Model: "synthetic-model"}, OpenCode: &config.OpenCodeHost{Executable: aliasExe, ExecutableHash: hex.EncodeToString(writtenHash[:]), StateRoot: stateRoot}}
+	got := openCodeRouteReadiness(cfg)
+	body, err := json.Marshal(got)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(body) == 0 || len(body) >= 8192 {
+		t.Fatalf("body len = %d", len(body))
+	}
+	var decoded struct {
+		Status string              `json:"status"`
+		Reason string              `json:"reason"`
+		Roles  []map[string]string `json:"roles"`
+	}
+	if err := json.Unmarshal(body, &decoded); err != nil {
+		t.Fatal(err)
+	}
+	if decoded.Status != "NOT_READY" {
+		t.Fatalf("status = %q", decoded.Status)
+	}
+	if decoded.Reason != "opencode executable unavailable" {
+		t.Fatalf("reason = %q", decoded.Reason)
+	}
+	if len(decoded.Roles) != 1 {
+		t.Fatalf("roles = %v", decoded.Roles)
+	}
+	role := decoded.Roles[0]
+	if len(role) != 4 || role["role"] != "planner" || role["provider"] != "synthetic" || role["model"] != "synthetic-model" || role["runtime"] != "opencode-http" {
+		t.Fatalf("role = %v", role)
+	}
+	lowerBody := bytes.ToLower(body)
+	needles := []string{root, target, alias, aliasChild, aliasExe, stateRoot, "link", "syscall", "privilege", "1314", "junction", "powershell"}
+	for _, n := range needles {
+		if len(n) == 0 {
+			t.Fatalf("empty privacy needle")
+		}
+		if bytes.Contains(lowerBody, bytes.ToLower([]byte(n))) {
+			t.Fatalf("public JSON leaks %q", n)
+		}
+	}
 }
