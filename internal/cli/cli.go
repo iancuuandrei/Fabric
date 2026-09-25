@@ -299,7 +299,7 @@ func Execute(ctx context.Context, args []string, cwd string, out io.Writer) (res
 		if _, err := controllerstate.Resolve(cfg.ControllerStateRoot, identity); err != nil {
 			return err
 		}
-		return writeDoctor(ctx, out, identity, cfg.HostPolicy)
+		return writeDoctorWithConfig(ctx, out, identity, cfg.HostPolicy, &cfg)
 	case "plan":
 		objective, err := planObjective(ctx, *root, args)
 		if err != nil {
