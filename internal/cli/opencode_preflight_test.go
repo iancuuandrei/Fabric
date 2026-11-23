@@ -9,11 +9,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/pelletier/go-toml/v2"
 	"github.com/iancuuandrei/fabric/internal/access"
 	"github.com/iancuuandrei/fabric/internal/config"
 	"github.com/iancuuandrei/fabric/internal/providergateway"
 	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/pelletier/go-toml/v2"
 )
 
 func opencodeUnitConfig(t *testing.T, stateRoot string) config.Config {

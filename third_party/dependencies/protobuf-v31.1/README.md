@@ -10,4 +10,4 @@ The upstream annotated `v31.1` tag resolves to commit
 The upstream tree at that commit has no root `NOTICE` file. The retained
 license applies to the compiler and include payload distributed inside the
 platform crates; this package does not claim those build-time files are linked
-into `engorch-ri`.
+into `fabric-ri`.

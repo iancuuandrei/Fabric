@@ -2,6 +2,40 @@
 
 Fabric exposes the exact same safe repository-bound engine over four integration surfaces: **Embedded Mission Control Web UI**, **HTTP/JSON + SSE REST API**, **Stdio MCP Server**, and the **Public Go SDK** (`pkg/fabric`).
 
+```mermaid
+flowchart LR
+  subgraph SURF["Four Operator & IDE Surfaces"]
+    direction TB
+    ui["Mission Control Web UI<br/>Strict CSP Kanban + Code Graph"]
+    rest["HTTP/JSON + SSE REST API<br/>OpenAPI 3.1 + Live Steering"]
+    mcp["Stdio MCP Server<br/>18 Tools incl. fabric_context"]
+    sdk["Public Go SDK<br/>github.com/iancuuandrei/fabric/pkg/fabric"]
+  end
+
+  subgraph ENGINE["Shared Repository-Bound Engine"]
+    direction TB
+    rt["Isolated Worktree Loop + CapScope"]
+    cc["Context Compiler + Spec Graph"]
+    intg["Issue Trackers + Webhooks + Alerts"]
+  end
+
+  ui --> rt
+  rest --> rt
+  rest --> cc
+  rest --> intg
+  mcp --> cc
+  mcp --> rt
+  sdk --> rt
+  sdk --> cc
+
+  classDef surf fill:#14283f,stroke:#38bdf8,color:#ffffff,stroke-width:1.5px;
+  classDef eng fill:#0f2e3a,stroke:#0891b2,color:#ecfeff,stroke-width:1.5px;
+  class ui,rest,mcp,sdk surf;
+  class rt,cc,intg eng;
+```
+
+See also [Context Compiler & Spec Graph](context-and-codegraph.md) and [Documentation Hub](../README.md).
+
 ---
 
 ## 1. Mission Control Web Dashboard (`fabric serve`)
@@ -46,8 +80,14 @@ curl -H "Authorization: Bearer my-secret" "http://127.0.0.1:7420/v1/episodes/<RU
 curl -X POST -H "Authorization: Bearer my-secret" -d '{"step":1}' http://127.0.0.1:7420/v1/episodes/<RUN_ID>/rewind
 curl -X POST -H "Authorization: Bearer my-secret" -d '{"branch":"fabric/fix-1"}' http://127.0.0.1:7420/v1/episodes/<RUN_ID>/apply
 
-# Query local Code Knowledge Graph & multi-hop blast radius
+# Query local Code Knowledge Graph, Javadoc Specs & multi-hop blast radius
+curl -H "Authorization: Bearer my-secret" "http://127.0.0.1:7420/v1/graph/spec?target=Server"
 curl -H "Authorization: Bearer my-secret" "http://127.0.0.1:7420/v1/graph/impact?target=Server&depth=2"
+
+# Compile a zero-embedding multi-resolution Context Pack (Javadoc specs + call graph + BM25/PPR/co-change)
+curl -X POST -H "Authorization: Bearer my-secret" -H "Content-Type: application/json" \
+  -d '{"query":"verify webhook HMAC signature","budget_tokens":3200,"spec_only":true}' \
+  http://127.0.0.1:7420/v1/context
 
 # Fetch & launch a Jira/Linear/GitLab/GitHub ticket, inspect integrations, or send Slack/Discord/Teams alerts
 curl -H "Authorization: Bearer my-secret" http://127.0.0.1:7420/v1/integrations
@@ -61,7 +101,7 @@ See [Engineering Integrations Guide](integrations.md) for Jira, Linear, GitLab, 
 
 ---
 
-## 3. Stdio MCP Server (17 Tools)
+## 3. Stdio MCP Server (18 Tools)
 
 Add Fabric to Claude Code, Codex, Cursor, or any MCP-compatible IDE:
 
@@ -79,7 +119,7 @@ Add Fabric to Claude Code, Codex, Cursor, or any MCP-compatible IDE:
 **Exposed MCP tools:**
 - **Episodes & Artifacts:** `fabric_episodes`, `fabric_packet`, `fabric_rewind`, `fabric_apply`, `fabric_mutate`
 - **Trackers & Notifications:** `fabric_ticket`, `fabric_notify`
-- **Code Graph & Memory:** `fabric_graph`, `fabric_graph_impact`, `fabric_memory`
+- **Code Graph, Context Compiler & Memory:** `fabric_context`, `fabric_graph`, `fabric_graph_impact`, `fabric_memory`
 - **Classic Controller:** `fabric_doctor`, `fabric_status`, `fabric_run`, `fabric_inspect`, `fabric_diff`, `fabric_usage`, `fabric_diagnose`
 
 ---

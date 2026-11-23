@@ -27,7 +27,7 @@ jobs:
           ./internal/codegraph ./internal/diagnostics ./internal/memory
           ./internal/githubflow ./internal/bench ./internal/agentloop
           ./internal/tournament ./internal/packet ./internal/webui
-          ./internal/api ./internal/mcpserver ./internal/integrations ./internal/runtimeutil
+          ./internal/api ./internal/mcpserver ./internal/integrations ./internal/contextcompiler ./internal/runtimeutil
           ./internal/gitexec ./internal/toolbridge ./pkg/fabric ./cmd/fabric
           ./internal/journal ./internal/directapi ./internal/clauderuntime
           ./internal/acpruntime ./internal/hooks ./internal/config

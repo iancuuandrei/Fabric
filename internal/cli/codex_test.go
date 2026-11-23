@@ -12,13 +12,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/pelletier/go-toml/v2"
 	"github.com/iancuuandrei/fabric/internal/codexhost"
 	"github.com/iancuuandrei/fabric/internal/codexruntime"
 	"github.com/iancuuandrei/fabric/internal/config"
 	"github.com/iancuuandrei/fabric/internal/control"
 	"github.com/iancuuandrei/fabric/internal/journal"
 	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/pelletier/go-toml/v2"
 )
 
 func TestLiveCodexPlanningCLI(t *testing.T) {

@@ -4,6 +4,38 @@ Fabric ships a complete, first-principles autonomous software engineering
 runtime built for daily production work across any language, any model
 provider, and any Git repository.
 
+```mermaid
+flowchart TD
+  turn1["Turn 1: Context Compiler (Spec Pack) + Discover Skills + Memory Lessons"]
+  loop["Worktree Tool Loop (CapScope + Epoch Observation Masking)"]
+  edit["edit_file / write_file -> Inline AST/vet Diagnostics + Git Snapshot Ref"]
+  gates["Hooks + Native Test Suite + Diff-Scoped Mutation Audit"]
+  rep["Verify Failed -> Activate repair / systematic-debugging Skill"]
+  hyg["Candidate Clean -> Diff Hygiene Audit + Multi-Lens Precision Review (--review=true)"]
+  ready["READY Structured Review Packet (Diff · Blast Radius · Receipts · Skills · USD Cost)"]
+
+  turn1 --> loop
+  loop --> edit --> loop
+  loop -->|"candidate complete"| gates
+  gates -->|"failed"| rep --> loop
+  gates -->|"passed"| hyg
+  hyg -->|"changes requested"| loop
+  hyg -->|"approved"| ready
+
+  classDef init fill:#0f2e3a,stroke:#0891b2,color:#ecfeff,stroke-width:1.5px;
+  classDef run fill:#172554,stroke:#3b82f6,color:#eff6ff,stroke-width:1.5px;
+  classDef gate fill:#3b270c,stroke:#d97706,color:#fffbeb,stroke-width:1.5px;
+  classDef err fill:#7f1d1d,stroke:#ef4444,color:#fef2f2,stroke-width:1.5px;
+  classDef ok fill:#064e3b,stroke:#10b981,color:#ecfdf5,stroke-width:1.5px;
+  class turn1 init;
+  class loop,edit run;
+  class gates,hyg gate;
+  class rep err;
+  class ready ok;
+```
+
+See [Context Compiler & Spec Graph Deep Dive](context-and-codegraph.md) for ranking internals and skill routing details.
+
 ## 1. Zero-Friction Initialization
 
 ```powershell
@@ -32,12 +64,18 @@ worktree with:
 - **CapScope Typed Capabilities (`arXiv:2609.08371`):** tool permissions and
   write ownership are enforced outside the LLM context window; repo `AGENTS.md`,
   `CLAUDE.md`, lessons, and skills are fenced in `<untrusted_repo_context>` tags.
-- **Poka-yoke ACI Toolbelt + Inline Diagnostics:** `repo_map`, `graph_impact`,
-  `list_skills`, `load_skill`, `read_file`, CRLF-aware unique-anchor
+- **Poka-yoke ACI Toolbelt + Inline Diagnostics:** `compile_context`, `repo_map`,
+  `graph_impact`, `list_skills`, `load_skill`, `read_file`, CRLF-aware unique-anchor
   `edit_file`, `write_file`, `delete_file`, `list_files`, binary-safe
   `search_text`, complete `git_diff` (including untracked files), and
   secret-scrubbed argv-only `run_command`. `edit_file`/`write_file` run instant
   inline syntax/vet checks (Go AST/`go vet`, JSON, Python `py_compile`, `tsc`).
+- **Stage-Aware Native Skill Lifecycle + End-of-Loop Code Review:** Turn 1
+  compiles a zero-embedding Javadoc/AST Spec Pack and activates relevant
+  discovery skills automatically; test/hook failures activate `repair` /
+  `systematic-debugging`; completion runs deterministic diff hygiene checks +
+  multi-skill fresh-context precision review by default (`--review=false` opts out),
+  recording `skills_used` inside the Review Packet.
 - **Cache-Stable Epoch Observation Masking (`arXiv:2508.21433`):** advances the
   masking cutoff in epochs alongside multi-turn Anthropic ephemeral cache
   breakpoints so prompt cache prefixes remain hot across long runs.
@@ -55,7 +93,7 @@ fabric agent --max-usd 1.50 --mutate "Fix edge-case timeout handling and add reg
 fabric agent --resume a3f9c12e --max-usd 3.50 --max-turns 32
 
 # High-assurance run with fresh precision reviewer and hardened Docker sandbox
-fabric agent --max-usd 3.00 --mutate --review --sandbox docker --sandbox-image golang:1.24 \
+fabric agent --max-usd 3.00 --mutate --review --sandbox docker --sandbox-image golang:1.27 \
   "Implement rate limiter token bucket with unit tests"
 ```
 
@@ -71,13 +109,18 @@ fabric tournament --models claude-sonnet-4-5,gpt-5 --mutate \
   "Fix race condition in connection pool shutdown"
 ```
 
-## 4. Code Knowledge Graph (`fabric graph`)
+## 4. Code Knowledge Graph & Context Compiler (`fabric graph` & `fabric context`)
 
-Zero-dependency local Code Knowledge Graph (`go/parser` AST + TS/JS/Py/Rust
-symbols + Markdown doc-to-code bridging + PageRank hub centrality + multi-hop
-blast radius):
+Zero-embedding local Code Knowledge Graph (`go/parser` AST + TS/JS/Py/Rust/Java/C#
+symbols + Javadoc/GoDoc/docstring `@param`/`@returns`/`@throws`/`@effects` Spec Cards +
+function-level `CALLS`/`USES_TYPE`/`TESTS`/`DOCUMENTS` edges + Personalized
+PageRank) paired with `fabric context` (hybrid Seed + BM25 + PPR + Git
+co-change fusion packed into `L3_BODY -> L2_SPEC -> L1_OUTLINE -> L0_POINTER`
+tiers under strict token budgets and SHA-256 caching):
 
 ```powershell
+fabric context --budget 3200 --spec-only "Fix Jira webhook HMAC validation"
+fabric graph --spec VerifyHMACSHA256
 fabric graph --save
 fabric graph --impact internal/agentloop/loop.go --depth 2
 ```
@@ -142,7 +185,7 @@ max_wall_seconds = 900
 
 [sandbox]
 mode = "docker"           # local | docker | podman
-image = "golang:1.24"
+image = "golang:1.27"
 allow_network = false
 inherit_secrets = false   # strips API keys/tokens from subprocess env by default
 memory_mb = 2048

@@ -16,6 +16,7 @@ import (
 	"github.com/iancuuandrei/fabric/internal/bench"
 	"github.com/iancuuandrei/fabric/internal/codegraph"
 	"github.com/iancuuandrei/fabric/internal/config"
+	"github.com/iancuuandrei/fabric/internal/contextcompiler"
 	"github.com/iancuuandrei/fabric/internal/cost"
 	"github.com/iancuuandrei/fabric/internal/gitexec"
 	"github.com/iancuuandrei/fabric/internal/githubflow"
@@ -42,7 +43,7 @@ func runAgent(args []string) error {
 	maxTurns := fs.Int("max-turns", 24, "maximum agentic turns")
 	keepRecent := fs.Int("keep-recent", 4, "observation masking window (keep last N tool outputs verbatim)")
 	mutate := fs.Bool("mutate", false, "run diff-scoped mutation audit after native checks pass")
-	review := fs.Bool("review", false, "run fresh-context Alibaba-style precision review before READY")
+	review := fs.Bool("review", true, "run fresh-context skill-backed precision review before READY (pass --review=false to disable)")
 	allowCmd := fs.Bool("allow-cmd", true, "allow bounded argv run_command inside isolated worktree")
 	writeScope := fs.String("write", "", "comma-separated repo-relative write scope allowlist (optional)")
 	sbMode := fs.String("sandbox", "", "execution sandbox override (local|docker|podman)")
@@ -103,7 +104,7 @@ func runAgent(args []string) error {
 		Budget:          cost.Budget{MaxUSD: *maxUSD, MaxTurns: *maxTurns},
 	}
 	if *review {
-		loopCfg.ReviewerModel = model
+		loopCfg.AutoReview = true
 	}
 	applyRepoDefaults(&loopCfg, repoCfg, *sbMode, *sbImage)
 	if !*asJSON {
@@ -451,6 +452,7 @@ func runGraph(args []string) error {
 	cwd, _ := os.Getwd()
 	root := fs.String("root", cwd, "repository root")
 	impact := fs.String("impact", "", "trace multi-hop blast radius for a symbol or file path")
+	specTarget := fs.String("spec", "", "render Javadoc-style Spec Cards for matching symbol(s) or file path")
 	depth := fs.Int("depth", 2, "impact hop depth (1..4)")
 	save := fs.Bool("save", false, "write .harness/graph/graph.json and GRAPH_REPORT.md")
 	asJSON := fs.Bool("json", false, "output JSON instead of Markdown")
@@ -472,6 +474,20 @@ func runGraph(args []string) error {
 		}
 		fmt.Fprintf(os.Stderr, "Saved Code Knowledge Graph: %s and %s\n", jp, mp)
 	}
+	if strings.TrimSpace(*specTarget) != "" {
+		cards := g.SpecCardsForTarget(*specTarget, 8)
+		if *asJSON {
+			enc := json.NewEncoder(os.Stdout)
+			enc.SetIndent("", "  ")
+			return enc.Encode(map[string]any{"target": *specTarget, "cards": cards})
+		}
+		if len(cards) == 0 {
+			fmt.Printf("No symbols matched %q.\n", *specTarget)
+			return nil
+		}
+		fmt.Print(strings.Join(cards, "\n"))
+		return nil
+	}
 	if strings.TrimSpace(*impact) != "" {
 		rep := g.Impact(*impact, *depth)
 		if *asJSON {
@@ -488,6 +504,18 @@ func runGraph(args []string) error {
 		fmt.Printf("\nDownstream callees/imports (%d):\n", len(rep.Callees))
 		for _, n := range rep.Callees {
 			fmt.Printf("  - %s (%s:%d)\n", n.Name, n.Path, n.Line)
+		}
+		if len(rep.Types) > 0 {
+			fmt.Printf("\nReferenced types (%d):\n", len(rep.Types))
+			for _, n := range rep.Types {
+				fmt.Printf("  - %s (%s:%d)\n", n.Name, n.Path, n.Line)
+			}
+		}
+		if len(rep.Tests) > 0 {
+			fmt.Printf("\nCovering tests (%d):\n", len(rep.Tests))
+			for _, n := range rep.Tests {
+				fmt.Printf("  - %s (%s:%d)\n", n.Name, n.Path, n.Line)
+			}
 		}
 		if len(rep.Docs) > 0 {
 			fmt.Printf("\nLinked docs (%d):\n", len(rep.Docs))
@@ -645,7 +673,7 @@ func runIssue(args []string) error {
 	maxUSD := fs.Float64("max-usd", 0, "hard USD spend cap")
 	maxTurns := fs.Int("max-turns", 24, "maximum agent turns")
 	mutate := fs.Bool("mutate", false, "run diff-scoped mutation audit")
-	review := fs.Bool("review", false, "run precision review before READY")
+	review := fs.Bool("review", true, "run skill-backed precision review before READY (pass --review=false to disable)")
 	if err := fs.Parse(args); err != nil {
 		return err
 	}
@@ -680,9 +708,7 @@ func runIssue(args []string) error {
 	if *mutate {
 		agentArgs = append(agentArgs, "--mutate")
 	}
-	if *review {
-		agentArgs = append(agentArgs, "--review")
-	}
+	agentArgs = append(agentArgs, fmt.Sprintf("--review=%t", *review))
 	agentArgs = append(agentArgs, githubflow.BuildIssueObjective(iss))
 	return runAgent(agentArgs)
 }
@@ -959,7 +985,7 @@ func runTicket(args []string) error {
 	maxTurns := fs.Int("max-turns", 24, "maximum agentic turns")
 	keepRecent := fs.Int("keep-recent", 4, "observation masking window")
 	mutate := fs.Bool("mutate", false, "run diff-scoped mutation audit after native checks pass")
-	review := fs.Bool("review", false, "run fresh-context precision review before READY")
+	review := fs.Bool("review", true, "run fresh-context skill-backed precision review before READY (pass --review=false to disable)")
 	allowCmd := fs.Bool("allow-cmd", true, "allow bounded argv run_command inside isolated worktree")
 	writeScope := fs.String("write", "", "comma-separated repo-relative write scope allowlist")
 	sbMode := fs.String("sandbox", "", "execution sandbox override (local|docker|podman)")
@@ -1036,7 +1062,7 @@ func runTicket(args []string) error {
 		Budget:          cost.Budget{MaxUSD: *maxUSD, MaxTurns: *maxTurns},
 	}
 	if *review {
-		loopCfg.ReviewerModel = model
+		loopCfg.AutoReview = true
 	}
 	applyRepoDefaults(&loopCfg, repoCfg, *sbMode, *sbImage)
 	if !*asJSON {
@@ -1352,4 +1378,61 @@ func runSkills(args []string) error {
 	default:
 		return fmt.Errorf("unknown skills subcommand %q (use list, show, or install)", sub)
 	}
+}
+
+func runContext(args []string) error {
+	fs := flag.NewFlagSet("context", flag.ContinueOnError)
+	cwd, _ := os.Getwd()
+	root := fs.String("root", cwd, "repository root")
+	budget := fs.Int("budget", 3500, "approximate token budget (400..24000)")
+	filesCSV := fs.String("files", "", "comma-separated seed file paths to anchor ranking")
+	includeDiff := fs.Bool("diff", false, "include current git diff/untracked files as seeds (auto-enabled when query and --files are empty)")
+	specOnly := fs.Bool("spec-only", false, "emit Javadoc spec cards and call graph instead of full focal bodies")
+	hops := fs.Int("hops", 2, "call-graph hop expansion depth (1..4)")
+	noCache := fs.Bool("no-cache", false, "bypass SHA-256 cached graph")
+	asJSON := fs.Bool("json", false, "output structured ContextPack JSON instead of Markdown")
+	if err := fs.Parse(args); err != nil {
+		return err
+	}
+	absRoot, err := filepath.Abs(*root)
+	if err != nil {
+		return err
+	}
+	query := strings.TrimSpace(strings.Join(fs.Args(), " "))
+	var seeds []string
+	for _, p := range strings.Split(*filesCSV, ",") {
+		if t := strings.TrimSpace(p); t != "" {
+			seeds = append(seeds, t)
+		}
+	}
+	useDiff := *includeDiff || (query == "" && len(seeds) == 0)
+
+	discovered := agentloop.DiscoverSkills(absRoot)
+	hints := make([]contextcompiler.SkillHint, 0, len(discovered))
+	for _, s := range discovered {
+		hints = append(hints, contextcompiler.SkillHint{Name: s.Name, Description: s.Description})
+	}
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
+	defer stop()
+
+	pack, err := contextcompiler.Compile(ctx, absRoot, contextcompiler.Options{
+		Query:        query,
+		SeedFiles:    seeds,
+		BudgetTokens: *budget,
+		MaxHops:      *hops,
+		SpecOnly:     *specOnly,
+		IncludeDiff:  useDiff,
+		UseCache:     !*noCache,
+		Skills:       hints,
+	})
+	if err != nil {
+		return err
+	}
+	if *asJSON {
+		enc := json.NewEncoder(os.Stdout)
+		enc.SetIndent("", "  ")
+		return enc.Encode(pack)
+	}
+	fmt.Print(pack.Markdown())
+	return nil
 }

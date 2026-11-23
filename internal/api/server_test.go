@@ -134,6 +134,15 @@ func TestHTTPAPIServerEndpointsAndAuth(t *testing.T) {
 	if r := authReq(http.MethodGet, "/v1/graph/impact?target=app.go", ""); r.Code != http.StatusOK {
 		t.Fatalf("GET /v1/graph/impact failed: status=%d body=%s", r.Code, r.Body.String())
 	}
+	if r := authReq(http.MethodGet, "/v1/graph/spec?target=app.go", ""); r.Code != http.StatusOK || !strings.Contains(r.Body.String(), "cards") {
+		t.Fatalf("GET /v1/graph/spec failed: status=%d body=%s", r.Code, r.Body.String())
+	}
+	if r := authReq(http.MethodPost, "/v1/context", `{"query":"app.go constant V","budget_tokens":1500,"spec_only":true}`); r.Code != http.StatusOK || !strings.Contains(r.Body.String(), "app.go") {
+		t.Fatalf("POST /v1/context JSON failed: status=%d body=%s", r.Code, r.Body.String())
+	}
+	if r := authReq(http.MethodPost, "/v1/context", `{"query":"app.go","budget_tokens":1500,"format":"markdown"}`); r.Code != http.StatusOK || !strings.Contains(r.Body.String(), "Compiled Context Pack") {
+		t.Fatalf("POST /v1/context markdown failed: status=%d body=%s", r.Code, r.Body.String())
+	}
 	// Steering a non-running episode returns 409 Conflict cleanly.
 	if r := authReq(http.MethodPost, "/v1/episodes/"+epID+"/steer", `{"message":"focus on unit tests"}`); r.Code != http.StatusConflict {
 		t.Fatalf("expected 409 Conflict when steering idle episode, got %d body=%s", r.Code, r.Body.String())
@@ -145,8 +154,8 @@ func TestHTTPAPIServerEndpointsAndAuth(t *testing.T) {
 	}
 	specRec := httptest.NewRecorder()
 	srv.ServeHTTP(specRec, httptest.NewRequest(http.MethodGet, "/v1/openapi.json", nil))
-	if !strings.Contains(specRec.Body.String(), "/v1/webhooks/{provider}") || !strings.Contains(specRec.Body.String(), "/v1/tickets/run") {
-		t.Fatalf("openapi spec missing integration routes")
+	if !strings.Contains(specRec.Body.String(), "/v1/webhooks/{provider}") || !strings.Contains(specRec.Body.String(), "/v1/tickets/run") || !strings.Contains(specRec.Body.String(), "/v1/context") {
+		t.Fatalf("openapi spec missing integration or context routes")
 	}
 
 	// 5. Inbound webhooks fail closed when unconfigured (503).

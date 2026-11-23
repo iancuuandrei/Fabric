@@ -4,7 +4,8 @@
 
 | Package | Exact source | Scope and evidence |
 |---|---|---|
-| [v1.1.0 Windows amd64](https://github.com/iancuuandrei/Fabric/releases/tag/v1.1.0) | `7ac130d4ea682559fb3b72a8ca096a7bdd5a3e9b` | Latest published package; [acceptance with documented cohort limits](https://github.com/iancuuandrei/Fabric/releases/download/v1.1.0/v11-release-acceptance.json) |
+| [v2.0.1 Windows amd64](https://github.com/iancuuandrei/Fabric/releases/tag/v2.0.1) | Tag `v2.0.1` | Latest published v2 package (`fabric_2.0.1_windows_amd64.zip`, `fabric.exe` + `fabric-ri.exe`); unsigned local Windows build with CI Go/Rust verification |
+| [v1.1.0 Windows amd64](https://github.com/iancuuandrei/Fabric/releases/tag/v1.1.0) | `7ac130d4ea682559fb3b72a8ca096a7bdd5a3e9b` | Historical v1 package; [acceptance with documented cohort limits](https://github.com/iancuuandrei/Fabric/releases/download/v1.1.0/v11-release-acceptance.json) |
 | [v1.0.0 Windows amd64](https://github.com/iancuuandrei/Fabric/releases/tag/v1.0.0) | Original immutable release commit | [Recorded installed-task walkthrough](../getting-started/installed-autonomous-task.md) and [acceptance](../evaluation/v1-release-acceptance.md) |
 
 The published v1.1.0 archive is `fabric_1.1.0_windows_amd64.zip`, 40,089,244 bytes,
@@ -144,7 +145,7 @@ pwsh -File scripts/release-verify.ps1 -ReleaseDirectory <release-dir>
 
 The verifier accepts a one-platform or two-platform release, requires
 exact per-archive component identities (`fabric[.exe]`,
-`engorch-ri[.exe]`, unique name and path, hash match), the declared Rust
+`fabric-ri[.exe]`, unique name and path, hash match), the declared Rust
 target, and the artifact filename carrying the exact release version.
 It checks integrity only, and `release_qualified` must remain `false`.
 

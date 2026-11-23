@@ -2,6 +2,41 @@
 
 Fabric integrates cleanly into existing team workflows without ever placing API tokens, passwords, or chat webhook URLs inside `fabric.toml`. Every credential references an environment variable name (`*_env`), external endpoints require HTTPS (or explicit loopback `http://` for local testing), and inbound webhooks fail closed unless a signing secret is present in the environment.
 
+```mermaid
+flowchart TD
+  subgraph TRIG["Inbound Triggers"]
+    direction LR
+    cli["CLI: fabric ticket KEY / URL"]
+    wh["Webhook: POST /v1/webhooks/provider<br/>HMAC-SHA256 Fail-Closed + Label Filter"]
+  end
+
+  subgraph CORE["Isolated Execution"]
+    direction LR
+    fetch["Normalize Ticket<br/>Jira · Linear · GitLab · GitHub"]
+    agent["Worktree Agent + Mutation Audit<br/>+ Multi-Lens Precision Review"]
+    pkt["Structured Review Packet"]
+    fetch --> agent --> pkt
+  end
+
+  subgraph NOTIF["Outbound Outcomes"]
+    direction LR
+    back["Comment & Transition Issue<br/>Jira · Linear · GitLab · GitHub PR"]
+    chat["Alert Channels<br/>Slack · Discord · Teams · Signed Webhook"]
+  end
+
+  cli --> fetch
+  wh --> fetch
+  pkt --> back
+  pkt --> chat
+
+  classDef trigNode fill:#1e293b,stroke:#64748b,color:#f8fafc,stroke-width:1.5px;
+  classDef execNode fill:#0f2e3a,stroke:#0891b2,color:#ecfeff,stroke-width:1.5px;
+  classDef outNode fill:#064e3b,stroke:#10b981,color:#ecfdf5,stroke-width:1.5px;
+  class cli,wh trigNode;
+  class fetch,agent,pkt execNode;
+  class back,chat outNode;
+```
+
 ---
 
 ## 1. Quick Configuration (`fabric.toml`)

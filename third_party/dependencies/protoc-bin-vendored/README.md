@@ -13,4 +13,4 @@ includes; their distinct upstream license is retained in the adjacent
 
 These crates are build dependencies. Retention here covers source or tooling
 packages that include the wrapper or platform payloads; it does not claim that
-the compiler or wrapper is linked into the final `engorch-ri` binary.
+the compiler or wrapper is linked into the final `fabric-ri` binary.

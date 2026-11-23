@@ -22,7 +22,7 @@ attempt IDs cannot be reused; release requires a live reservation and a receipt
 digest rather than silently clamping counters at zero. Missing terminal evidence
 retains capacity. The controller must validate evidence and external authority.
 
-Tests and benchmarks are EngOrch-specific adaptations of the capacity properties.
+Tests and benchmarks are Fabric-specific adaptations of the capacity properties.
 The original donor test suite was not executed because its sibling file dependency
-was unavailable. EngOrch's focused ordinary and race tests passed. Controller
+was unavailable. Fabric's focused ordinary and race tests passed. Controller
 dispatch integration and durable-recovery stress qualification remain outstanding.

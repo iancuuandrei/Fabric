@@ -18,6 +18,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/iancuuandrei/fabric/internal/codegraph"
+	"github.com/iancuuandrei/fabric/internal/contextcompiler"
 	"github.com/iancuuandrei/fabric/internal/diagnostics"
 	"github.com/iancuuandrei/fabric/internal/gitexec"
 	"github.com/iancuuandrei/fabric/internal/sandbox"
@@ -45,6 +46,7 @@ type WorkspaceTools struct {
 	Capabilities      Capabilities
 	Skills            []SkillMetadata
 	OnPreMutate       func(reason string) error
+	OnSkillLoaded     func(name string)
 
 	graphMu sync.Mutex
 	graph   *codegraph.Graph
@@ -122,10 +124,20 @@ func (w *WorkspaceTools) Definitions() []ToolDef {
 		},
 		{
 			Name:        "graph_impact",
-			Description: "Query the local Code Knowledge Graph for multi-hop blast radius (upstream callers, downstream callees/imports, and linked docs) around a file path or symbol name.",
+			Description: "Query the local Code Knowledge Graph for multi-hop blast radius (upstream callers, downstream callees/imports, types, tests, and linked docs) around a file path or symbol name.",
 			Parameters: toolObjSchema([]string{"target"}, map[string]any{
 				"target": propDef("string", "File path or symbol name to trace"),
 				"depth":  propDef("integer", "Hop depth (1..4, default 2)"),
+			}),
+		},
+		{
+			Name:        "compile_context",
+			Description: "Compile a budget-bounded Context Pack combining Javadoc symbol specs, function call graphs, BM25, Personalized PageRank, git co-change, and scoped AGENTS.md/skills without vector embeddings.",
+			Parameters: toolObjSchema([]string{"query"}, map[string]any{
+				"query":         propDef("string", "Task description, symbol, file:line, or error snippet"),
+				"seed_files":    map[string]any{"type": "array", "items": map[string]any{"type": "string"}, "description": "Optional explicit file paths to anchor Personalized PageRank"},
+				"budget_tokens": propDef("integer", "Approximate token budget (400..24000, default 3200)"),
+				"spec_only":     propDef("boolean", "Prefer Javadoc spec cards and call graph instead of full function bodies"),
 			}),
 		},
 		{
@@ -239,6 +251,31 @@ func (w *WorkspaceTools) Execute(ctx context.Context, call ToolCall) ToolResult 
 		res.Output = string(b)
 		return res
 
+	case "compile_context":
+		var a struct {
+			Query        string   `json:"query"`
+			SeedFiles    []string `json:"seed_files"`
+			BudgetTokens int      `json:"budget_tokens"`
+			SpecOnly     bool     `json:"spec_only"`
+		}
+		if err := json.Unmarshal(call.Arguments, &a); err != nil || (strings.TrimSpace(a.Query) == "" && len(a.SeedFiles) == 0) {
+			return errResult(res, errors.New("compile_context requires query or seed_files"))
+		}
+		pack, err := contextcompiler.Compile(ctx, w.Root, contextcompiler.Options{
+			Query:        a.Query,
+			SeedFiles:    a.SeedFiles,
+			BudgetTokens: a.BudgetTokens,
+			SpecOnly:     a.SpecOnly,
+			IncludeDiff:  true,
+			UseCache:     true,
+			Skills:       skillHintsFromMetadata(w.Skills),
+		})
+		if err != nil {
+			return errResult(res, err)
+		}
+		res.Output = fenceUntrustedRepoGuidance("context_pack", pack.Markdown())
+		return res
+
 	case "list_skills":
 		type item struct {
 			Name        string `json:"name"`
@@ -262,6 +299,9 @@ func (w *WorkspaceTools) Execute(ctx context.Context, call ToolCall) ToolResult 
 		body, ok := loadSkillBody(w.Skills, a.Name)
 		if !ok {
 			return errResult(res, fmt.Errorf("skill %q not found; call list_skills to see valid names", a.Name))
+		}
+		if w.OnSkillLoaded != nil {
+			w.OnSkillLoaded(strings.TrimSpace(a.Name))
 		}
 		res.Output = fenceUntrustedRepoGuidance("skill:"+a.Name, body)
 		return res

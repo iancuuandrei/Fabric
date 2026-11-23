@@ -40,7 +40,7 @@ func ReadOnlyCapabilities() Capabilities {
 
 func (c Capabilities) checkToolAllowed(name string) error {
 	switch name {
-	case "repo_map", "graph_impact", "read_file", "list_files", "search_text", "git_diff", "list_skills", "load_skill":
+	case "repo_map", "graph_impact", "compile_context", "read_file", "list_files", "search_text", "git_diff", "list_skills", "load_skill":
 		if !c.AllowRead {
 			return fmt.Errorf("capability denied: read tools disabled for %s", name)
 		}

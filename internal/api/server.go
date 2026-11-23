@@ -23,6 +23,7 @@ import (
 	"github.com/iancuuandrei/fabric/internal/agentloop"
 	"github.com/iancuuandrei/fabric/internal/codegraph"
 	"github.com/iancuuandrei/fabric/internal/config"
+	"github.com/iancuuandrei/fabric/internal/contextcompiler"
 	"github.com/iancuuandrei/fabric/internal/cost"
 	"github.com/iancuuandrei/fabric/internal/integrations"
 	"github.com/iancuuandrei/fabric/internal/mutation"
@@ -158,9 +159,11 @@ func (s *Server) registerRoutes() {
 	s.mux.HandleFunc("GET /v1/openapi.json", s.handleOpenAPI)
 	s.mux.HandleFunc("GET /v1/doctor", s.handleDoctor)
 
-	// Code Knowledge Graph API (Graphify/GitNexus-grade local intelligence).
+	// Code Knowledge Graph & Context Compiler API (zero vector embeddings).
 	s.mux.HandleFunc("GET /v1/graph", s.handleGraph)
 	s.mux.HandleFunc("GET /v1/graph/impact", s.handleGraphImpact)
+	s.mux.HandleFunc("GET /v1/graph/spec", s.handleGraphSpec)
+	s.mux.HandleFunc("POST /v1/context", s.handleCompileContext)
 
 	// Classic replay-validated controller runs.
 	s.mux.HandleFunc("GET /v1/runs", s.handleListRuns)
@@ -222,7 +225,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) handleHealth(w http.ResponseWriter, _ *http.Request) {
-	writeJSON(w, http.StatusOK, map[string]string{"status": "ok", "service": "fabric", "version": "2.0.0-dev"})
+	writeJSON(w, http.StatusOK, map[string]string{"status": "ok", "service": "fabric", "version": "2.0.1"})
 }
 
 func (s *Server) handleOpenAPI(w http.ResponseWriter, _ *http.Request) {
@@ -258,6 +261,71 @@ func (s *Server) handleGraphImpact(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writeJSON(w, http.StatusOK, g.Impact(target, depth))
+}
+
+func (s *Server) handleGraphSpec(w http.ResponseWriter, r *http.Request) {
+	target := strings.TrimSpace(r.URL.Query().Get("target"))
+	if target == "" {
+		writeError(w, http.StatusBadRequest, "target query parameter is required")
+		return
+	}
+	limit, _ := strconv.Atoi(r.URL.Query().Get("limit"))
+	g, err := codegraph.Build(s.client.Root)
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]any{
+		"target": target,
+		"cards":  g.SpecCardsForTarget(target, limit),
+	})
+}
+
+func (s *Server) handleCompileContext(w http.ResponseWriter, r *http.Request) {
+	var body struct {
+		Query        string   `json:"query"`
+		SeedFiles    []string `json:"seed_files"`
+		BudgetTokens int      `json:"budget_tokens"`
+		MaxHops      int      `json:"max_hops"`
+		SpecOnly     bool     `json:"spec_only"`
+		IncludeDiff  bool     `json:"include_diff"`
+		NoCache      bool     `json:"no_cache"`
+		Format       string   `json:"format"`
+	}
+	if err := decodeBody(w, r, &body); err != nil {
+		writeError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	if strings.TrimSpace(body.Query) == "" && len(body.SeedFiles) == 0 && !body.IncludeDiff {
+		writeError(w, http.StatusBadRequest, "query, seed_files, or include_diff is required")
+		return
+	}
+	discovered := agentloop.DiscoverSkills(s.client.Root)
+	hints := make([]contextcompiler.SkillHint, 0, len(discovered))
+	for _, sk := range discovered {
+		hints = append(hints, contextcompiler.SkillHint{Name: sk.Name, Description: sk.Description})
+	}
+	pack, err := contextcompiler.Compile(r.Context(), s.client.Root, contextcompiler.Options{
+		Query:        body.Query,
+		SeedFiles:    body.SeedFiles,
+		BudgetTokens: body.BudgetTokens,
+		MaxHops:      body.MaxHops,
+		SpecOnly:     body.SpecOnly,
+		IncludeDiff:  body.IncludeDiff,
+		UseCache:     !body.NoCache,
+		Skills:       hints,
+	})
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	if strings.EqualFold(body.Format, "markdown") {
+		w.Header().Set("Content-Type", "text/markdown; charset=utf-8")
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(pack.Markdown()))
+		return
+	}
+	writeJSON(w, http.StatusOK, pack)
 }
 
 func (s *Server) handleListRuns(w http.ResponseWriter, r *http.Request) {
@@ -1306,7 +1374,7 @@ const openAPISpec = `{
   "openapi": "3.1.0",
   "info": {
     "title": "Fabric Autonomous Engineering Runtime API",
-    "version": "2.0.0-dev",
+    "version": "2.0.1",
     "description": "Local HTTP/JSON + SSE API, Code Knowledge Graph, and Mission Control backend for orchestrating, inspecting, rewinding, auditing, and applying Fabric runs and agentic episodes."
   },
   "paths": {
@@ -1315,6 +1383,8 @@ const openAPISpec = `{
     "/v1/doctor": {"get": {"summary": "Validate configuration, runtimes, hooks, budget, sandbox, and verification readiness"}},
     "/v1/graph": {"get": {"summary": "Build and return local Code Knowledge Graph (nodes, edges, clusters, PageRank hubs)"}},
     "/v1/graph/impact": {"get": {"summary": "Compute multi-hop blast radius (?target=<symbol|path>&depth=2)"}},
+    "/v1/graph/spec": {"get": {"summary": "Render Javadoc-style SymbolSpec cards for a symbol or file (?target=<symbol|path>)"}},
+    "/v1/context": {"post": {"summary": "Compile a zero-embedding, budget-bounded Context Pack (Javadoc specs + call graph + BM25 + PPR + co-change)"}},
     "/v1/runs": {
       "get": {"summary": "List classic replay-validated runs"},
       "post": {"summary": "Start an autonomous classic run (sync or async)"}

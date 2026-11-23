@@ -5,5 +5,5 @@ The unmodified `scip.proto` is from sourcegraph/scip revision
 The upstream license is retained alongside it. Rust bindings are generated at
 build time using Prost and the Cargo-locked bundled protoc compiler.
 
-EngOrch owns the admission rules around these bindings. Decoding a protobuf
+Fabric owns the admission rules around these bindings. Decoding a protobuf
 does not establish repository identity, producer authenticity or completeness.

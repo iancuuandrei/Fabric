@@ -14,10 +14,10 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"go.yaml.in/yaml/v3"
 	"github.com/iancuuandrei/fabric/internal/canonical"
 	"github.com/iancuuandrei/fabric/internal/repository"
 	"github.com/iancuuandrei/fabric/internal/safepath"
+	"go.yaml.in/yaml/v3"
 )
 
 const maxFiles = 96

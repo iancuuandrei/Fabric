@@ -57,9 +57,9 @@ required checks before `fabric run --autonomous`. Inspect the exact run with
 `fabric checkpoint RUN`. Results remain in an isolated workspace; integration
 requires explicit operator action.
 
-Optional RI/planner intelligence also needs the Rust `engorch-ri` executable
+Optional RI/planner intelligence also needs the Rust `fabric-ri` executable
 and its explicit SHA256 pin. From a source checkout, build it with
-`cargo build --locked --release --bin engorch-ri` using the repository's Rust
+`cargo build --locked --release --bin fabric-ri` using the repository's Rust
 toolchain; native Windows builds need the Visual Studio C++ toolchain. A Windows
 bundle includes both executables. See the [packaging guide](release.md) and
 [RI query examples](engineering-orientation.md) for paths and pinning.

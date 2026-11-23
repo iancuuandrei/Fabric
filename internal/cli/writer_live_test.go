@@ -16,7 +16,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/pelletier/go-toml/v2"
 	"github.com/iancuuandrei/fabric/internal/codexhost"
 	"github.com/iancuuandrei/fabric/internal/codexruntime"
 	"github.com/iancuuandrei/fabric/internal/config"
@@ -25,6 +24,7 @@ import (
 	"github.com/iancuuandrei/fabric/internal/fileeffects"
 	"github.com/iancuuandrei/fabric/internal/journal"
 	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/pelletier/go-toml/v2"
 )
 
 func TestLiveCodexWriterCLI(t *testing.T) {

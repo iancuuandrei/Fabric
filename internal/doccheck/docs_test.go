@@ -85,6 +85,99 @@ func TestDocumentationLinksAndADRs(t *testing.T) {
 	}
 }
 
+func TestMermaidDiagramsHaveSafeIdentifiers(t *testing.T) {
+	r := root(t)
+	reserved := map[string]bool{
+		"end": true, "graph": true, "subgraph": true, "direction": true,
+		"class": true, "classdef": true, "style": true, "linkstyle": true,
+		"click": true, "default": true, "call": true, "href": true,
+		"interpolate": true, "flowchart": true,
+	}
+	classDefRe := regexp.MustCompile(`(?i)^\s*classDef\s+([A-Za-z0-9_-]+)`)
+	subgraphRe := regexp.MustCompile(`(?i)^\s*subgraph\s+([A-Za-z0-9_-]+)`)
+	nodeIDRe := regexp.MustCompile(`(?:^|-->|-->\|[^|]*\||-\.[^.]*\.->|\s)([A-Za-z_][A-Za-z0-9_-]*)(?:[\[\(\{])`)
+
+	err := filepath.WalkDir(r, func(p string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if d.IsDir() {
+			if d.Name() == ".git" || d.Name() == ".local" || d.Name() == "target" || d.Name() == "node_modules" {
+				return filepath.SkipDir
+			}
+			return nil
+		}
+		if filepath.Ext(p) != ".md" {
+			return nil
+		}
+		b, err := os.ReadFile(p)
+		if err != nil {
+			return err
+		}
+		lines := strings.Split(string(b), "\n")
+		inBlock := false
+		startLine := 0
+		var block []string
+		for i, raw := range lines {
+			line := strings.TrimRight(raw, "\r")
+			trimmed := strings.TrimSpace(line)
+			if !inBlock && strings.EqualFold(trimmed, "```mermaid") {
+				inBlock = true
+				startLine = i + 1
+				block = nil
+				continue
+			}
+			if inBlock && trimmed == "```" {
+				inBlock = false
+				nodeIDs := map[string]bool{}
+				classNames := map[string]int{}
+				for j, ml := range block {
+					ln := startLine + j + 1
+					if m := classDefRe.FindStringSubmatch(ml); len(m) == 2 {
+						name := m[1]
+						if reserved[strings.ToLower(name)] {
+							t.Errorf("%s:%d Mermaid classDef uses reserved keyword %q", p, ln, name)
+						}
+						classNames[name] = ln
+					}
+					if m := subgraphRe.FindStringSubmatch(ml); len(m) == 2 {
+						name := m[1]
+						if reserved[strings.ToLower(name)] {
+							t.Errorf("%s:%d Mermaid subgraph uses reserved keyword %q", p, ln, name)
+						}
+					}
+					for _, nm := range nodeIDRe.FindAllStringSubmatch(ml, -1) {
+						id := nm[1]
+						if strings.EqualFold(id, "subgraph") {
+							continue
+						}
+						nodeIDs[id] = true
+						if reserved[strings.ToLower(id)] {
+							t.Errorf("%s:%d Mermaid node ID uses reserved keyword %q", p, ln, id)
+						}
+					}
+				}
+				for name, ln := range classNames {
+					if nodeIDs[name] {
+						t.Errorf("%s:%d Mermaid classDef %q collides with node ID of the same name", p, ln, name)
+					}
+				}
+				continue
+			}
+			if inBlock {
+				block = append(block, line)
+			}
+		}
+		if inBlock {
+			t.Errorf("%s:%d unterminated mermaid code fence", p, startLine)
+		}
+		return nil
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestModelAllocationCodexAccessExampleUsesSupportedAuthMode(t *testing.T) {
 	raw, err := os.ReadFile(filepath.Join(root(t), "docs", "guides", "model-allocation.md"))
 	if err != nil {

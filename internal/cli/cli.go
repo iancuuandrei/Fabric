@@ -133,10 +133,38 @@ var commands = []Command{
 	{"recover-files", "RUN PREVIEW_JSON INTENT_ID ACTOR", "Explicitly approve cleanup and completion of recognized partial writes."},
 }
 
+var v2Commands = []Command{
+	{"agent", "[--resume ID] [--max-usd N] [--max-turns N] [--mutate] [--review=true|false] [--sandbox local|docker|podman] [--notify] OBJECTIVE", "Run or resume an isolated worktree agentic loop with Turn-1 Context Compiler Spec Pack, CapScope capabilities, inline diagnostics, stage-aware skills, and precision review."},
+	{"tournament", "--models M1,M2 [--mutate] OBJECTIVE", "Run parallel isolated contenders across models and select the Pareto-optimal winner."},
+	{"context", "[--spec-only] [--budget N] [--hops N] [--files PATH,...] [--diff] [QUERY]", "Compile a deterministic zero-embedding multi-resolution Context Pack (BM25 + PPR + hops + Git co-change)."},
+	{"graph", "[--spec SYMBOL] [--impact PATH] [--depth N] [--save]", "Build the local Code Knowledge Graph, print Javadoc SymbolSpec cards, and trace multi-hop blast radius."},
+	{"packet", "[RUN_ID] [--json]", "Render the Structured Review Packet (diff churn, blast radius, receipts, skills_used, hygiene_notes, cost)."},
+	{"apply", "[--dry-run] [--branch NAME] [RUN_ID]", "Validate and safely apply a READY episode patch (including untracked files) without dirtying .git/index."},
+	{"rewind", "--list | --to STEP [RUN_ID]", "List or restore automatic pre-edit Git snapshot checkpoints."},
+	{"mutate", "[--max N] -- COMMAND...", "Run a diff-scoped mutation audit on production code in a Git worktree."},
+	{"bench", "--suite PATH [--model MODEL] [--mutate]", "Run a JSONL empirical benchmark suite (Pass@1, mutation kill %, USD cost, cache hit %, churn)."},
+	{"ticket", "[--provider jira|linear|gitlab|github] [--comment] [--transition STATE] [--pr] [--notify] [--fetch-only] KEY_OR_URL", "Fetch a Jira, Linear, GitLab, or GitHub ticket and run an isolated worktree agent."},
+	{"issue", "[--max-usd N] [--mutate] NUMBER", "Fetch a GitHub issue via gh and launch an isolated Fabric agent run."},
+	{"pr", "--branch NAME [RUN_ID]", "Apply a READY episode onto a branch, commit, push, and open a PR with the Review Packet body."},
+	{"review-pr", "NUMBER", "Run Alibaba-style filter-only precision code review on an open GitHub PR diff."},
+	{"serve", "[--addr 127.0.0.1:7420] [--token SECRET] [--cors]", "Launch embedded strict-CSP Mission Control Web UI, HTTP/SSE REST API, OpenAPI 3.1, and signed inbound webhooks."},
+	{"mcp", "[--root PATH]", "Start the 18-tool stdio Model Context Protocol (MCP) server (including fabric_context)."},
+	{"memory", "list | add [--scope SCOPE] TEXT | rm ID", "Manage verified cross-run project lessons under .harness/memory/lessons.jsonl."},
+	{"notify", "[--channel all|slack|discord|teams|webhook] [--ticket KEY] [--pr-url URL] [RUN_ID]", "Dispatch an episode Review Packet to Slack, Discord, Microsoft Teams, or an HMAC-signed webhook."},
+	{"integrations", "", "Inspect configured issue trackers, chat alert channels, and inbound webhook readiness without printing secrets."},
+	{"skills", "list | show NAME | install [--root DIR] [NAME...]", "List, inspect, or install Fabric's 32 built-in embedded SWE skills."},
+	{"watch", "RUN", "Stream live progress for a running classic controller run."},
+	{"clean", "[--dry-run] [--keep N]", "Prune old agent worktrees and temporary branches while preserving Review Packets."},
+}
+
 // Reference returns generated Markdown from the actual command catalogue.
 func Reference() string {
 	var b strings.Builder
-	b.WriteString("# CLI reference\n\nGenerated from `internal/cli`; do not edit by hand.\n\nUse `fabric [--root PATH] COMMAND`; `harness` remains a compatibility executable.\nOutput is canonical JSON except help, aggregated run-snapshot JSON, and `inspect --export-jsonl`.\n\n| Command | Arguments | Behavior |\n| --- | --- | --- |\n")
+	b.WriteString("# CLI reference\n\nGenerated from `internal/cli`; do not edit by hand.\n\nUse `fabric [--root PATH] COMMAND`; `harness` remains a compatibility executable.\nRun `fabric <command> --help` for command-specific flags.\n\n## Production v2 Runtime Commands\n\n| Command | Arguments | Behavior |\n| --- | --- | --- |\n")
+	for _, c := range v2Commands {
+		fmt.Fprintf(&b, "| `%s` | `%s` | %s |\n", markdownTableCell(c.Name), markdownTableCell(c.Arguments), markdownTableCell(c.Summary))
+	}
+	b.WriteString("\n## Classic Controller & Repository Intelligence Commands\n\nOutput is canonical JSON except help, `--human` terminal tables (`status --human`, `doctor --human`), aggregated run-snapshot JSON, and `inspect --export-jsonl`.\n\n| Command | Arguments | Behavior |\n| --- | --- | --- |\n")
 	for _, c := range commands {
 		fmt.Fprintf(&b, "| `%s` | `%s` | %s |\n", markdownTableCell(c.Name), markdownTableCell(c.Arguments), markdownTableCell(c.Summary))
 	}

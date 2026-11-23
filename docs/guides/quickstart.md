@@ -2,10 +2,23 @@
 
 Get Fabric running on any committed Git repository in five steps.
 
+```mermaid
+flowchart LR
+  s1["1 · Init<br/>fabric init --auto"] --> s2["2 · Verify<br/>fabric doctor --human"]
+  s2 --> s3["3 · Run Agent<br/>fabric agent --max-usd 1.50 --mutate"]
+  s3 --> s4["4 · Inspect / Rewind<br/>fabric packet · rewind"]
+  s4 --> s5["5 · Apply & Monitor<br/>fabric apply --branch · serve"]
+
+  classDef step fill:#0f2e3a,stroke:#0891b2,color:#ecfeff,stroke-width:1.5px;
+  classDef done fill:#064e3b,stroke:#10b981,color:#ecfdf5,stroke-width:1.5px;
+  class s1,s2,s3,s4 step;
+  class s5 done;
+```
+
 ## 1. Prerequisites
 
 - **Git** (2.35+)
-- **Go 1.27+** (`D:\Tools\go1.27.4\go\bin\go.exe` or `go` on `PATH`)
+- **Go 1.27+** (`go` on `PATH`)
 - At least one model runtime:
   - **Claude Code CLI** (`claude`), OR
   - **API Key** (`ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, OpenRouter, or local Ollama/vLLM), OR
@@ -71,4 +84,4 @@ fabric serve --addr 127.0.0.1:7420
 # Open http://127.0.0.1:7420/ in your browser
 ```
 
-Next: read the [Production Agent Runtime Guide](production-agent-runtime.md) or [API, Mission Control & MCP Guide](api-and-mcp.md).
+Next: read the [Production Agent Runtime Guide](production-agent-runtime.md), [Context Compiler & Spec Graph Guide](context-and-codegraph.md), or [API, Mission Control & MCP Guide](api-and-mcp.md).

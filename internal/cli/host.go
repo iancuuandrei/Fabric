@@ -162,11 +162,11 @@ func doctorExternalRuntimes(cfg config.Config) map[string]any {
 			status = "API_KEY_MISSING"
 		}
 		out["direct-api"] = map[string]any{
-			"dialect":        cfg.DirectAPI.Dialect,
-			"base_url":       baseURL,
-			"api_key_env":    keyEnv,
+			"dialect":         cfg.DirectAPI.Dialect,
+			"base_url":        baseURL,
+			"api_key_env":     keyEnv,
 			"api_key_present": hasKey,
-			"status":         status,
+			"status":          status,
 		}
 	}
 	return out

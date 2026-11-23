@@ -42,6 +42,8 @@ type ReviewPacket struct {
 	MutationScore    *float64                        `json:"mutation_score,omitempty"`
 	ReviewVerdict    string                          `json:"review_verdict,omitempty"`
 	ReviewNotes      string                          `json:"review_notes,omitempty"`
+	SkillsUsed       []agentloop.SkillActivation     `json:"skills_used,omitempty"`
+	HygieneNotes     []string                        `json:"hygiene_notes,omitempty"`
 	TokensTotal      int64                           `json:"tokens_total"`
 	CachedTokens     int64                           `json:"cached_tokens"`
 	MaskedBytesSaved int64                           `json:"masked_bytes_saved"`
@@ -63,6 +65,8 @@ func FromEpisode(ep agentloop.Episode) ReviewPacket {
 		Verification:     ep.Verification,
 		ReviewVerdict:    ep.ReviewVerdict,
 		ReviewNotes:      ep.ReviewNotes,
+		SkillsUsed:       ep.SkillsUsed,
+		HygieneNotes:     ep.HygieneNotes,
 		TokensTotal:      ep.Usage.TotalTokens(),
 		CachedTokens:     ep.Usage.CachedTokens,
 		MaskedBytesSaved: ep.MaskedBytesSaved,
@@ -129,6 +133,20 @@ func (p ReviewPacket) Markdown() string {
 	}
 	if p.ReviewVerdict != "" {
 		fmt.Fprintf(&b, "### Independent Review\n- **Verdict:** `%s`\n- **Notes:** %s\n\n", p.ReviewVerdict, strings.TrimSpace(p.ReviewNotes))
+	}
+	if len(p.SkillsUsed) > 0 || len(p.HygieneNotes) > 0 {
+		b.WriteString("### Workflow Skills & Hygiene\n")
+		if len(p.SkillsUsed) > 0 {
+			items := make([]string, 0, len(p.SkillsUsed))
+			for _, s := range p.SkillsUsed {
+				items = append(items, fmt.Sprintf("`%s` (%s/%s)", s.Skill, s.Stage, s.Reason))
+			}
+			fmt.Fprintf(&b, "- **Activated skills:** %s\n", strings.Join(items, ", "))
+		}
+		for _, hn := range p.HygieneNotes {
+			fmt.Fprintf(&b, "- **Hygiene check:** %s\n", hn)
+		}
+		b.WriteByte('\n')
 	}
 
 	fmt.Fprintf(&b, "### Economics & Efficiency\n- **Model:** `%s`\n- **Tokens:** %d total (%d cached) · **Observation masking saved:** %d bytes\n- **Estimated Cost:** `$%.4f` · **Duration:** `%.1fs`\n",

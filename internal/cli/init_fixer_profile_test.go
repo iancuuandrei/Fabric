@@ -11,12 +11,12 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/pelletier/go-toml/v2"
 	"github.com/iancuuandrei/fabric/internal/access"
 	"github.com/iancuuandrei/fabric/internal/canonical"
 	"github.com/iancuuandrei/fabric/internal/config"
 	"github.com/iancuuandrei/fabric/internal/runtime"
 	"github.com/iancuuandrei/fabric/internal/writercontract"
+	"github.com/pelletier/go-toml/v2"
 )
 
 func TestCodexInitAddsOnlyExplicitIndependentFixerRoute(t *testing.T) {

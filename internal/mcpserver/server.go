@@ -13,6 +13,7 @@ import (
 
 	"github.com/iancuuandrei/fabric/internal/agentloop"
 	"github.com/iancuuandrei/fabric/internal/codegraph"
+	"github.com/iancuuandrei/fabric/internal/contextcompiler"
 	"github.com/iancuuandrei/fabric/internal/integrations"
 	"github.com/iancuuandrei/fabric/internal/memory"
 	"github.com/iancuuandrei/fabric/internal/mutation"
@@ -225,6 +226,22 @@ var tools = []toolSpec{
 			},
 		},
 	},
+	{
+		Name:        "fabric_context",
+		Description: "Compile a zero-embedding, budget-bounded Context Pack (Javadoc specs, function call graph, BM25, Personalized PageRank, git co-change, and scoped AGENTS.md/skills).",
+		InputSchema: map[string]any{
+			"type":     "object",
+			"required": []string{"query"},
+			"properties": map[string]any{
+				"query":         map[string]any{"type": "string", "description": "Task objective, symbol, file:line, or error message"},
+				"seed_files":    map[string]any{"type": "array", "items": map[string]any{"type": "string"}},
+				"budget_tokens": map[string]any{"type": "integer", "description": "Approximate token budget (400..24000, default 3200)"},
+				"include_diff":  map[string]any{"type": "boolean"},
+				"spec_only":     map[string]any{"type": "boolean"},
+				"format":        map[string]any{"type": "string", "enum": []string{"markdown", "json"}},
+			},
+		},
+	},
 }
 
 // ServeStdio serves MCP JSON-RPC 2.0 requests over in/out until EOF or context cancellation.
@@ -265,7 +282,7 @@ func dispatch(ctx context.Context, client *fabric.Client, req rpcRequest) map[st
 			"id":      req.ID,
 			"result": map[string]any{
 				"protocolVersion": "2024-11-05",
-				"serverInfo":      map[string]string{"name": "fabric", "version": "2.0.0-dev"},
+				"serverInfo":      map[string]string{"name": "fabric", "version": "2.0.1"},
 				"capabilities":    map[string]any{"tools": map[string]any{}},
 			},
 		}
@@ -601,6 +618,40 @@ func invokeTool(ctx context.Context, client *fabric.Client, name string, args js
 		res := integrations.NotifyAll(ctx, notifyCfg, packet.NotificationFromEpisode(ep, p.TicketKey, "", p.PRURL), p.Channel, nil)
 		b, err := json.Marshal(res)
 		return toolOutput{rawJSON: b}, err
+	case "fabric_context":
+		var p struct {
+			Query        string   `json:"query"`
+			SeedFiles    []string `json:"seed_files"`
+			BudgetTokens int      `json:"budget_tokens"`
+			IncludeDiff  bool     `json:"include_diff"`
+			SpecOnly     bool     `json:"spec_only"`
+			Format       string   `json:"format"`
+		}
+		if err := json.Unmarshal(args, &p); err != nil || (p.Query == "" && len(p.SeedFiles) == 0 && !p.IncludeDiff) {
+			return toolOutput{}, fmt.Errorf("query, seed_files, or include_diff is required")
+		}
+		discovered := agentloop.DiscoverSkills(client.Root)
+		hints := make([]contextcompiler.SkillHint, 0, len(discovered))
+		for _, sk := range discovered {
+			hints = append(hints, contextcompiler.SkillHint{Name: sk.Name, Description: sk.Description})
+		}
+		pack, err := contextcompiler.Compile(ctx, client.Root, contextcompiler.Options{
+			Query:        p.Query,
+			SeedFiles:    p.SeedFiles,
+			BudgetTokens: p.BudgetTokens,
+			IncludeDiff:  p.IncludeDiff,
+			SpecOnly:     p.SpecOnly,
+			UseCache:     true,
+			Skills:       hints,
+		})
+		if err != nil {
+			return toolOutput{}, err
+		}
+		if p.Format == "json" {
+			b, err := json.Marshal(pack)
+			return toolOutput{rawJSON: b}, err
+		}
+		return toolOutput{text: pack.Markdown()}, nil
 	default:
 		return toolOutput{}, fmt.Errorf("unknown tool: %s", name)
 	}

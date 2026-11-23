@@ -274,7 +274,7 @@ func runACPSession(ctx context.Context, cfg Config, inv runtime.Invocation) (str
 	// 1. initialize
 	if _, err := call(1, "initialize", map[string]any{
 		"protocolVersion": 1,
-		"clientInfo":      map[string]string{"name": "fabric", "version": "2.0.0"},
+		"clientInfo":      map[string]string{"name": "fabric", "version": "2.0.1"},
 		"clientCapabilities": map[string]any{
 			"fs":       map[string]bool{"readTextFile": false, "writeTextFile": false},
 			"terminal": false,

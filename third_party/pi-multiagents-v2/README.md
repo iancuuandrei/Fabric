@@ -1,6 +1,6 @@
 # pi-multiagents-v2 adaptation provenance
 
-EngOrch's `internal/agenttree` package adapts bounded topology, path
+Fabric's `internal/agenttree` package adapts bounded topology, path
 reservation, lifecycle, and mailbox mechanisms from
 `YoungseokCh/pi-multiagents-v2` at revision
 `fb056dd9ea65f32ee8e8da7b57e457d93bdd6ccd`.
@@ -19,6 +19,6 @@ in-memory TypeScript session state with bounded, replay-validated Go journal
 events; assigns opaque content identities separately from display paths; uses
 two-phase durable child reservation; binds immutable context digests and access
 authority; and records monotonic digest-only mailbox envelopes. Runtime and
-capacity ownership remain in EngOrch's controller and TaskPool.
+capacity ownership remain in Fabric's controller and TaskPool.
 
 The upstream MIT license is retained byte-for-byte in `LICENSE`.

@@ -6,7 +6,9 @@ resolver = "3"
 edition = "2024"
 rust-version = "1.94"
 license = "Apache-2.0"
-version = "0.1.0"
+version = "2.0.1"
+repository = "https://github.com/iancuuandrei/Fabric"
+homepage = "https://github.com/iancuuandrei/Fabric"
 
 [workspace.lints.rust]
 unsafe_code = "forbid"

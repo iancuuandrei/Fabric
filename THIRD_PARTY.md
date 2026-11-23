@@ -1,28 +1,28 @@
 # Third-party inventory
 
 This inventory records the dependency baseline and subsequent source adaptations.
-The Go module graph and lockfile hashes were refreshed after SQLite, JSON Schema,
-GitHub client and OpenTelemetry integration on 2026-09-08. The complete resolved
-Go graph is recorded in [the generated inventory](docs/provenance/go-module-license-inventory.md).
+The Go module graph, `Cargo.lock` (`fabric-ri` v2.0.1), and `NOTICE` hashes were
+refreshed on 2026-11-23. The complete resolved Go graph (113 modules) is recorded
+in [the generated inventory](docs/provenance/go-module-license-inventory.md).
 This includes upstream test/optional dependencies and is not a binary linkage claim.
 It is not a final-tree release inventory.
 It is evidence for review, not legal advice or a release-compliance conclusion.
 `Cargo.lock` and `go.sum` remain the machine-readable authorities for resolved
 package identities and checksums.
 
-Dependency inventory inputs inspected on 2026-09-07; NOTICE and the OpenCode and
-Vercel AI adaptation entries refreshed on 2026-09-08:
+Dependency inventory inputs verified on 2026-11-23:
 
 | Input | SHA-256 |
 | --- | --- |
-| `Cargo.lock` | `ca6d82a017e5e1f16ae4f2452e5c0238c1828b5f18fa669e1eac45dbf84986ae` |
-| `go.mod` | `c84395ca3e4d7b0ba8af7b8d40cb7d90b49ba401530e7a1aa3ec372a31708a6b` |
+| `Cargo.lock` | `d416992791d2c919ff1e28be11ab6037e7a5c43497aa7cc8a296e916e438f71d` |
+| `go.mod` | `914b8bbf78386bd1664822883a3eccea658ff3f0fc625efdfa91ee8d93a44d2c` |
 | `go.sum` | `4febf638ca14a977d88904bfd626b805c5978aa6672f3f10307840b2a089b3eb` |
-| `NOTICE` | `a915fd15057e102f1cb1c5f7a82276b7b0afda66dd5bdb16c703e7d901081edd` |
+| `NOTICE` | `ca8477d3df8d175103b661d7be4eb76f853b7b55a50033983984ea3e14494b76` |
 
 The Rust inventory was derived with `cargo metadata --locked --format-version 1`.
-It contains 104 external packages in the resolved graph. “Normal closure” means
-reachable through a normal dependency edge from `engorch-ri`; it can include
+It contains 105 external packages in the resolved graph (73 normal closure + 32
+build/test-only closure). “Normal closure” means
+reachable through a normal dependency edge from `fabric-ri`; it can include
 proc macros and target-specific packages needed to build, and does not prove that
 every package contributes bytes to every final binary. “Build/test-only closure”
 means there is no normal-dependency path; `tempfile` is also the one direct dev
@@ -42,23 +42,29 @@ cross-target inventory is broader than one Windows binary.
 | SCIP schema | `third_party/scip/scip.proto` is an unmodified source-vendored file from `sourcegraph/scip` revision `1c2b6db7e560d5233c944f36e4ac1377cc6963fc`. Rust bindings are generated at build time and are not committed. Declared Apache-2.0. | Schema SHA-256 `b38021b65ef90cbbf6af9c829ff75192859ad9b5da05439ef154bea4ceb2bf03`; license SHA-256 `c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4`; both byte-equal to retained inspected upstream files. See `third_party/scip/README.md`. |
 | tgrep-core | Linked as a Cargo Git dependency, not source-vendored or modified, from `microsoft/tgrep` revision `e2007b52d2b8fe4176159d0da20c9ba4a46d5aab`, package `tgrep-core 1.0.4`. Declared MIT. | `third_party/tgrep/LICENSE` SHA-256 `5baa259ffd1a975780869d7d2925212224c92206cefb96fb2bf0b146650e5029`, byte-equal to the pinned Cargo checkout root license. |
 
-The other projects discussed in `docs/research/oss-mechanisms.md` are research
-inputs only. No source or prose from those donors is identified as copied or
-adapted into this repository.
+The other projects discussed in `docs/research/oss-mechanisms.md` and
+`docs/research/harness-best-practices-2026.md` are research inputs only. No
+source or prose from those donors is identified as copied or adapted into this
+repository outside the entries recorded above.
 
-## Go module dependency
+## Go direct dependencies
 
-The table below retains the original TOML dependency evidence. Added direct
-dependencies and all 113 modules in the resolved graph have version, archive sum
-and license hashes in the generated inventory linked above. Unmodified direct
-notices for go-github, jsonschema and modernc SQLite are additionally retained in
-`third_party/dependencies/`. The collector now labels Go records as the resolved
-module graph rather than incorrectly treating every module as a normal binary
-dependency. Full release packaging remains unqualified.
+All 113 modules in the resolved Go module graph have version, archive sum, and
+license hashes in [the generated inventory](docs/provenance/go-module-license-inventory.md).
+Unmodified direct notices for `go-toml/v2`, `go-github`, `jsonschema`, and
+`modernc.org/sqlite` are additionally retained in `third_party/dependencies/`.
+The collector labels Go records as the resolved module graph rather than
+treating every module as a normal binary dependency.
 
-| Use | Module | Version and source identity | Declared license evidence |
+| Use | Module | Version and archive sum | Declared license evidence |
 | --- | --- | --- | --- |
-| Normal dependency; compiled into `engorch` where referenced | `github.com/pelletier/go-toml/v2` | `v2.4.3`; module sum `h1:GTRvJQutkOSftxIFD5xw9aepkYNuPWmVJpffdDPYVpY=`; go.mod sum `h1:2gIqNv+qfxSVS7cM2xJQKtLSTLUE9V8t9Stt+h56mCY=` | MIT; `third_party/dependencies/go-toml-v2/LICENSE` is byte-equal to the resolved module's primary license, SHA-256 `26844e4b53c5adec04e557fd7dfef281cc0205a7d355626b1c68b778b99e9e7b`. |
+| Normal dependency; compiled into `fabric` where referenced | `github.com/pelletier/go-toml/v2` | `v2.4.3`; `h1:GTRvJQutkOSftxIFD5xw9aepkYNuPWmVJpffdDPYVpY=` | MIT; `third_party/dependencies/go-toml-v2/LICENSE` SHA-256 `26844e4b53c5adec04e557fd7dfef281cc0205a7d355626b1c68b778b99e9e7b`. |
+| Normal dependency; GitHub draft-PR/API client | `github.com/google/go-github/v89` | `v89.0.0`; `h1:35bEK5XoEcF3PZrlVbl9XN63f5BcJRA/UGkxeC9xPg0=` | BSD-3-Clause; retained in `third_party/dependencies/go-github-v89/`. |
+| Normal dependency; JSON Schema validation | `github.com/santhosh-tekuri/jsonschema/v6` | `v6.0.3`; `h1:1EYB5IzjZawrrnELUi78f9fPu57HuXjmddZPjrls/28=` | Apache-2.0; retained in `third_party/dependencies/jsonschema-v6/`. |
+| Normal dependency; OpenTelemetry tracing (`otel`, `sdk`, `trace`, `otlptracehttp`) | `go.opentelemetry.io/otel` | `v1.46.0`; `h1:FHt5/CDyVxi/8IM1CH7VE/rRgq3kLHa2mSTVMO8AWyc=` | Apache-2.0; recorded in `docs/provenance/go-module-license-inventory.md`. |
+| Normal dependency; YAML frontmatter parsing | `go.yaml.in/yaml/v3` | `v3.0.5`; `h1:N6y/pJk8buWs9NY5ERU2HSMfm+IuD/OtfdAnq6kESPw=` | MIT and Apache-2.0; recorded in `docs/provenance/go-module-license-inventory.md`. |
+| Normal dependency; Go module/version parsing | `golang.org/x/mod` | `v0.38.0`; `h1:MECBjubtXD7yj4HrhIUcywNaGeNVUdfVnxmPajOk4yk=` | BSD-3-Clause; recorded in `docs/provenance/go-module-license-inventory.md`. |
+| Normal dependency; durable SQLite run journal | `modernc.org/sqlite` | `v1.58.0`; `h1:38u40/bwkfM7f0Myhosl+SEMltSDxnGdQf8o6Kjmys0=` | BSD-3-Clause (plus bundled SQLite and sqlite-vec notices); retained in `third_party/dependencies/modernc-sqlite/`. |
 
 ## Rust normal dependency closure
 
@@ -143,9 +149,11 @@ not reduced to a project-selected license.
 | `zmij` | 1.0.23 | `MIT` | crates.io |
 
 The direct normal declarations in `crates/ri/Cargo.toml` are `prost`, `regex`,
-`serde`, `serde_json`, `sha1`, `sha2`, `tgrep-core`, `tree-sitter`, and
-`tree-sitter-rust`. Versions above are resolved versions, so, for example, the
-`sha1 = "0.10.6"` requirement resolves to 0.10.7.
+`serde`, `serde_json`, `sha1`, `sha2`, `tgrep-core`, `tree-sitter`,
+`tree-sitter-go`, and `tree-sitter-rust`. Versions above are resolved versions,
+so, for example, the `sha1 = "0.10.6"` requirement resolves to 0.10.7. Full MIT
+license text for `tree-sitter-go 0.25.0` is retained in
+`third_party/dependencies/tree-sitter-go/LICENSE`.
 
 ## Rust build/test-only closure
 
@@ -193,12 +201,12 @@ build closure.
 | Material | Exact provenance and retained evidence | Distribution scope |
 | --- | --- | --- |
 | `r-efi 6.0.0` | The crates.io package records upstream commit `7e1b0322d31d625f81a5656096330934f9cd835d`. `third_party/dependencies/r-efi/AUTHORS` is byte-equal to that commit, SHA-256 `d027e91dbc9cdbb2f1190068e498bd6b61cff022b6a032b191021ba658d96111`. It is the revision's primary licensing and copyright file; the revision contains no standalone `LICENSE`, `NOTICE`, or `COPYING` files. | Target-specific resolved build/test closure. Retention supports distributions that include this crate; it does not prove contribution to a particular binary. |
-| `protoc-bin-vendored 3.2.0` | The wrapper package records upstream commit `895c0433c3727a552970ce961e398e20e52d6353`. `third_party/dependencies/protoc-bin-vendored/LICENSE.txt` is byte-equal to that commit, SHA-256 `97647e63047ef75a82ee2928b335df94f45c87e08777dc033393c73294f3a57a`. | Build-tool wrapper and platform package source/tooling distributions. No claim that the wrapper is linked into `engorch-ri`. |
-| Google Protocol Buffers compiler v31.1 payload | The platform crates record `v31.1`. The annotated upstream tag resolves to commit `74211c0dfc2777318ab53c2cd2c317a2ef9012de`. `third_party/dependencies/protobuf-v31.1/LICENSE` is byte-equal to that commit, SHA-256 `6e5e117324afd944dcf67f36cf329843bc1a92229a8cd9bb573d7a83130fea7d`; that upstream tree has no root `NOTICE`. | Google-built compiler binaries and `.proto` includes embedded in the platform crates. No claim that these build-time files are linked into `engorch-ri`. |
+| `protoc-bin-vendored 3.2.0` | The wrapper package records upstream commit `895c0433c3727a552970ce961e398e20e52d6353`. `third_party/dependencies/protoc-bin-vendored/LICENSE.txt` is byte-equal to that commit, SHA-256 `97647e63047ef75a82ee2928b335df94f45c87e08777dc033393c73294f3a57a`. | Build-tool wrapper and platform package source/tooling distributions. No claim that the wrapper is linked into `fabric-ri`. |
+| Google Protocol Buffers compiler v31.1 payload | The platform crates record `v31.1`. The annotated upstream tag resolves to commit `74211c0dfc2777318ab53c2cd2c317a2ef9012de`. `third_party/dependencies/protobuf-v31.1/LICENSE` is byte-equal to that commit, SHA-256 `6e5e117324afd944dcf67f36cf329843bc1a92229a8cd9bb573d7a83130fea7d`; that upstream tree has no root `NOTICE`. | Google-built compiler binaries and `.proto` includes embedded in the platform crates. No claim that these build-time files are linked into `fabric-ri`. |
 
 ## Evidence limits and concrete gaps
 
-- Local primary package directories were inspected for all 104 external Rust
+- Local primary package directories were inspected for all 105 external Rust
   packages. Every package exposes a license expression, but local license text
   files were absent for `protoc-bin-vendored 3.2.0`, its eight platform packages,
   `r-efi 6.0.0`, and the `tgrep-core` package subdirectory. The exact upstream

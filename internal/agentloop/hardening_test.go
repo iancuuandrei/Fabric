@@ -12,6 +12,7 @@ import (
 	"sync/atomic"
 	"testing"
 
+	"github.com/iancuuandrei/fabric/internal/config"
 	"github.com/iancuuandrei/fabric/internal/cost"
 	"github.com/iancuuandrei/fabric/internal/sandbox"
 )
@@ -153,6 +154,10 @@ func TestUntrackedFilesBinarySearchAndGraphTools(t *testing.T) {
 	imp := wt.Execute(context.Background(), ToolCall{ID: "g2", Name: "graph_impact", Arguments: json.RawMessage(`{"target":"AlphaHelper","depth":2}`)})
 	if imp.IsError || !strings.Contains(imp.Output, "caller.go") {
 		t.Fatalf("expected caller.go in graph_impact for AlphaHelper, got: %s", imp.Output)
+	}
+	cc := wt.Execute(context.Background(), ToolCall{ID: "g3", Name: "compile_context", Arguments: json.RawMessage(`{"query":"AlphaHelper","budget_tokens":1500,"spec_only":true}`)})
+	if cc.IsError || !strings.Contains(cc.Output, "AlphaHelper") {
+		t.Fatalf("expected AlphaHelper in compile_context output, got: err=%v out=%s", cc.IsError, cc.Output)
 	}
 
 	// delete_file safely deletes caller.go.
@@ -354,5 +359,85 @@ func TestEmbeddedSkillsFallbackAndInstall(t *testing.T) {
 	}
 	if _, _, err := InstallBuiltinSkills(emptyRepo, []string{"nonexistent-skill-xyz"}, false); err == nil {
 		t.Fatal("expected unknown skill name rejected")
+	}
+}
+
+func TestWorkflowNativeSkillsRepairAndAutoReview(t *testing.T) {
+	dir := t.TempDir()
+	runGit := func(args ...string) {
+		t.Helper()
+		if out, err := exec.Command("git", append([]string{"-C", dir}, args...)...).CombinedOutput(); err != nil {
+			t.Fatalf("git %v: %v: %s", args, err, out)
+		}
+	}
+	runGit("init", "-q")
+	_ = os.WriteFile(filepath.Join(dir, "service.go"), []byte("package svc\nfunc Guard() bool { return true }\n"), 0o600)
+	runGit("add", ".")
+	runGit("-c", "user.name=T", "-c", "user.email=t@e.invalid", "-c", "commit.gpgsign=false", "commit", "-qm", "init")
+
+	mdl := &seqModel{
+		name: "claude-sonnet-4-5",
+		responses: []ModelResponse{
+			// Turn 1: modify service.go without PASSED_GATE -> triggers verify fail & repair skill.
+			{ToolCalls: []ToolCall{{
+				ID:        "e1",
+				Name:      "write_file",
+				Arguments: json.RawMessage(`{"path":"service.go","content":"package svc\nimport \"sync\"\nvar mu sync.Mutex\nfunc Guard() bool { mu.Lock(); defer mu.Unlock(); return true }\n"}`),
+			}}, Usage: cost.Usage{InputTokens: 120, OutputTokens: 30}},
+			// Turn 2: finish -> fails gate check.
+			{Text: "added mutex guard", Usage: cost.Usage{InputTokens: 100, OutputTokens: 20}},
+			// Turn 3: repair after failed gate -> add PASSED_GATE marker.
+			{ToolCalls: []ToolCall{{
+				ID:        "e2",
+				Name:      "edit_file",
+				Arguments: json.RawMessage(`{"path":"service.go","old_string":"return true","new_string":"// PASSED_GATE\n\treturn true"}`),
+			}}, Usage: cost.Usage{InputTokens: 120, OutputTokens: 30}},
+			// Turn 4: finish -> passes gate -> AutoReview #1 runs.
+			{Text: "gate fixed", Usage: cost.Usage{InputTokens: 100, OutputTokens: 20}},
+			// AutoReview #1 (using same model): requests test coverage.
+			{Text: `{"verdict":"changes_requested","notes":"missing unit test for Guard"}`, Usage: cost.Usage{InputTokens: 150, OutputTokens: 25}},
+			// Turn 5: add unit test file.
+			{ToolCalls: []ToolCall{{
+				ID:        "w3",
+				Name:      "write_file",
+				Arguments: json.RawMessage(`{"path":"service_test.go","content":"package svc\nimport \"testing\"\nfunc TestGuard(t *testing.T) { if !Guard() { t.Fatal(\"fail\") } }\n"}`),
+			}}, Usage: cost.Usage{InputTokens: 120, OutputTokens: 30}},
+			// Turn 6: finish -> passes gate -> AutoReview #2 runs.
+			{Text: "added unit test", Usage: cost.Usage{InputTokens: 100, OutputTokens: 20}},
+			// AutoReview #2: approves.
+			{Text: `{"verdict":"approve","notes":"clean mutex guard and test coverage"}`, Usage: cost.Usage{InputTokens: 150, OutputTokens: 25}},
+		},
+	}
+
+	ep, err := Run(context.Background(), Config{
+		RepoRoot:     dir,
+		Objective:    "Fix race condition in Guard with mutex and tests",
+		Model:        mdl,
+		AutoReview:   true,
+		MaxTurns:     10,
+		Verification: []config.Check{{Name: "gate", Argv: []string{"git", "grep", "-q", "PASSED_GATE", "service.go"}, TimeoutSeconds: 10}},
+	})
+	if err != nil {
+		t.Fatalf("Run error: %v", err)
+	}
+	if ep.Status != "READY" || ep.ReviewVerdict != "approve" {
+		t.Fatalf("expected READY + approve, got status=%s verdict=%q reason=%s", ep.Status, ep.ReviewVerdict, ep.Reason)
+	}
+
+	stages := map[string]bool{}
+	skills := map[string]bool{}
+	for _, act := range ep.SkillsUsed {
+		stages[act.Stage] = true
+		skills[act.Skill] = true
+	}
+	for _, wantStage := range []string{"discover", "repair", "verify", "review"} {
+		if !stages[wantStage] {
+			t.Fatalf("expected stage %q in SkillsUsed, got %+v", wantStage, ep.SkillsUsed)
+		}
+	}
+	for _, wantSkill := range []string{"repair", "verification-before-completion", "code-review", "code-hygiene", "concurrency-resource-safety"} {
+		if !skills[wantSkill] {
+			t.Fatalf("expected skill %q activated natively, got %+v", wantSkill, ep.SkillsUsed)
+		}
 	}
 }

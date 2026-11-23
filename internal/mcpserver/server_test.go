@@ -34,6 +34,7 @@ func TestMCPStdioInitializeAndToolsList(t *testing.T) {
 		`{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}`,
 		`{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"fabric_status","arguments":{}}}`,
 		`{"jsonrpc":"2.0","id":4,"method":"tools/call","params":{"name":"fabric_episodes","arguments":{}}}`,
+		`{"jsonrpc":"2.0","id":5,"method":"tools/call","params":{"name":"fabric_context","arguments":{"query":"fabric","budget_tokens":1200,"spec_only":true}}}`,
 	}, "\n") + "\n"
 
 	var out bytes.Buffer
@@ -41,15 +42,18 @@ func TestMCPStdioInitializeAndToolsList(t *testing.T) {
 		t.Fatalf("ServeStdio failed: %v", err)
 	}
 	lines := strings.Split(strings.TrimSpace(out.String()), "\n")
-	if len(lines) != 4 {
-		t.Fatalf("expected 4 JSON-RPC responses, got %d:\n%s", len(lines), out.String())
+	if len(lines) != 5 {
+		t.Fatalf("expected 5 JSON-RPC responses, got %d:\n%s", len(lines), out.String())
 	}
 	var listResp struct {
 		Result struct {
 			Tools []toolSpec `json:"tools"`
 		} `json:"result"`
 	}
-	if err := json.Unmarshal([]byte(lines[1]), &listResp); err != nil || len(listResp.Result.Tools) < 17 {
+	if err := json.Unmarshal([]byte(lines[1]), &listResp); err != nil || len(listResp.Result.Tools) < 18 {
 		t.Fatalf("unexpected tools/list response (%d tools): %s", len(listResp.Result.Tools), lines[1])
+	}
+	if !strings.Contains(lines[4], "Compiled Context Pack") {
+		t.Fatalf("expected Compiled Context Pack from fabric_context tool call, got: %s", lines[4])
 	}
 }

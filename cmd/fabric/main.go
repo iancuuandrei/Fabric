@@ -67,6 +67,12 @@ func main() {
 			os.Exit(1)
 		}
 		return
+	case "context":
+		if err := runContext(os.Args[2:]); err != nil {
+			fmt.Fprintln(os.Stderr, "fabric context:", err)
+			os.Exit(1)
+		}
+		return
 	case "clean":
 		if err := runClean(os.Args[2:]); err != nil {
 			fmt.Fprintln(os.Stderr, "fabric clean:", err)
@@ -173,7 +179,8 @@ Inspect & Ship:
   apply       Safely validate (--dry-run) and apply a READY episode patch onto a branch
   rewind      List or restore lightweight Git worktree checkpoints (--list | --to STEP)
   watch       Stream live progress for a running classic controller run
-  graph       Build local Code Knowledge Graph and trace multi-hop blast radius (--impact)
+  graph       Build local Code Knowledge Graph, print Javadoc specs (--spec), and trace impact (--impact)
+  context     Compile a budget-bounded Javadoc Spec + Call-Graph Context Pack (zero embeddings)
   issue       Fetch a GitHub issue (via gh) and launch an isolated Fabric agent run
   ticket      Run an isolated agent from Jira, Linear, GitLab, or GitHub (--comment | --transition | --pr)
   pr          Apply a READY episode onto a branch, commit, and open a PR with its Review Packet
@@ -181,7 +188,7 @@ Inspect & Ship:
 
 Server, Team Integrations & Memory:
   serve       Launch embedded Mission Control Web UI + HTTP/SSE REST API + Webhooks + OpenAPI 3.1
-  mcp         Start the 17-tool stdio Model Context Protocol (MCP) server
+  mcp         Start the 18-tool stdio Model Context Protocol (MCP) server
   memory      Manage verified cross-run project lessons (list | add | rm)
   notify       Send an episode Review Packet to Slack, Discord, Teams, or signed webhooks
   integrations Inspect configured trackers, chat channels, and inbound webhook readiness

@@ -12,13 +12,13 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/pelletier/go-toml/v2"
 	"github.com/iancuuandrei/fabric/internal/canonical"
 	"github.com/iancuuandrei/fabric/internal/config"
 	"github.com/iancuuandrei/fabric/internal/modelpolicy"
 	"github.com/iancuuandrei/fabric/internal/repository"
 	"github.com/iancuuandrei/fabric/internal/runtime"
 	"github.com/iancuuandrei/fabric/internal/writercontract"
+	"github.com/pelletier/go-toml/v2"
 )
 
 func initCommand(ctx context.Context, root string, args []string, out io.Writer) error {
