@@ -12,8 +12,8 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/repository"
 )
 
 func graphInput(path, source string, pkg GoPackageBinding, declarations []GoSymbol, imports []GoImport, calls []GoCall, markers []string, producer string) GoGraphFileInput {

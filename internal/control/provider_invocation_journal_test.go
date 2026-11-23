@@ -1,11 +1,11 @@
 package control
 
 import (
-	"harness.local/engorch/internal/contextbroker"
-	"harness.local/engorch/internal/opencode"
-	"harness.local/engorch/internal/opencoderuntime"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/taskscheduler"
+	"github.com/iancuuandrei/fabric/internal/contextbroker"
+	"github.com/iancuuandrei/fabric/internal/opencode"
+	"github.com/iancuuandrei/fabric/internal/opencoderuntime"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/taskscheduler"
 	"strings"
 	"testing"
 )

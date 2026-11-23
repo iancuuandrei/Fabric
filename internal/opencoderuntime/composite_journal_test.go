@@ -6,9 +6,9 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/opencode"
-	"harness.local/engorch/internal/toolbridge"
-	"harness.local/engorch/internal/toolreceipts"
+	"github.com/iancuuandrei/fabric/internal/opencode"
+	"github.com/iancuuandrei/fabric/internal/toolbridge"
+	"github.com/iancuuandrei/fabric/internal/toolreceipts"
 )
 
 func TestCompositeBoundCapturesUnusedReceiptPrefix(t *testing.T) {

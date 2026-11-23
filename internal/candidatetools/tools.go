@@ -12,13 +12,13 @@ import (
 	"errors"
 	"strings"
 
-	"harness.local/engorch/internal/anchoredit"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/repository"
-	"harness.local/engorch/internal/safepath"
-	"harness.local/engorch/internal/sourcetools"
-	"harness.local/engorch/internal/toolcontent"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/anchoredit"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/sourcetools"
+	"github.com/iancuuandrei/fabric/internal/toolcontent"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 const (

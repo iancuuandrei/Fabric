@@ -13,10 +13,10 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/safepath"
-	"harness.local/engorch/internal/toolbridge"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/toolbridge"
 )
 
 const (

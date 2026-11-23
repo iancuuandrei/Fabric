@@ -2,8 +2,8 @@ package providertransport
 
 import (
 	"context"
-	"harness.local/engorch/internal/access"
-	"harness.local/engorch/internal/providergateway"
+	"github.com/iancuuandrei/fabric/internal/access"
+	"github.com/iancuuandrei/fabric/internal/providergateway"
 	"net/http"
 	"sync/atomic"
 	"testing"

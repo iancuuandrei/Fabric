@@ -3,7 +3,7 @@ package control
 import (
 	"errors"
 
-	"harness.local/engorch/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/journal"
 )
 
 // InspectWithHead returns a validated snapshot and its exact journal prefix

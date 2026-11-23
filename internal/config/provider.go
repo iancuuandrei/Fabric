@@ -8,10 +8,10 @@ import (
 	"errors"
 	"strings"
 
+	"github.com/iancuuandrei/fabric/internal/access"
+	"github.com/iancuuandrei/fabric/internal/providergateway"
+	"github.com/iancuuandrei/fabric/internal/runtime"
 	"github.com/pelletier/go-toml/v2"
-	"harness.local/engorch/internal/access"
-	"harness.local/engorch/internal/providergateway"
-	"harness.local/engorch/internal/runtime"
 )
 
 // Provider is a reusable operator configuration for controller-owned provider

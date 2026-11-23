@@ -13,14 +13,14 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"harness.local/engorch/internal/agentcontext"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/control"
-	"harness.local/engorch/internal/controllerstate"
-	"harness.local/engorch/internal/engineeringplan"
-	"harness.local/engorch/internal/opencode"
-	"harness.local/engorch/internal/repository"
-	"harness.local/engorch/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/agentcontext"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/control"
+	"github.com/iancuuandrei/fabric/internal/controllerstate"
+	"github.com/iancuuandrei/fabric/internal/engineeringplan"
+	"github.com/iancuuandrei/fabric/internal/opencode"
+	"github.com/iancuuandrei/fabric/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/runtime"
 )
 
 const defaultAutonomousMaxRepairs = 2
@@ -95,6 +95,7 @@ func legacyRunCommand(ctx context.Context, root, id string, out io.Writer) error
 func autonomousRunCommand(ctx context.Context, root string, args []string, out io.Writer) error {
 	fs := flag.NewFlagSet("run --autonomous", flag.ContinueOnError)
 	fs.SetOutput(io.Discard)
+	preset := fs.String("preset", "", "execution preset: standard, fast, or thorough")
 	maxRepairs := fs.Int("max-repairs", defaultAutonomousMaxRepairs, "maximum bounded repair attempts")
 	maxParallel := fs.Int("max-parallel", defaultAutonomousMaxParallel, "maximum bounded parallel task workers (1 sequential, 2..8 parallel)")
 	parallelWriters := fs.Bool("parallel-writers", false, "allow two independent initial implementation tasks when justified")
@@ -123,6 +124,19 @@ func autonomousRunCommand(ctx context.Context, root string, args []string, out i
 	goalFile := fs.String("file", "", "read objective from file")
 	if err := fs.Parse(args); err != nil {
 		return err
+	}
+	switch *preset {
+	case "", "standard":
+	case "fast":
+		*maxRepairs = 1
+		*maxParallel = 1
+	case "thorough":
+		*repairIntelligence = true
+		if *maxRepairs < 3 {
+			*maxRepairs = 3
+		}
+	default:
+		return fmt.Errorf("unknown preset %q (use standard, fast, or thorough)", *preset)
 	}
 	if *workingContext {
 		*dynamicExplorers = true

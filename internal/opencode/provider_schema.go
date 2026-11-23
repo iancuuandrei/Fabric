@@ -9,8 +9,8 @@ import (
 	"regexp"
 	"unicode/utf8"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/toolbridge"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/toolbridge"
 )
 
 const (

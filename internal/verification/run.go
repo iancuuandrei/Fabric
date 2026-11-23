@@ -11,7 +11,7 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 // Stream describes captured output. Truncated means Hash covers only CapturedBytes,

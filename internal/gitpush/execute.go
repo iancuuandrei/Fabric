@@ -8,9 +8,9 @@ import (
 	"strings"
 	"time"
 
-	"harness.local/engorch/internal/effects"
-	"harness.local/engorch/internal/gitexec"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/gitexec"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 func gitInTemporary(ctx context.Context, directory, objects string, args ...string) error {

@@ -6,13 +6,13 @@ import (
 	"encoding/json"
 	"errors"
 
-	"harness.local/engorch/internal/agentcontrol"
-	"harness.local/engorch/internal/agenttree"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/contextmcp"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/taskscheduler"
-	"harness.local/engorch/internal/toolbridge"
+	"github.com/iancuuandrei/fabric/internal/agentcontrol"
+	"github.com/iancuuandrei/fabric/internal/agenttree"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/contextmcp"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/taskscheduler"
+	"github.com/iancuuandrei/fabric/internal/toolbridge"
 )
 
 const waitAgentDeliveryVersion = 1

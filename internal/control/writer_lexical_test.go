@@ -9,12 +9,12 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/config"
-	"harness.local/engorch/internal/effects"
-	"harness.local/engorch/internal/fileeffects"
-	"harness.local/engorch/internal/ri"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/config"
+	"github.com/iancuuandrei/fabric/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/fileeffects"
+	"github.com/iancuuandrei/fabric/internal/ri"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 func TestWriterLexicalInvocationAndLeasedSelectionActualRust(t *testing.T) {

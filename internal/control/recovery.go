@@ -6,9 +6,9 @@ import (
 	"encoding/hex"
 	"errors"
 
-	"harness.local/engorch/internal/effects"
-	"harness.local/engorch/internal/fileeffects"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/fileeffects"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 // PreparedRecovery is a fresh approval target for an observed partial file effect.

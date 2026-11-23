@@ -11,7 +11,7 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/repository"
 )
 
 func document(name, body string) Document {
@@ -187,5 +187,43 @@ func TestAgentContextRejectsMalformedAndOversizedCapture(t *testing.T) {
 		if _, err := Capture(context.Background(), i); err == nil {
 			t.Fatal("invalid committed context admitted")
 		}
+	}
+}
+
+func TestRepositorySkillsCatalogValid(t *testing.T) {
+	skillsRoot := filepath.Join("..", "..", ".agents", "skills")
+	entries, err := os.ReadDir(skillsRoot)
+	if err != nil {
+		t.Fatalf("read %s: %v", skillsRoot, err)
+	}
+	b := Bundle{
+		Version:      1,
+		SourceID:     strings.Repeat("a", 64),
+		SourceCommit: strings.Repeat("b", 40),
+		Instructions: []Document{document("AGENTS.md", "root")},
+	}
+	for _, ent := range entries {
+		if !ent.IsDir() {
+			continue
+		}
+		raw, err := os.ReadFile(filepath.Join(skillsRoot, ent.Name(), "SKILL.md"))
+		if err != nil {
+			t.Fatalf("read skill %s: %v", ent.Name(), err)
+		}
+		text := strings.ReplaceAll(string(raw), "\r\n", "\n")
+		if lines := strings.Count(text, "\n") + 1; lines > 500 {
+			t.Fatalf("skill %s exceeds 500-line hygiene limit (%d lines)", ent.Name(), lines)
+		}
+		s, err := parseSkill(document(".agents/skills/"+ent.Name()+"/SKILL.md", string(raw)))
+		if err != nil {
+			t.Fatalf("skill %s failed parseSkill: %v", ent.Name(), err)
+		}
+		b.Skills = append(b.Skills, s)
+	}
+	if len(b.Skills) < 32 {
+		t.Fatalf("expected at least 32 repository skills, got %d", len(b.Skills))
+	}
+	if err := b.Validate(); err != nil {
+		t.Fatalf("repository skills bundle invalid: %v", err)
 	}
 }

@@ -9,11 +9,11 @@ import (
 	"sync"
 	"time"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/memoryadmission"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/taskscheduler"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/memoryadmission"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/taskscheduler"
 )
 
 const (

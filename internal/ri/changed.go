@@ -3,8 +3,8 @@ package ri
 import (
 	"context"
 	"errors"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/repository"
 )
 
 // SourceChange compares declared source inputs, not inferred Git file changes.

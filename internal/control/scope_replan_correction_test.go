@@ -5,10 +5,10 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/engineeringplan"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/taskscheduler"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/engineeringplan"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/taskscheduler"
 )
 
 func settledCorrectionProjection(t *testing.T) (Snapshot, SettledGraphWriterMember) {

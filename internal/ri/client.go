@@ -14,8 +14,8 @@ import (
 	"strings"
 	"time"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/repository"
 )
 
 // ErrProcessUnavailable marks a failure to obtain a usable response because

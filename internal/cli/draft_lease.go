@@ -6,8 +6,8 @@ import (
 	"io"
 	"path/filepath"
 
-	"harness.local/engorch/internal/control"
-	"harness.local/engorch/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/control"
+	"github.com/iancuuandrei/fabric/internal/effects"
 )
 
 type draftLeasePreview struct {

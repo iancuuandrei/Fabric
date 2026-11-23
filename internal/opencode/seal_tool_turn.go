@@ -10,11 +10,11 @@ import (
 	"strconv"
 	"time"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/contextbroker"
-	"harness.local/engorch/internal/contextmcp"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/contextbroker"
+	"github.com/iancuuandrei/fabric/internal/contextmcp"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 const synchronousToolTurnSealQuietInterval = 100 * time.Millisecond
@@ -260,7 +260,7 @@ func bestEffortUnsealedCleanup(client *Client, process *Process, running *contex
 	// Initiate root cancellation before a listener shutdown can consume the
 	// cleanup deadline; the final CloseContext below still waits for reap.
 	if process != nil {
-		kick, stop := context.WithCancel(context.Background())
+		kick, stop := context.WithCancel(ctx)
 		stop()
 		_ = process.CloseContext(kick)
 	}

@@ -7,9 +7,9 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/config"
-	"harness.local/engorch/internal/repository"
-	"harness.local/engorch/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/config"
+	"github.com/iancuuandrei/fabric/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/runtime"
 )
 
 func creation(t *testing.T) Creation {

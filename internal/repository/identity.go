@@ -10,8 +10,8 @@ import (
 	"strings"
 	"time"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/gitexec"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/gitexec"
 )
 
 // Identity binds a named checkout and Git object identity. Paths are local

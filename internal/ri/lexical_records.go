@@ -8,7 +8,7 @@ import (
 	"errors"
 	"io"
 
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 )
 
 // ReadLexicalRecords hydrates a controller-selected JSONL manifest, verifying

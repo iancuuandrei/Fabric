@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"errors"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/journal"
 )
 
 // RequireActive validates the entire durable ledger and checks that the exact

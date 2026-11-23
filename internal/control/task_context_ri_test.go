@@ -11,12 +11,12 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/codexruntime"
-	"harness.local/engorch/internal/gitlocal"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/ri"
-	"harness.local/engorch/internal/taskcontext"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/codexruntime"
+	"github.com/iancuuandrei/fabric/internal/gitlocal"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/ri"
+	"github.com/iancuuandrei/fabric/internal/taskcontext"
 )
 
 // fixtureTaskContextLexicalSearcher supplies explicitly synthetic typed

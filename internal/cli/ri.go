@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"strconv"
 
-	"harness.local/engorch/internal/repository"
-	"harness.local/engorch/internal/ri"
+	"github.com/iancuuandrei/fabric/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/ri"
 )
 
 func riCommand(ctx context.Context, root string, args []string, out io.Writer) error {

@@ -71,6 +71,7 @@ Muse qualification is unchanged. Registry qualification is offline evidence;
 authenticated execution, model quality and the next end-to-end M2 result are
 reported separately.
 
-The standalone `d0-transport-probe` diagnostic also requires strict confinement
-unconditionally. It cannot be used to bypass the controller's gate and issue a
-synthetic Sol invocation while the effective surface is unverified.
+The historical standalone `d0-transport-probe` diagnostic has been retired;
+strict controller confinement remains enforced unconditionally and cannot be
+bypassed to issue a synthetic Sol invocation while the effective surface is
+unverified.

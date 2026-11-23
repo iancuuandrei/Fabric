@@ -3,7 +3,7 @@ param(
     [Parameter(Mandatory = $true)][string]$Cargo,
     [Parameter(Mandatory = $true)][string]$Go,
     [Parameter(Mandatory = $true)][string]$RustTarget,
-    [Parameter(Mandatory = $false)][string]$RustPackage = 'engorch-ri',
+    [Parameter(Mandatory = $false)][string]$RustPackage = 'fabric-ri',
     [Parameter(Mandatory = $true)][string]$OutputDirectory
 )
 

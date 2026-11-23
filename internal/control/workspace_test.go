@@ -2,17 +2,17 @@ package control
 
 import (
 	"context"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/config"
-	"harness.local/engorch/internal/controllerstate"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/config"
+	"github.com/iancuuandrei/fabric/internal/controllerstate"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"testing"
 
-	"harness.local/engorch/internal/repository"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 func approvedRepository(t *testing.T, checks ...config.Check) (string, Snapshot) {

@@ -1,5 +1,5 @@
 //! Qualify upstream disk append over exact-byte posting batches, not its walker.
-use engorch_ri::lexical::LexicalQuery;
+use fabric_ri::lexical::LexicalQuery;
 use std::collections::BTreeMap;
 use tgrep_core::{builder::append_overlay_to_index, live::LiveIndex, reader::IndexReader};
 

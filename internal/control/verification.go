@@ -9,10 +9,10 @@ import (
 	"strings"
 	"time"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/verification"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/verification"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 // VerificationState retains the frozen plan, completed observations and pending launch.
@@ -333,6 +333,11 @@ func Verify(ctx context.Context, path string) (snapshot Snapshot, err error) {
 	planID, err := p.ID()
 	if err != nil {
 		return s, err
+	}
+	if first == 0 {
+		if hookErr := runLifecycleHooks(ctx, s, "pre_verify"); hookErr != nil {
+			return s, hookErr
+		}
 	}
 	for n := first; n < len(p.Invocations); n++ {
 		invocation := p.Invocations[n]

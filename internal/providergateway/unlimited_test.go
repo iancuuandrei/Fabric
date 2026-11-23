@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/access"
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/access"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 )
 
 func newUnlimitedV2Fixture(t *testing.T) gatewayFixture {

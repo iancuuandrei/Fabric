@@ -5,9 +5,9 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/codexhost"
-	"harness.local/engorch/internal/codexrpc"
-	"harness.local/engorch/internal/config"
+	"github.com/iancuuandrei/fabric/internal/codexhost"
+	"github.com/iancuuandrei/fabric/internal/codexrpc"
+	"github.com/iancuuandrei/fabric/internal/config"
 )
 
 var codexReceiptDisabledFeatures = []string{"apps", "plugins", "remote_plugin", "hooks", "multi_agent", "multi_agent_v2", "shell_tool", "code_mode", "code_mode_host", "code_mode_only", "browser_use", "browser_use_external", "browser_use_full_cdp_access", "computer_use", "in_app_browser", "image_generation", "memories", "skill_search", "skill_mcp_dependency_install", "workspace_dependencies", "recommended_plugins", "goals", "tool_suggest", "view_image", "sleep_tool", "unbounded_connection_retries"}

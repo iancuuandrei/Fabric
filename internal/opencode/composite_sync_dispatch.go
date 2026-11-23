@@ -7,10 +7,10 @@ import (
 	"path/filepath"
 	"strings"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/contextbroker"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/toolreceipts"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/contextbroker"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/toolreceipts"
 )
 
 // CompositeDispatchIntent binds a single POST to both authoritative context

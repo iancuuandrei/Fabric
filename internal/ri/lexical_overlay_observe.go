@@ -9,8 +9,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"harness.local/engorch/internal/gitlocal"
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/gitlocal"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 // ObserveLexicalOverlay rechecks staged bytes against an independently admitted

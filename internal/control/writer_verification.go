@@ -3,8 +3,8 @@ package control
 import (
 	"unicode/utf8"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/verification"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/verification"
 )
 
 type writerCheck struct {

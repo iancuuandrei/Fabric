@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	"harness.local/engorch/internal/providergateway"
+	"github.com/iancuuandrei/fabric/internal/providergateway"
 )
 
 func terminalExpectationForTransportTest(t *testing.T) providergateway.TerminalStructuredOutputExpectation {

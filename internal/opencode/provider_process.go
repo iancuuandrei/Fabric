@@ -9,8 +9,8 @@ import (
 	"slices"
 	"time"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 // ProviderStartupAttempt records one terminal provider-host startup attempt.

@@ -9,7 +9,7 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"harness.local/engorch/internal/gitexec"
+	"github.com/iancuuandrei/fabric/internal/gitexec"
 )
 
 // SourceEntry identifies a committed tree leaf, including unsupported file kinds.

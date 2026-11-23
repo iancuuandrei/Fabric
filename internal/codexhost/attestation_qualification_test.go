@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 )
 
 func qualificationFixture(t *testing.T) (CapabilityConfinementAttestation, Launch, attestationManifest) {

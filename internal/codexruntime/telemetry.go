@@ -5,8 +5,8 @@ import (
 	"errors"
 	"unicode/utf8"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/codexrpc"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/codexrpc"
 )
 
 const unknownFinishReason = "UNKNOWN"

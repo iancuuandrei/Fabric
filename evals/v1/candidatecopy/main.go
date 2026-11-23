@@ -22,10 +22,10 @@ import (
 	"path/filepath"
 	"strings"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/control"
-	"harness.local/engorch/internal/safepath"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/control"
+	"github.com/iancuuandrei/fabric/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 type output struct {

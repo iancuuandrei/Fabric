@@ -1,10 +1,10 @@
 //! Encoding-bound range conversion tests for semantic interchange.
-use engorch_ri::occurrence::*;
+use fabric_ri::occurrence::*;
 
 #[test]
 fn structural_occurrences_remain_unresolved_and_source_bound() {
     let bytes = b"type T = crate::X;";
-    let types = engorch_ri::structural::rust_types(bytes).unwrap();
+    let types = fabric_ri::structural::rust_types(bytes).unwrap();
     let occurrences = types.occurrences("src/lib.rs", "structural-v1").unwrap();
     let source = SourceText::new(bytes).unwrap();
     assert_eq!(occurrences.len(), 1);

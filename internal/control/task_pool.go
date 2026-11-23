@@ -4,12 +4,12 @@ import (
 	"errors"
 	"reflect"
 
-	"harness.local/engorch/internal/access"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/config"
-	"harness.local/engorch/internal/providerruntime"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/taskpool"
+	"github.com/iancuuandrei/fabric/internal/access"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/config"
+	"github.com/iancuuandrei/fabric/internal/providerruntime"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/taskpool"
 )
 
 type taskPoolAttemptIdentity struct {

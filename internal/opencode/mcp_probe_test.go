@@ -13,9 +13,9 @@ import (
 	"testing"
 	"time"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/sourcetools"
-	"harness.local/engorch/internal/toolbridge"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/sourcetools"
+	"github.com/iancuuandrei/fabric/internal/toolbridge"
 )
 
 const (

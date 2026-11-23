@@ -4,11 +4,11 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/access"
-	"harness.local/engorch/internal/config"
-	"harness.local/engorch/internal/engineeringplan"
-	"harness.local/engorch/internal/modelpolicy"
-	"harness.local/engorch/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/access"
+	"github.com/iancuuandrei/fabric/internal/config"
+	"github.com/iancuuandrei/fabric/internal/engineeringplan"
+	"github.com/iancuuandrei/fabric/internal/modelpolicy"
+	"github.com/iancuuandrei/fabric/internal/runtime"
 )
 
 func adaptivePlannerPolicy(base runtime.Profile, bytes int64) *modelpolicy.Policy {

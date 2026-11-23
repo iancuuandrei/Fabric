@@ -59,12 +59,12 @@ source = "registry+https://example.invalid/index"
 checksum = "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
 "@
 
-    $rootId = 'path+file:///fixture#engorch-ri@0.1.0'
+    $rootId = 'path+file:///fixture#fabric-ri@0.1.0'
     $normalId = 'registry+https://example.invalid/index#normal-dep@1.0.0'
     $buildId = 'registry+https://example.invalid/index#build-dep@2.0.0'
     $devId = 'registry+https://example.invalid/index#dev-dep@3.0.0'
     $packages = @(
-        [ordered]@{ name='engorch-ri'; version='0.1.0'; id=$rootId; source=$null; license='MIT'; license_file=$null; manifest_path=(Join-Path $repo 'Cargo.toml') },
+        [ordered]@{ name='fabric-ri'; version='0.1.0'; id=$rootId; source=$null; license='MIT'; license_file=$null; manifest_path=(Join-Path $repo 'Cargo.toml') },
         [ordered]@{ name='normal-dep'; version='1.0.0'; id=$normalId; source='registry+https://example.invalid/index'; license='MIT'; license_file=$null; manifest_path=(Join-Path $normal 'Cargo.toml') },
         [ordered]@{ name='build-dep'; version='2.0.0'; id=$buildId; source='registry+https://example.invalid/index'; license='MIT'; license_file=$null; manifest_path=(Join-Path $build 'Cargo.toml') },
         [ordered]@{ name='dev-dep'; version='3.0.0'; id=$devId; source='registry+https://example.invalid/index'; license='MIT'; license_file=$null; manifest_path=(Join-Path $dev 'Cargo.toml') }
@@ -93,7 +93,7 @@ checksum = "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
         Cargo = Join-Path $fixture 'fake-cargo.ps1'
         Go = Join-Path $fixture 'fake-go.ps1'
         RustTarget = 'fixture-target'
-        RustPackage = 'engorch-ri'
+        RustPackage = 'fabric-ri'
     }
     $out1 = Join-Path $fixture 'out1'
     $out2 = Join-Path $fixture 'out2'
@@ -133,10 +133,10 @@ checksum = "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
 
     $package = Join-Path $fixture 'package'
     New-Item -ItemType Directory -Path (Join-Path $package 'bin') -Force | Out-Null
-    Write-Utf8 (Join-Path $package 'bin/engorch.cmd') "@exit /b 0`n"
-    Write-Utf8 (Join-Path $package 'bin/engorch-ri.cmd') "@exit /b 2`n"
+    Write-Utf8 (Join-Path $package 'bin/fabric.cmd') "@exit /b 0`n"
+    Write-Utf8 (Join-Path $package 'bin/fabric-ri.cmd') "@exit /b 2`n"
     $fileRecords = @()
-    foreach ($relative in @('bin/engorch.cmd', 'bin/engorch-ri.cmd')) {
+    foreach ($relative in @('bin/fabric.cmd', 'bin/fabric-ri.cmd')) {
         $path = Join-Path $package $relative
         $fileRecords += [ordered]@{ path=$relative; bytes=[int64](Get-Item $path).Length; sha256=(Get-FileHash $path -Algorithm SHA256).Hash.ToLowerInvariant() }
     }
@@ -146,7 +146,7 @@ checksum = "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
     $packageManifest = [ordered]@{
         schema_version=1; artifact_kind='local-development-package'; release_qualified=$false
         source=[ordered]@{ mode='development-unborn'; head=$null; tree=$null; clean=$false }
-        components=[ordered]@{ go_binary='engorch.cmd'; rust_binary='engorch-ri.cmd' }
+        components=[ordered]@{ go_binary='fabric.cmd'; rust_binary='fabric-ri.cmd' }
         files=$fileRecords
     }
     Write-Utf8 (Join-Path $package 'manifest.json') (($packageManifest | ConvertTo-Json -Depth 8) + "`n")

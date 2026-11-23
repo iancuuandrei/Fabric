@@ -4,10 +4,10 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/toolbridge"
-	"harness.local/engorch/internal/toolreceipts"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/toolbridge"
+	"github.com/iancuuandrei/fabric/internal/toolreceipts"
 )
 
 func TestResultFromSealedCompositeToolTurnRequiresExactReceiptAndCallSequence(t *testing.T) {

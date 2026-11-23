@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"harness.local/engorch/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/journal"
 )
 
 func TestDurableDispatchRecoversWithoutReposting(t *testing.T) {

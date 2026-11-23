@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	"harness.local/engorch/internal/providergateway"
+	"github.com/iancuuandrei/fabric/internal/providergateway"
 )
 
 // BuildRequest creates one finite protocol request without tools, continuation,

@@ -7,10 +7,10 @@ import (
 	"errors"
 	"time"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/draftpr"
-	"harness.local/engorch/internal/effects"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/draftpr"
+	"github.com/iancuuandrei/fabric/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 type draftHost interface {

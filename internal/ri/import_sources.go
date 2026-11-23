@@ -3,7 +3,7 @@ package ri
 import (
 	"context"
 	"errors"
-	"harness.local/engorch/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/repository"
 	"sort"
 	"strings"
 )

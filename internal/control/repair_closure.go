@@ -4,9 +4,9 @@ import (
 	"errors"
 	"path/filepath"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/verification"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/verification"
 )
 
 // RepairClosureReport exposes original failures and exact native recheck receipts.

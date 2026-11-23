@@ -8,9 +8,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/control"
-	"harness.local/engorch/internal/evidencevalue"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/control"
+	"github.com/iancuuandrei/fabric/internal/evidencevalue"
 )
 
 func checkEvidenceValueCLI(t *testing.T, s control.Snapshot, run func(...string) []byte) {

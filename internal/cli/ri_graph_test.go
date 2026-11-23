@@ -12,8 +12,8 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/ri"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/ri"
 )
 
 func TestValidateGoGraphSpecRejectsUnsafeOrUnboundInputs(t *testing.T) {

@@ -18,11 +18,11 @@ if (Test-Path -LiteralPath Cargo.toml) {
     Invoke-Check 'cargo' @('fmt', '--all', '--', '--check')
     Invoke-Check 'cargo' @('clippy', '--workspace', '--all-targets', '--', '-D', 'warnings')
     Invoke-Check 'cargo' @('test', '--workspace')
-    Invoke-Check 'cargo' @('build', '--bin', 'engorch-ri')
+    Invoke-Check 'cargo' @('build', '--bin', 'fabric-ri')
     $riMetadataText = & cargo metadata --format-version 1 --no-deps
     if ($LASTEXITCODE -ne 0) { throw 'Cargo metadata failed' }
     $riMetadata = $riMetadataText | ConvertFrom-Json
-    $riExecutableName = if ([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::Windows)) { 'engorch-ri.exe' } else { 'engorch-ri' }
+    $riExecutableName = if ([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::Windows)) { 'fabric-ri.exe' } else { 'fabric-ri' }
     $riPreviousBinary = $env:ENGORCH_RI_BINARY
     try {
         $env:ENGORCH_RI_BINARY = Join-Path $riMetadata.target_directory "debug/$riExecutableName"

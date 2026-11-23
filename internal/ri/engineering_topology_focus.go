@@ -4,7 +4,7 @@ import (
 	"errors"
 	"sort"
 
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 )
 
 const goFocusTopologyMaxBytes = 8 << 10

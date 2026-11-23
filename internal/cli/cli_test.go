@@ -10,9 +10,9 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/control"
-	"harness.local/engorch/internal/effects"
-	"harness.local/engorch/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/control"
+	"github.com/iancuuandrei/fabric/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/journal"
 )
 
 func TestLocalPlanApprovalAndResume(t *testing.T) {

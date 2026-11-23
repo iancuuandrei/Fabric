@@ -2,8 +2,8 @@ package config
 
 import (
 	"bytes"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/providergateway"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/providergateway"
 	"path/filepath"
 	"strings"
 	"testing"

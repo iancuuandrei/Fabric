@@ -87,10 +87,10 @@ try {
 
     $template = Join-Path $fixture 'template'
     New-Item -ItemType Directory -Path (Join-Path $template 'bin') -Force | Out-Null
-    Write-Utf8 (Join-Path $template 'bin/engorch.cmd') "@exit /b 0`n"
-    Write-Utf8 (Join-Path $template 'bin/engorch-ri.cmd') "@exit /b 2`n"
+    Write-Utf8 (Join-Path $template 'bin/fabric.cmd') "@exit /b 0`n"
+    Write-Utf8 (Join-Path $template 'bin/fabric-ri.cmd') "@exit /b 2`n"
     $records = @()
-    foreach ($relative in @('bin/engorch.cmd', 'bin/engorch-ri.cmd')) {
+    foreach ($relative in @('bin/fabric.cmd', 'bin/fabric-ri.cmd')) {
         $path = Join-Path $template $relative
         $records += [ordered]@{
             path   = $relative
@@ -110,7 +110,7 @@ try {
         artifact_kind     = 'local-development-package'
         release_qualified = $false
         source            = [ordered]@{ mode = 'development-unborn'; head = $null; tree = $null; clean = $false }
-        components        = [ordered]@{ go_binary = 'engorch.cmd'; rust_binary = 'engorch-ri.cmd' }
+        components        = [ordered]@{ go_binary = 'fabric.cmd'; rust_binary = 'fabric-ri.cmd' }
         files             = @($records + $sumRecord)
     }
     Write-Utf8 (Join-Path $template 'manifest.json') (($manifest | ConvertTo-Json -Depth 8) + "`n")
@@ -129,7 +129,7 @@ try {
         & $verifyScript -PackageDirectory $extra
     } 'unlisted or missing files'
     $tampered = Copy-Template 'package-tampered'
-    Write-Utf8 (Join-Path $tampered 'bin/engorch.cmd') "@exit /b 1`n"
+    Write-Utf8 (Join-Path $tampered 'bin/fabric.cmd') "@exit /b 1`n"
     Expect-Failure 'verifier rejects tampered payload' {
         & $verifyScript -PackageDirectory $tampered
     } 'package (size|hash) mismatch'

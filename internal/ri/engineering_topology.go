@@ -5,7 +5,7 @@ import (
 	"sort"
 	"strings"
 
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 )
 
 // GoTopologyModule describes a package in the observed corpus. Import degrees

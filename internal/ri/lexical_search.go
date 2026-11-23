@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 	"path/filepath"
 	"strings"
 	"unicode"

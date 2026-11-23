@@ -8,10 +8,10 @@ import (
 	"sort"
 	"strings"
 
-	"harness.local/engorch/internal/control"
-	"harness.local/engorch/internal/controllerstate"
-	"harness.local/engorch/internal/repository"
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/control"
+	"github.com/iancuuandrei/fabric/internal/controllerstate"
+	"github.com/iancuuandrei/fabric/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 // runEligibility reports whether a fully validated journal snapshot may be
@@ -149,7 +149,14 @@ func isCanonicalProviderSidecar(sidecar string) bool {
 		}
 		return isCanonicalProviderStem(stem, ".opencode-runtime.jsonl")
 	}
-	for _, suffix := range []string{".opencode-runtime.jsonl", ".provider-gateway.jsonl", ".provider-runtime.jsonl"} {
+	for _, suffix := range []string{
+		".opencode-runtime.jsonl",
+		".provider-gateway.jsonl",
+		".provider-runtime.jsonl",
+		".claude-runtime.jsonl",
+		".acp-runtime.jsonl",
+		".directapi-runtime.jsonl",
+	} {
 		if !strings.HasSuffix(sidecar, suffix) {
 			continue
 		}

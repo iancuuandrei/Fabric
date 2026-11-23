@@ -5,10 +5,10 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/config"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/verification"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/config"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/verification"
 )
 
 func TestRepairDiagnosisObservedFailureAndReadOnlyIdentity(t *testing.T) {

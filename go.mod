@@ -1,4 +1,4 @@
-module harness.local/engorch
+module github.com/iancuuandrei/fabric
 
 go 1.27.1
 

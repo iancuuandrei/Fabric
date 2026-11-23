@@ -1,7 +1,7 @@
 //! Snapshot byte identity and record-order qualification.
 
-use engorch_ri::query::{Query, Snapshot};
-use engorch_ri::{canonical, graph::*, manifest::*, snapshot};
+use fabric_ri::query::{Query, Snapshot};
+use fabric_ri::{canonical, graph::*, manifest::*, snapshot};
 
 fn fixture() -> (Manifest, Vec<Node>) {
     (
@@ -45,7 +45,7 @@ fn fixture() -> (Manifest, Vec<Node>) {
 fn semantic_roles_survive_snapshot_and_keep_unknown_separate() {
     let (mut manifest, mut nodes) = fixture();
     let expected = manifest.source.clone();
-    let types = engorch_ri::structural::rust_types(b"type A = crate::Thing;").unwrap();
+    let types = fabric_ri::structural::rust_types(b"type A = crate::Thing;").unwrap();
     manifest.producers[0].inputs = vec![Input {
         name: "source:a.rs".into(),
         sha256: types.source_sha256.clone(),
@@ -67,7 +67,7 @@ fn semantic_roles_survive_snapshot_and_keep_unknown_separate() {
         let mut record = original.clone();
         record.id = id.into();
         record.symbol = Some("thing".into());
-        record.roles = bits.map(|bits| engorch_ri::scip::Roles::from_scip(bits).unwrap());
+        record.roles = bits.map(|bits| fabric_ri::scip::Roles::from_scip(bits).unwrap());
         records.push(record);
     }
     let artifact =
@@ -83,7 +83,7 @@ fn semantic_roles_survive_snapshot_and_keep_unknown_separate() {
     assert_eq!(loaded.occurrences().definitions("thing").len(), 1);
     assert_eq!(loaded.occurrences().references("thing").len(), 2);
     let handle = Snapshot::read(&artifact.bytes, &artifact.id, &expected).unwrap();
-    let mut locate = engorch_ri::query::LocateQuery {
+    let mut locate = fabric_ri::query::LocateQuery {
         path: "a.rs".into(),
         offset: original.span.start,
         producer: "p".into(),
@@ -105,7 +105,7 @@ fn semantic_roles_survive_snapshot_and_keep_unknown_separate() {
     );
     locate.path = "missing.rs".into();
     assert!(handle.locate(&locate, None).is_err());
-    let mut query = engorch_ri::query::OccurrenceQuery {
+    let mut query = fabric_ri::query::OccurrenceQuery {
         symbol: "thing".into(),
         producer: "p".into(),
         definitions: false,
@@ -147,7 +147,7 @@ fn semantic_roles_survive_snapshot_and_keep_unknown_separate() {
     file.write_all(&artifact.bytes).unwrap();
     drop(file);
     let invoke = |request: serde_json::Value| {
-        let mut child = Command::new(env!("CARGO_BIN_EXE_engorch-ri"))
+        let mut child = Command::new(env!("CARGO_BIN_EXE_fabric-ri"))
             .arg("--stdio")
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
@@ -181,7 +181,7 @@ fn semantic_roles_survive_snapshot_and_keep_unknown_separate() {
     for invalid in [-1, 128, 256] {
         value["roles"] = invalid.into();
         assert!(
-            serde_json::from_value::<engorch_ri::occurrence::Occurrence>(value.clone()).is_err()
+            serde_json::from_value::<fabric_ri::occurrence::Occurrence>(value.clone()).is_err()
         );
     }
 }
@@ -190,7 +190,7 @@ fn semantic_roles_survive_snapshot_and_keep_unknown_separate() {
 fn occurrences_roundtrip_only_with_exact_file_and_producer_input() {
     let (mut manifest, nodes) = fixture();
     let expected = manifest.source.clone();
-    let types = engorch_ri::structural::rust_types(b"type A = crate::Thing;").unwrap();
+    let types = fabric_ri::structural::rust_types(b"type A = crate::Thing;").unwrap();
     manifest.producers[0].inputs = vec![Input {
         name: "source:a.rs".into(),
         sha256: types.source_sha256.clone(),
@@ -253,12 +253,12 @@ fn actual_ri_process_reads_disk_artifact_and_rejects_changed_bytes() {
         .unwrap()
         .as_nanos();
     let directory =
-        std::env::temp_dir().join(format!("engorch-ri-process-{}-{nonce}", std::process::id()));
+        std::env::temp_dir().join(format!("fabric-ri-process-{}-{nonce}", std::process::id()));
     std::fs::create_dir(&directory).unwrap();
     let path = directory.join("snapshot.jsonl");
     std::fs::write(&path, &artifact.bytes).unwrap();
     let invoke = |request: serde_json::Value| {
-        let mut child = Command::new(env!("CARGO_BIN_EXE_engorch-ri"))
+        let mut child = Command::new(env!("CARGO_BIN_EXE_fabric-ri"))
             .arg("--stdio")
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())

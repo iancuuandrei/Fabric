@@ -7,9 +7,9 @@ import (
 	"io"
 	"sync"
 
-	"harness.local/engorch/internal/access"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/providergateway"
+	"github.com/iancuuandrei/fabric/internal/access"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/providergateway"
 )
 
 // Binding is the non-secret identity attached to one credential lease. The

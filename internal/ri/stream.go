@@ -12,7 +12,7 @@ import (
 	"sync"
 	"time"
 
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 )
 
 // Stream owns one pinned RI process. Calls are sequential; transport failures

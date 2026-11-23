@@ -4,10 +4,10 @@ import (
 	"errors"
 	"strings"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/opencode"
-	"harness.local/engorch/internal/providergateway"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/opencode"
+	"github.com/iancuuandrei/fabric/internal/providergateway"
 )
 
 // ValidateCompositeFinalGateway proves that every decoded composite OpenCode

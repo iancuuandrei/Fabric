@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/runtime"
 )
 
 func lifecycleFixture(t *testing.T) (string, Creation) {

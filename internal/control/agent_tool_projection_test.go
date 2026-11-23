@@ -8,10 +8,10 @@ import (
 	"sync"
 	"testing"
 
-	"harness.local/engorch/internal/agentcontrol"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/taskscheduler"
-	"harness.local/engorch/internal/toolbridge"
+	"github.com/iancuuandrei/fabric/internal/agentcontrol"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/taskscheduler"
+	"github.com/iancuuandrei/fabric/internal/toolbridge"
 )
 
 type agentToolFixture struct {

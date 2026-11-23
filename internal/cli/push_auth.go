@@ -2,7 +2,7 @@ package cli
 
 import (
 	"errors"
-	"harness.local/engorch/internal/gitpush"
+	"github.com/iancuuandrei/fabric/internal/gitpush"
 )
 
 func pushCredentials(destination string, extra []string) ([]*gitpush.Credential, error) {

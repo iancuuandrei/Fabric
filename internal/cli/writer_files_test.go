@@ -9,8 +9,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"harness.local/engorch/internal/control"
-	"harness.local/engorch/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/control"
+	"github.com/iancuuandrei/fabric/internal/runtime"
 )
 
 func TestWriterFilesExportsRecordedIdentityAndRejectsStaleCandidate(t *testing.T) {

@@ -5,7 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"harness.local/engorch/internal/codexrpc"
+	"github.com/iancuuandrei/fabric/internal/codexrpc"
 	"net"
 	"path/filepath"
 	"strings"

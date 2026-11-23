@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"testing"
 
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 )
 
 func TestCodexAutoCompactInvocationOptionIsOptionalAndContentBound(t *testing.T) {

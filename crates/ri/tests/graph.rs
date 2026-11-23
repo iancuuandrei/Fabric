@@ -1,6 +1,6 @@
 //! Graph qualification against false absence, invalid inputs and order dependence.
 
-use engorch_ri::graph::*;
+use fabric_ri::graph::*;
 
 fn nodes() -> Vec<Node> {
     ["a", "b", "c"]

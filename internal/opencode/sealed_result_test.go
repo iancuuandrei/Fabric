@@ -6,9 +6,9 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/contextbroker"
-	"harness.local/engorch/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/contextbroker"
+	"github.com/iancuuandrei/fabric/internal/runtime"
 )
 
 func TestResultFromSealedToolTurnPreservesExactOutputAndUnknownUsage(t *testing.T) {

@@ -6,13 +6,13 @@ import (
 	"errors"
 	"path/filepath"
 
-	"harness.local/engorch/internal/access"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/codexruntime"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/repository"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/access"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/codexruntime"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 // ModelAccessState mirrors the access-only journal inside controller replay.

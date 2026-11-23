@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strings"
 
-	"harness.local/engorch/internal/gitpush"
+	"github.com/iancuuandrei/fabric/internal/gitpush"
 )
 
 // ReadBranch reads an exact branch reference from the fixed API repository.

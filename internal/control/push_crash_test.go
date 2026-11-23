@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
-	"harness.local/engorch/internal/effects"
-	"harness.local/engorch/internal/gitpush"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/gitpush"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 func TestPushCrashWorker(t *testing.T) {

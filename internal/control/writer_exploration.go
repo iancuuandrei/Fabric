@@ -3,7 +3,7 @@ package control
 import (
 	"errors"
 
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 )
 
 type explorerExcerpt struct {

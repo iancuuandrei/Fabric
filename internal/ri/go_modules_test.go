@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/repository"
 )
 
 func goModuleFixture(t *testing.T, files map[string]string) repository.Identity {

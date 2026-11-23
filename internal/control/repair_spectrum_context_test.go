@@ -5,10 +5,10 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/faultlocalization"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/taskcontext"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/faultlocalization"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/taskcontext"
 )
 
 func checkRepairSpectrumAdmission(t *testing.T, ctx context.Context, path string, s Snapshot) {

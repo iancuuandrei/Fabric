@@ -1,5 +1,5 @@
 //! Go intelligence facts tests.
-use engorch_ri::intelligence::go_file_facts;
+use fabric_ri::intelligence::go_file_facts;
 use sha2::{Digest, Sha256};
 fn h(v: &[u8]) -> String {
     Sha256::digest(v)
@@ -111,7 +111,7 @@ fn unicode_and_escaped_bytes_are_decoded() {
 
 #[test]
 fn cache_metadata_ranges_and_order_are_checked_even_with_matching_body_digest() {
-    use engorch_ri::canonical;
+    use fabric_ri::canonical;
     let source = b"package p\nfunc F(){}\nfunc G(){F()}\n";
     let directory = tempfile::tempdir().unwrap();
     let producer = "c".repeat(64);
@@ -203,7 +203,7 @@ fn source_bindings_cache_keys_and_read_bounds_hold() {
     let path = directory
         .path()
         .join(format!("{}.json", original.cache_key));
-    std::fs::write(path, vec![b' '; engorch_ri::canonical::MAX_BYTES + 1]).unwrap();
+    std::fs::write(path, vec![b' '; fabric_ri::canonical::MAX_BYTES + 1]).unwrap();
     assert_eq!(
         go_file_facts(
             "a.go",

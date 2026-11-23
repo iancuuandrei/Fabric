@@ -10,13 +10,13 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/config"
-	"harness.local/engorch/internal/effects"
-	"harness.local/engorch/internal/fileeffects"
-	"harness.local/engorch/internal/modelpolicy"
-	"harness.local/engorch/internal/repository"
-	"harness.local/engorch/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/config"
+	"github.com/iancuuandrei/fabric/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/fileeffects"
+	"github.com/iancuuandrei/fabric/internal/modelpolicy"
+	"github.com/iancuuandrei/fabric/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/runtime"
 )
 
 func TestExplorationAdmissionAndWriterContext(t *testing.T) {

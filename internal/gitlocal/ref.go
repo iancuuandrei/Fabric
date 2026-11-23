@@ -5,8 +5,8 @@ import (
 	"context"
 	"errors"
 
-	"harness.local/engorch/internal/effects"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 // AdvanceRef atomically verifies the branch's old commit before advancing only

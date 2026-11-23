@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/runtime"
 )
 
 type utf8WriterChange struct {

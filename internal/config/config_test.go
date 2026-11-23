@@ -3,19 +3,25 @@ package config
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/access"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/hostenvironment"
-	"harness.local/engorch/internal/modelpolicy"
-	"harness.local/engorch/internal/providergateway"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/taskpool"
-	"harness.local/engorch/internal/writercontract"
+	"github.com/iancuuandrei/fabric/internal/access"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/hostenvironment"
+	"github.com/iancuuandrei/fabric/internal/modelpolicy"
+	"github.com/iancuuandrei/fabric/internal/providergateway"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/taskpool"
+	"github.com/iancuuandrei/fabric/internal/writercontract"
 )
+
+func testAbsPath(elems ...string) string {
+	root := filepath.VolumeName(os.TempDir()) + string(filepath.Separator)
+	return filepath.Join(append([]string{root}, elems...)...)
+}
 
 func TestOptionalHostPolicyIsStrictAndIdentityBound(t *testing.T) {
 	base, err := Parse([]byte(Example))
@@ -325,7 +331,7 @@ func TestTopLevelProviderAndOpenCodeSelection(t *testing.T) {
 	if err := opencode.Validate(); err == nil {
 		t.Fatal("OpenCode runtime admitted without pinned host")
 	}
-	opencode.OpenCode = &OpenCodeHost{Version: 1, Executable: `D:\tools\opencode.exe`, ExecutableHash: strings.Repeat("a", 64), StateRoot: `D:\state\opencode`}
+	opencode.OpenCode = &OpenCodeHost{Version: 1, Executable: testAbsPath("tools", "opencode"), ExecutableHash: strings.Repeat("a", 64), StateRoot: testAbsPath("state", "opencode")}
 	if err := opencode.Validate(); err != nil {
 		t.Fatal(err)
 	}
@@ -586,7 +592,7 @@ func nativeWriterOutputConfig(t *testing.T) Config {
 			Models:      []ProviderModel{{Name: "writer-model", Version: 2, Provider: providerID, Model: "writer-model", AdapterID: providergateway.OpenAIResponsesAdapter, Capabilities: ProviderCapabilities{Tools: true, OutputCap: true, CompleteUsage: true}, AdapterCapabilitiesJSON: string(capabilities), ContextWindowTokens: 128, MaxCalls: 4, MaxRequestBytes: 1 << 16, MaxResponseBytes: 1 << 16, MaxOutputTokens: 32}},
 			Roles:       map[string]ProviderRole{"writer": {Endpoint: "responses", Model: "writer-model", AdapterControlsJSON: string(controls), Variant: ProviderVariant{Effort: "none", SystemRole: "developer"}, RequiredCapabilities: &ProviderRequiredCapabilities{Tools: true, StructuredOutput: providergateway.StructuredOutputUnsupported}}},
 		},
-		OpenCode: &OpenCodeHost{Version: 1, Executable: `D:\tools\opencode.exe`, ExecutableHash: strings.Repeat("a", 64), StateRoot: `D:\state\opencode`, NativeWriterOutput: true},
+		OpenCode: &OpenCodeHost{Version: 1, Executable: testAbsPath("tools", "opencode"), ExecutableHash: strings.Repeat("a", 64), StateRoot: testAbsPath("state", "opencode"), NativeWriterOutput: true},
 	}
 }
 
@@ -885,5 +891,56 @@ FailureEscalationCount = 1
 	}
 	if _, err := Parse([]byte(strings.Replace(raw, "DefaultProfile", "default_profile", 1))); err == nil {
 		t.Fatal("JSON snake_case policy field was accepted")
+	}
+}
+
+func TestIntegrationsTOMLParsingValidationAndIDInvariance(t *testing.T) {
+	base, err := Parse([]byte(Example))
+	if err != nil {
+		t.Fatal(err)
+	}
+	baseID, err := base.ID()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	raw := Example + `
+[integrations.jira]
+base_url = "https://acme.atlassian.net"
+email_env = "JIRA_EMAIL"
+token_env = "JIRA_API_TOKEN"
+api_version = "3"
+auto_comment = true
+ready_transition = "In Review"
+
+[integrations.notify]
+slack_webhook_env = "FABRIC_SLACK_WEBHOOK"
+events = ["READY", "FAILED"]
+
+[integrations.webhooks]
+secret_env = "FABRIC_WEBHOOK_SECRET"
+trigger_label = "fabric"
+default_max_usd = 2.5
+default_max_turns = 20
+`
+	cfg, err := Parse([]byte(raw))
+	if err != nil || cfg.Integrations == nil || cfg.Integrations.Jira == nil || cfg.Integrations.Notify == nil || cfg.Integrations.Webhooks == nil {
+		t.Fatalf("failed parsing [integrations] config: %v", err)
+	}
+	if cfg.Integrations.Jira.ReadyTransition != "In Review" || cfg.Integrations.Webhooks.TriggerLabel != "fabric" {
+		t.Fatalf("unexpected integrations values: %+v", cfg.Integrations)
+	}
+	badURL := strings.Replace(raw, "https://acme.atlassian.net", "http://acme.atlassian.net", 1)
+	if _, err := Parse([]byte(badURL)); err == nil {
+		t.Fatal("expected non-loopback HTTP Jira URL rejection")
+	}
+	// Reloading base Example confirms Config.ID stays unchanged when [integrations] is absent.
+	again, err := Parse([]byte(Example))
+	if err != nil {
+		t.Fatal(err)
+	}
+	againID, err := again.ID()
+	if err != nil || againID != baseID {
+		t.Fatalf("Config.ID shifted unexpectedly: %s != %s", againID, baseID)
 	}
 }

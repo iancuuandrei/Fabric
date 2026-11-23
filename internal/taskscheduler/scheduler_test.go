@@ -8,7 +8,7 @@ import (
 	"sync"
 	"testing"
 
-	"harness.local/engorch/internal/taskpool"
+	"github.com/iancuuandrei/fabric/internal/taskpool"
 )
 
 type fakeAdapter struct {

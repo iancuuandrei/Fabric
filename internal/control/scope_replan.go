@@ -7,16 +7,16 @@ import (
 	"sort"
 	"strings"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/codexruntime"
-	"harness.local/engorch/internal/engineeringplan"
-	"harness.local/engorch/internal/fileeffects"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/safepath"
-	"harness.local/engorch/internal/taskscheduler"
-	"harness.local/engorch/internal/worktree"
-	"harness.local/engorch/internal/writercontract"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/codexruntime"
+	"github.com/iancuuandrei/fabric/internal/engineeringplan"
+	"github.com/iancuuandrei/fabric/internal/fileeffects"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/taskscheduler"
+	"github.com/iancuuandrei/fabric/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/writercontract"
 )
 
 const maxScopeReplanPaths = 8

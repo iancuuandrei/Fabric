@@ -1,8 +1,8 @@
 package ri
 
 import (
-	"harness.local/engorch/internal/effects"
-	"harness.local/engorch/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/repository"
 	"path/filepath"
 	"strings"
 	"testing"

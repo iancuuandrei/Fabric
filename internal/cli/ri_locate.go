@@ -3,8 +3,8 @@ package cli
 import (
 	"context"
 	"errors"
-	"harness.local/engorch/internal/repository"
-	"harness.local/engorch/internal/ri"
+	"github.com/iancuuandrei/fabric/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/ri"
 	"io"
 	"strconv"
 )

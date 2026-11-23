@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"harness.local/engorch/internal/ri"
+	"github.com/iancuuandrei/fabric/internal/ri"
 )
 
 type filterCaptureReader struct {

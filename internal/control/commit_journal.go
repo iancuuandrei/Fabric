@@ -4,11 +4,11 @@ import (
 	"context"
 	"errors"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/effects"
-	"harness.local/engorch/internal/gitlocal"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/gitlocal"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 // CommitIntent fixes execution inputs before any object or ref mutation.

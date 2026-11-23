@@ -113,7 +113,7 @@ with tempfile.TemporaryDirectory(prefix=".fabric-install-", dir=str(canonical_pa
         raise SystemExit("refusing unsafe installer staging path")
     with zipfile.ZipFile(archive) as zf:
         names = zf.namelist()
-        if len(names) != 3 or len(set(names)) != 3 or set(names) - {"manifest.json", "fabric", "engorch-ri"}:
+        if len(names) != 3 or len(set(names)) != 3 or set(names) - {"manifest.json", "fabric", "fabric-ri"}:
             raise SystemExit("archive contains unexpected entries")
         manifest = json.loads(zf.read("manifest.json"))
         if (manifest.get("schema_version") != 1 or manifest.get("product") != "Fabric" or
@@ -124,7 +124,7 @@ with tempfile.TemporaryDirectory(prefix=".fabric-install-", dir=str(canonical_pa
         components = manifest.get("components", [])
         if manifest.get("platform", {}).get("rust_target") != "x86_64-unknown-linux-gnu":
             raise SystemExit("archive Rust target mismatch")
-        expected = {"fabric": "fabric", "engorch-ri": "engorch-ri"}
+        expected = {"fabric": "fabric", "fabric-ri": "fabric-ri"}
         if len(components) != 2:
             raise SystemExit("archive component set is invalid")
         seen_names = set()
@@ -149,7 +149,7 @@ with tempfile.TemporaryDirectory(prefix=".fabric-install-", dir=str(canonical_pa
             (stage / path).write_bytes(zf.read(path))
             os.chmod(stage / path, 0o755)
     staged = sorted(p.name for p in stage.iterdir())
-    if staged != ["engorch-ri", "fabric"]:
+    if staged != ["fabric-ri", "fabric"]:
         raise SystemExit("staged payload is incomplete")
     # Atomically rename the whole staging directory; never move files singly.
     os.rename(str(stage), str(canonical_install))

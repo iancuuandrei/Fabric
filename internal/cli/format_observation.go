@@ -7,9 +7,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/control"
-	"harness.local/engorch/internal/verification"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/control"
+	"github.com/iancuuandrei/fabric/internal/verification"
 )
 
 const goFormatManifestMaxBytes = 16 << 10

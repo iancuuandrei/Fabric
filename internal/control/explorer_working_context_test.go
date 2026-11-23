@@ -7,15 +7,15 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/access"
-	"harness.local/engorch/internal/agentcontext"
-	"harness.local/engorch/internal/agentcontrol"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/config"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/taskscheduler"
-	"harness.local/engorch/internal/workingcontext"
+	"github.com/iancuuandrei/fabric/internal/access"
+	"github.com/iancuuandrei/fabric/internal/agentcontext"
+	"github.com/iancuuandrei/fabric/internal/agentcontrol"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/config"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/taskscheduler"
+	"github.com/iancuuandrei/fabric/internal/workingcontext"
 )
 
 func TestExplorerWorkingContextCodexSettledResultUsesCachedReceipt(t *testing.T) {

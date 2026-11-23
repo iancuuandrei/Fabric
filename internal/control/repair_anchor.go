@@ -8,9 +8,9 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/safepath"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 // RepairAnchor records current-candidate bytes separately from the original

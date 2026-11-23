@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/google/go-github/v89/github"
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 )
 
 // Reconcile searches repository PRs without mutation, then independently reads

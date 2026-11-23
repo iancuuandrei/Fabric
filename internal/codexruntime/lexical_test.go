@@ -3,13 +3,13 @@ package codexruntime
 import (
 	"bytes"
 	"context"
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/ri"
+	"github.com/iancuuandrei/fabric/internal/ri"
 )
 
 func TestLexicalBindingRejectsSourceCandidateAndBuildSubstitution(t *testing.T) {

@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
-	"harness.local/engorch/internal/opencoderuntime"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/opencoderuntime"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 // ErrAutonomousReconciliation prohibits new work until existing effects settle.

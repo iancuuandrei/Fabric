@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/taskcontext"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/taskcontext"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 func rrfBoundedCreation(t *testing.T, maxRepairs int) Creation {

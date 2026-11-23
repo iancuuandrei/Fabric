@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"testing"
 
-	"harness.local/engorch/internal/contextmcp"
-	"harness.local/engorch/internal/toolbridge"
+	"github.com/iancuuandrei/fabric/internal/contextmcp"
+	"github.com/iancuuandrei/fabric/internal/toolbridge"
 )
 
 func TestProviderRequestToolsForCatalogPreservesContextProjection(t *testing.T) {

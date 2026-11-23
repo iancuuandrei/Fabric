@@ -4,7 +4,7 @@ import (
 	"context"
 	"strings"
 
-	engtelemetry "harness.local/engorch/internal/telemetry"
+	engtelemetry "github.com/iancuuandrei/fabric/internal/telemetry"
 )
 
 func startCommandTelemetry(ctx context.Context, args []string) (context.Context, func(error)) {

@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 
-	"harness.local/engorch/internal/codexruntime"
-	"harness.local/engorch/internal/ri"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/codexruntime"
+	"github.com/iancuuandrei/fabric/internal/ri"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 // SelectRuntimeLexical selects only controller-confirmed artifacts and rechecks

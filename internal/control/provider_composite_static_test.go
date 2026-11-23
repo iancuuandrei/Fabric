@@ -5,9 +5,9 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/contextmcp"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/taskscheduler"
+	"github.com/iancuuandrei/fabric/internal/contextmcp"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/taskscheduler"
 )
 
 func staticQueueTestContext(withBinding bool) context.Context {

@@ -86,11 +86,11 @@ foreach ($relative in $seen.Keys) {
 $goBinary = Join-Path $root (Join-Path 'bin' $manifest.components.go_binary)
 $riBinary = Join-Path $root (Join-Path 'bin' $manifest.components.rust_binary)
 $help = & $goBinary help 2>&1
-if ($LASTEXITCODE -ne 0 -or (($help | Out-String).Trim()).Length -eq 0) { throw 'packaged engorch help smoke failed' }
+if ($LASTEXITCODE -ne 0 -or (($help | Out-String).Trim()).Length -eq 0) { throw 'packaged fabric help smoke failed' }
 $riWire = & $riBinary 2>$null
-if ($LASTEXITCODE -ne 2) { throw 'packaged engorch-ri usage smoke returned an unexpected status' }
+if ($LASTEXITCODE -ne 2) { throw 'packaged fabric-ri usage smoke returned an unexpected status' }
 $riEnvelope = (($riWire | Out-String).Trim()) | ConvertFrom-Json
 if ($riEnvelope.version -ne 1 -or $riEnvelope.ok -ne $false -or $riEnvelope.error -notmatch '^usage:') {
-    throw 'packaged engorch-ri usage smoke returned an unexpected envelope'
+    throw 'packaged fabric-ri usage smoke returned an unexpected envelope'
 }
 Write-Output "PASS local package verification: $root"

@@ -8,11 +8,11 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/codexrpc"
-	"harness.local/engorch/internal/codexruntime"
-	"harness.local/engorch/internal/config"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/codexrpc"
+	"github.com/iancuuandrei/fabric/internal/codexruntime"
+	"github.com/iancuuandrei/fabric/internal/config"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/runtime"
 )
 
 func TestExplorerCapacityFailureRequiresExactSealedEvidence(t *testing.T) {

@@ -1,7 +1,7 @@
 package evidencevalue
 
 import (
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 	"reflect"
 	"testing"
 )

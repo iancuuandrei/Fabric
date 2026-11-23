@@ -7,10 +7,10 @@ import (
 	"encoding/json"
 	"errors"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/opencode"
-	"harness.local/engorch/internal/providergateway"
-	"harness.local/engorch/internal/writercontract"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/opencode"
+	"github.com/iancuuandrei/fabric/internal/providergateway"
+	"github.com/iancuuandrei/fabric/internal/writercontract"
 )
 
 // validateStructuredOutputIntent proves that the native terminal contract is

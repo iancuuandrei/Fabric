@@ -6,9 +6,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"harness.local/engorch/internal/fileeffects"
-	"harness.local/engorch/internal/gitlocal"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/fileeffects"
+	"github.com/iancuuandrei/fabric/internal/gitlocal"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 func TestLexicalCandidateDerivesAdmittedChangesAndRejectsDrift(t *testing.T) {

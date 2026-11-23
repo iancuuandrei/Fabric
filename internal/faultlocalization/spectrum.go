@@ -7,8 +7,8 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 // MaxEncodedBytes bounds a complete imported spectrum, including all profiles.

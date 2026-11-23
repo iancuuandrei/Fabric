@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"sync"
 
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 // ReadLease is a shared process-owned worktree guard. It carries no writer

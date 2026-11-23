@@ -10,10 +10,10 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"harness.local/engorch/internal/contextbroker"
-	"harness.local/engorch/internal/safepath"
-	"harness.local/engorch/internal/toolbridge"
-	"harness.local/engorch/internal/toolreceipts"
+	"github.com/iancuuandrei/fabric/internal/contextbroker"
+	"github.com/iancuuandrei/fabric/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/toolbridge"
+	"github.com/iancuuandrei/fabric/internal/toolreceipts"
 )
 
 // RecorderOwnedConfig binds a composite transport receipt journal to one

@@ -12,8 +12,8 @@ import (
 	"testing"
 	"time"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/effects"
 )
 
 func TestTLSResponseBodyFailures(t *testing.T) {

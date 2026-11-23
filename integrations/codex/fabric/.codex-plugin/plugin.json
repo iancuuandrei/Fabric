@@ -1,0 +1,18 @@
+{
+  "name": "fabric",
+  "version": "0.1.0",
+  "description": "Operate the standalone Fabric engineering harness from Codex through its public CLI.",
+  "author": {
+    "name": "Fabric contributors"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Fabric",
+    "shortDescription": "Run and inspect governed engineering work.",
+    "longDescription": "A thin skill integration for the standalone Fabric CLI. The harness retains orchestration, access policy, effect receipts and verification.",
+    "developerName": "Fabric contributors",
+    "category": "Productivity",
+    "capabilities": [],
+    "defaultPrompt": "Use Fabric to inspect my repository configuration and engineering runs."
+  }
+}

@@ -8,8 +8,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 // LoginChatGPT supplies an existing local access token through the provider's

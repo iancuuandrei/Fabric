@@ -6,9 +6,9 @@ import (
 	"reflect"
 	"testing"
 
-	"harness.local/engorch/internal/config"
-	"harness.local/engorch/internal/verification"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/config"
+	"github.com/iancuuandrei/fabric/internal/verification"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 func TestVerificationControllerChild(t *testing.T) {

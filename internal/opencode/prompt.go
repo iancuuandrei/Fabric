@@ -7,7 +7,7 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 )
 
 // PromptOnce submits a text-only turn after the caller has durably recorded its

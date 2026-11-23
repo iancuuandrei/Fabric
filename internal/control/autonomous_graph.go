@@ -9,14 +9,14 @@ import (
 	"strings"
 	"time"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/codexhost"
-	"harness.local/engorch/internal/engineeringplan"
-	"harness.local/engorch/internal/fileeffects"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/safepath"
-	"harness.local/engorch/internal/taskscheduler"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/codexhost"
+	"github.com/iancuuandrei/fabric/internal/engineeringplan"
+	"github.com/iancuuandrei/fabric/internal/fileeffects"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/taskscheduler"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 var graphAttemptIDPattern = regexp.MustCompile(`^[a-z][a-z0-9_-]{0,63}$`)

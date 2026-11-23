@@ -3,8 +3,8 @@ package opencode
 import (
 	"errors"
 
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 // ToolSessionRecord is one completed, journaled tool-session creation. Binding

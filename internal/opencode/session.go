@@ -5,7 +5,7 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 // SessionBinding is the controller's expected creation marker and host context.

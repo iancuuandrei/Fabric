@@ -3,7 +3,7 @@ package control
 import (
 	"encoding/json"
 
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 )
 
 func repairReviewWitnesses(s Snapshot, accepted bool) (map[string]repairNativeWitness, string, error) {

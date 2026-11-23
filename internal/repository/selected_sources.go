@@ -13,8 +13,8 @@ import (
 	"strings"
 	"time"
 
-	"harness.local/engorch/internal/gitexec"
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/gitexec"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 // CopySelectedSourceBatch copies only the exact regular leaves supplied from a

@@ -9,10 +9,10 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/effects"
-	"harness.local/engorch/internal/fileeffects"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/fileeffects"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 // PreparedFiles is an immutable proposal and its exact effect identity. It grants
@@ -176,6 +176,9 @@ func ApplyFiles(ctx context.Context, journalPath string, p PreparedFiles, a effe
 	latest, readErr := Inspect(journalPath)
 	if applyErr == nil && observeErr == nil && appendErr == nil && readErr == nil && latest.FileOutcome == "CONFIRMED" {
 		latest, readErr = observeCandidateBaseline(ctx, journalPath)
+		if readErr == nil {
+			readErr = runLifecycleHooks(ctx, latest, "post_write")
+		}
 	}
 	return latest, errors.Join(applyErr, observeErr, appendErr, readErr)
 }

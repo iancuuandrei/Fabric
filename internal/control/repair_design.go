@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"sort"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/engineeringplan"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/engineeringplan"
 )
 
 func repairPlanningEnabled(s Snapshot) bool {

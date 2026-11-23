@@ -2,8 +2,8 @@ package codexruntime
 
 import (
 	"context"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/ri"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/ri"
 	"path/filepath"
 	"strings"
 	"testing"

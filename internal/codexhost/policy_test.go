@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"harness.local/engorch/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/runtime"
 )
 
 func TestHostPreparationRejectsReuseAndDrift(t *testing.T) {

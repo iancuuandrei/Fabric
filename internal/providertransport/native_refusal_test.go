@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"harness.local/engorch/internal/providergateway"
+	"github.com/iancuuandrei/fabric/internal/providergateway"
 )
 
 func TestAnthropicRefusalRequiresExactModelBeforeDurableClassification(t *testing.T) {

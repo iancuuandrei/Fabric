@@ -5,7 +5,7 @@ import (
 	"sort"
 	"strings"
 
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 // BlobEntry binds a portable repository-relative file path to a native blob ID.

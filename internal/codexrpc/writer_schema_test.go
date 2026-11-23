@@ -3,8 +3,8 @@ package codexrpc
 import (
 	"context"
 	"encoding/json"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/writercontract"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/writercontract"
 	"strings"
 	"testing"
 )

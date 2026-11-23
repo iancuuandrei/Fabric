@@ -10,8 +10,8 @@ import (
 	"sync/atomic"
 	"testing"
 
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/toolbridge"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/toolbridge"
 )
 
 func TestBindingQueuePolicyVersionsPreserveLegacyIdentity(t *testing.T) {

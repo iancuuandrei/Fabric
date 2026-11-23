@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/taskscheduler"
+	"github.com/iancuuandrei/fabric/internal/taskscheduler"
 )
 
 func TestRepositoryScheduleAdapterRejectsForeignDynamicTask(t *testing.T) {

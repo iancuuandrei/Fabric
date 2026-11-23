@@ -6,7 +6,7 @@ import (
 	"io"
 	"path/filepath"
 
-	"harness.local/engorch/internal/control"
+	"github.com/iancuuandrei/fabric/internal/control"
 )
 
 func lifecycleCommand(ctx context.Context, root, command string, args []string, out io.Writer) error {

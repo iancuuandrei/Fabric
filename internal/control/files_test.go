@@ -9,8 +9,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"harness.local/engorch/internal/effects"
-	"harness.local/engorch/internal/fileeffects"
+	"github.com/iancuuandrei/fabric/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/fileeffects"
 )
 
 func textPointer(s string) *string { return &s }

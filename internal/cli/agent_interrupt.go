@@ -5,7 +5,7 @@ import (
 	"errors"
 	"io"
 
-	"harness.local/engorch/internal/control"
+	"github.com/iancuuandrei/fabric/internal/control"
 )
 
 func agentInterruptCommand(ctx context.Context, root string, args []string, out io.Writer) error {

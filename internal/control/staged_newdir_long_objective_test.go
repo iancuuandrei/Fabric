@@ -6,7 +6,7 @@ import (
 	"testing"
 	"unicode/utf8"
 
-	"harness.local/engorch/internal/engineeringplan"
+	"github.com/iancuuandrei/fabric/internal/engineeringplan"
 )
 
 // stagedNewDirGraph mirrors the fresh staged Muse demo shape: a hub that owns

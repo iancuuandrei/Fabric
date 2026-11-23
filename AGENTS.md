@@ -14,19 +14,20 @@ run; they do not define current behavior.
 
 | Responsibility | Authoritative location |
 | --- | --- |
+| Quickstart & daily runtime guides | README.md, docs/guides/quickstart.md, docs/guides/production-agent-runtime.md |
 | Structure and component boundaries | docs/architecture/ |
 | Normative behavior and invariants | docs/specifications/ |
 | Decisions and rationale | docs/adr/ |
-| User workflows and interface reference | docs/guides/ and docs/reference/ |
+| User workflows, API/MCP & CLI reference | docs/guides/ and docs/reference/ |
 | Scoped measurements and qualification | docs/evaluation/ and release records |
 | Planned product work | docs/roadmap/ |
 | Development and publication | CONTRIBUTING.md and docs/contributing/ |
-| Reusable workflows | .agents/skills/ |
+| Reusable workflows (32 embedded skills) | .agents/skills/ |
 
-Go orchestration lives in cmd/ and internal/; Rust intelligence in crates/ri/.
-Area guidance lives in internal/AGENTS.md, crates/ri/AGENTS.md, evals/AGENTS.md,
-docs/AGENTS.md and integrations/AGENTS.md. Load only guidance applicable to
-the paths being changed. Link authoritative rules rather than duplicating them.
+Go orchestration, v2 agentloop/API/MCP/Graph/Memory packages live in cmd/, pkg/, and internal/;
+Rust intelligence (`fabric-ri`) lives in crates/ri/. Area guidance lives in internal/AGENTS.md,
+crates/ri/AGENTS.md, evals/AGENTS.md, docs/AGENTS.md and integrations/AGENTS.md. Load only
+guidance applicable to the paths being changed. Link authoritative rules rather than duplicating them.
 
 ## Working rules
 

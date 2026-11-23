@@ -6,9 +6,9 @@ import (
 	"io"
 	"path/filepath"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/control"
-	"harness.local/engorch/internal/evidencevalue"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/control"
+	"github.com/iancuuandrei/fabric/internal/evidencevalue"
 )
 
 func evidenceValueCommand(root string, args []string, out io.Writer) error {

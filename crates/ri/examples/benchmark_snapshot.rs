@@ -1,6 +1,6 @@
 //! Synthetic ring-graph measurement separating build, verified load and warm query.
 
-use engorch_ri::{
+use fabric_ri::{
     graph::{Direction, Edge, Node, NodeKind, Quality, Relation},
     manifest::{Input, Manifest, Producer, Source},
     query::{Query, Snapshot},

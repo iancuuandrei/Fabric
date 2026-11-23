@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 )
 
 func TestSemanticSnapshotQueryValidation(t *testing.T) {

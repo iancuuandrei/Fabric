@@ -6,7 +6,7 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 )
 
 // InputID hashes exact bounded UTF-8 runtime input without retaining its body.

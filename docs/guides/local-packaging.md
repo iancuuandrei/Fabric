@@ -1,7 +1,7 @@
 # Build and verify a local package
 
-`scripts/package-local.ps1` builds the Go control plane as `engorch` and the Rust
-repository-intelligence process as `engorch-ri`. It produces a local directory,
+`scripts/package-local.ps1` builds the Go control plane as `fabric` and the Rust
+repository-intelligence process as `fabric-ri`. It produces a local directory,
 not an installer, archive, signed artifact, tag, or published release. The script
 never commits or modifies Git refs.
 
@@ -31,9 +31,9 @@ $rustcExe = "C:\Tools\rust\bin\rustc.exe"
 $rustHost = (& $rustcExe --version --verbose |
     Select-String '^host: ' | ForEach-Object { $_.Line.Substring(6) })
 
-& "C:\src\engorch\scripts\package-local.ps1" `
-  -OutputDirectory "C:\Temp\engorch-package\windows-amd64" `
-  -BuildDirectory "C:\Temp\engorch-package-build\windows-amd64" `
+& "C:\src\fabric\scripts\package-local.ps1" `
+  -OutputDirectory "C:\Temp\fabric-package\windows-amd64" `
+  -BuildDirectory "C:\Temp\fabric-package-build\windows-amd64" `
   -Go $goExe `
   -Git $gitExe `
   -Cargo $cargoExe `
@@ -58,8 +58,8 @@ versions and targets in `manifest.json`.
 The package contains:
 
 ```text
-bin/engorch.exe
-bin/engorch-ri.exe
+bin/fabric.exe
+bin/fabric-ri.exe
 LICENSE
 NOTICE
 THIRD_PARTY.md
@@ -77,13 +77,13 @@ smoke and payload identities. `release_qualified` is always `false`; the result
 is never a signed or published release. Verify an existing directory without rebuilding:
 
 ```powershell
-& "C:\src\engorch\scripts\verify-local-package.ps1" `
-  -PackageDirectory "C:\Temp\engorch-package\windows-amd64"
+& "C:\src\fabric\scripts\verify-local-package.ps1" `
+  -PackageDirectory "C:\Temp\fabric-package\windows-amd64"
 ```
 
 The verifier rejects missing, additional, linked, path-escaping, size-mismatched
-or hash-mismatched payloads. It also executes `engorch help` and checks that
-`engorch-ri` returns its expected canonical usage-error envelope.
+or hash-mismatched payloads. It also executes `fabric help` and checks that
+`fabric-ri` returns its expected canonical usage-error envelope.
 
 ## Dependency license collection
 
@@ -112,13 +112,13 @@ Run the collector without building binaries when reviewing a resolved graph,
 using the same explicitly supplied executables:
 
 ```powershell
-& "C:\src\engorch\scripts\collect-dependency-licenses.ps1" `
-  -RepositoryRoot "C:\src\engorch" `
+& "C:\src\fabric\scripts\collect-dependency-licenses.ps1" `
+  -RepositoryRoot "C:\src\fabric" `
   -Cargo $cargoExe `
   -Go $goExe `
   -RustTarget $rustHost `
-  -RustPackage engorch-ri `
-  -OutputDirectory "C:\Temp\engorch-dependency-licenses\windows-amd64"
+  -RustPackage fabric-ri `
+  -OutputDirectory "C:\Temp\fabric-dependency-licenses\windows-amd64"
 ```
 
 The output directory must be new. Its JSON has no timestamp or host-specific

@@ -11,9 +11,9 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/repository"
-	"harness.local/engorch/internal/taskcontext"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/taskcontext"
 )
 
 func TestGoContractGenerationFilesBindLiteralClosure(t *testing.T) {

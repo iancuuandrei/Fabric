@@ -1,5 +1,5 @@
 //! Opt-in test of an actual scip-go binary artifact over the repository fixture.
-use engorch_ri::{
+use fabric_ri::{
     manifest::{Input, Manifest, Producer, Source},
     scip,
 };
@@ -79,7 +79,7 @@ fn real_scip_go_artifact_reaches_source_validated_snapshot() {
     )
     .unwrap();
     let artifact = admitted.snapshot(&sources).unwrap();
-    let loaded = engorch_ri::snapshot::read(&artifact.bytes, &artifact.id, &expected).unwrap();
+    let loaded = fabric_ri::snapshot::read(&artifact.bytes, &artifact.id, &expected).unwrap();
     assert!(
         loaded
             .occurrences()

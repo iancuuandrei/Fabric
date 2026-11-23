@@ -6,8 +6,8 @@ import (
 	"strings"
 	"sync"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/codexusage"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/codexusage"
 )
 
 // Profile is the immutable requested routing for one role. It is not a fallback list.

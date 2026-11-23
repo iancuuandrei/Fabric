@@ -7,9 +7,9 @@ import (
 	"context"
 	"encoding/json"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/repository"
-	"harness.local/engorch/internal/toolcontent"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/toolcontent"
 )
 
 const (

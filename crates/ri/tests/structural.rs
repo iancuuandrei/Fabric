@@ -1,6 +1,6 @@
 //! Structural extraction tests using the real Rust grammar.
 
-use engorch_ri::{
+use fabric_ri::{
     graph::Completeness,
     structural::{TypeRole, rust_types},
 };
@@ -67,7 +67,7 @@ fn occurrences_are_not_merged_or_promoted_to_semantic_absence() {
 
 #[test]
 fn actual_process_structural_operation_binds_exact_source_bytes() {
-    use engorch_ri::canonical;
+    use fabric_ri::canonical;
     use std::{
         io::Write,
         process::{Command, Stdio},
@@ -77,7 +77,7 @@ fn actual_process_structural_operation_binds_exact_source_bytes() {
     for hash in [expected.source_sha256.clone(), "0".repeat(64)] {
         let request =
             serde_json::json!({"operation":"rust_types","source_text":source,"source_sha256":hash});
-        let mut child = Command::new(env!("CARGO_BIN_EXE_engorch-ri"))
+        let mut child = Command::new(env!("CARGO_BIN_EXE_fabric-ri"))
             .arg("--stdio")
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())

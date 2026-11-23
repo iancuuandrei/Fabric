@@ -6,8 +6,8 @@ import (
 	"errors"
 	"os"
 
-	"harness.local/engorch/internal/safepath"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 // EncodedBlob retains exact candidate bytes and their native Git identity.

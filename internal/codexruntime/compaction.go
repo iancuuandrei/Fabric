@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/codexrpc"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/codexrpc"
 )
 
 const (

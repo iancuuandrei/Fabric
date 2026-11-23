@@ -8,9 +8,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/control"
-	"harness.local/engorch/internal/faultlocalization"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/control"
+	"github.com/iancuuandrei/fabric/internal/faultlocalization"
 )
 
 func diagnoseCommand(ctx context.Context, root string, args []string, out io.Writer) error {

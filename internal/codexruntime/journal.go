@@ -4,12 +4,12 @@ import (
 	"errors"
 	"path/filepath"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/codexrpc"
-	"harness.local/engorch/internal/codexusage"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/repository"
-	"harness.local/engorch/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/codexrpc"
+	"github.com/iancuuandrei/fabric/internal/codexusage"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/runtime"
 )
 
 // ToolOutputVersionUTF8First selects the compact read-page representation for

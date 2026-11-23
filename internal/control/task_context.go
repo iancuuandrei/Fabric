@@ -9,12 +9,12 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/ri"
-	"harness.local/engorch/internal/safepath"
-	"harness.local/engorch/internal/taskcontext"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/ri"
+	"github.com/iancuuandrei/fabric/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/taskcontext"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 // taskContextBoundedV1 is the only task-context mode that enables native role

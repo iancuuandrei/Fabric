@@ -7,9 +7,9 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/evidencevalue"
-	"harness.local/engorch/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/evidencevalue"
+	"github.com/iancuuandrei/fabric/internal/journal"
 )
 
 // EvidenceContextRequest binds a finite source-acquisition model and its query

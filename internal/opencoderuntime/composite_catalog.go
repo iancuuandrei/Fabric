@@ -3,9 +3,9 @@ package opencoderuntime
 import (
 	"errors"
 
-	"harness.local/engorch/internal/opencode"
-	"harness.local/engorch/internal/providergateway"
-	"harness.local/engorch/internal/toolbridge"
+	"github.com/iancuuandrei/fabric/internal/opencode"
+	"github.com/iancuuandrei/fabric/internal/providergateway"
+	"github.com/iancuuandrei/fabric/internal/toolbridge"
 )
 
 // ProviderRequestToolsForCatalog projects a finite MCP catalog into the exact

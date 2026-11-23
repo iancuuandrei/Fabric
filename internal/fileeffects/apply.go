@@ -7,8 +7,8 @@ import (
 	"os"
 	"path"
 
-	"harness.local/engorch/internal/safepath"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 // Apply performs the approved ordered writes. Preconditions: caller holds the

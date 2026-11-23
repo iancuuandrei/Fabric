@@ -3,7 +3,7 @@ package access
 import (
 	"errors"
 
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 // PrivacyPolicy records the operator-selected terms for one access product.

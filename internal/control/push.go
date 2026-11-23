@@ -6,9 +6,9 @@ import (
 	"encoding/hex"
 	"errors"
 
-	"harness.local/engorch/internal/effects"
-	"harness.local/engorch/internal/gitpush"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/gitpush"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 // PreparedPush freezes an observed remote expectation and committed candidate.

@@ -6,8 +6,8 @@ import (
 	"errors"
 	"sync"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/ri"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/ri"
 )
 
 // ToolSession owns persistent lexical transport for one runtime host lifetime.

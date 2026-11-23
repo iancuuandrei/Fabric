@@ -3,9 +3,9 @@ package cli
 import (
 	"fmt"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/control"
-	"harness.local/engorch/internal/evidencevalue"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/control"
+	"github.com/iancuuandrei/fabric/internal/evidencevalue"
 )
 
 const evidenceAutoPolicyMaxBytes = 64 << 10

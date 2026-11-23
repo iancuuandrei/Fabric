@@ -8,14 +8,14 @@ import (
 	"strings"
 	"time"
 
-	"harness.local/engorch/internal/agenttree"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/codexhost"
-	"harness.local/engorch/internal/codexruntime"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/safepath"
-	"harness.local/engorch/internal/taskscheduler"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/agenttree"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/codexhost"
+	"github.com/iancuuandrei/fabric/internal/codexruntime"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/taskscheduler"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 // RunExplorer executes or resumes a private read-only host for the exact question.
@@ -127,6 +127,20 @@ func RunExplorer(ctx context.Context, path, question string) (_ ExplorerRecord, 
 	}
 	if invocation.Profile.Runtime == "fake" && s.Creation.Execution != nil && s.Creation.Execution.GraphEnabled() {
 		result, err := runFakeExplorer(ctx, path, s, invocation, question)
+		if err != nil {
+			return ExplorerRecord{}, err
+		}
+		return complete(result)
+	}
+	if isExternalRuntime(invocation.Profile.Runtime) {
+		result, err := executeExternalRole(ctx, path, s, invocation)
+		if err != nil {
+			return ExplorerRecord{}, err
+		}
+		return complete(result)
+	}
+	if invocation.Profile.Runtime == "provider-api" {
+		result, err := executeDirectProviderRole(ctx, path, s, invocation, question)
 		if err != nil {
 			return ExplorerRecord{}, err
 		}

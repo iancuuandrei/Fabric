@@ -13,12 +13,12 @@ import (
 	"time"
 
 	"github.com/pelletier/go-toml/v2"
-	"harness.local/engorch/internal/codexhost"
-	"harness.local/engorch/internal/codexruntime"
-	"harness.local/engorch/internal/config"
-	"harness.local/engorch/internal/control"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/codexhost"
+	"github.com/iancuuandrei/fabric/internal/codexruntime"
+	"github.com/iancuuandrei/fabric/internal/config"
+	"github.com/iancuuandrei/fabric/internal/control"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/runtime"
 )
 
 func TestLiveCodexPlanningCLI(t *testing.T) {

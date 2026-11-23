@@ -7,10 +7,10 @@ import (
 	"reflect"
 	"strings"
 
-	"harness.local/engorch/internal/access"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/access"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 const (

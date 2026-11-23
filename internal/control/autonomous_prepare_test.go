@@ -6,10 +6,10 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/access"
-	"harness.local/engorch/internal/agenttree"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/engineeringplan"
+	"github.com/iancuuandrei/fabric/internal/access"
+	"github.com/iancuuandrei/fabric/internal/agenttree"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/engineeringplan"
 )
 
 func TestPrepareAutonomousRegistersOptInExplorerRootWithoutDispatch(t *testing.T) {

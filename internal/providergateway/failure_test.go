@@ -6,8 +6,8 @@ import (
 	"sync"
 	"testing"
 
-	"harness.local/engorch/internal/access"
-	"harness.local/engorch/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/access"
+	"github.com/iancuuandrei/fabric/internal/journal"
 )
 
 func TestFailureObservationPreservesPendingReservationAndIdempotency(t *testing.T) {

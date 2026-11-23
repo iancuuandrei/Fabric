@@ -12,9 +12,9 @@ import (
 	"sync"
 	"testing"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/control"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/control"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 // diffWorkspaceFixture plans, approves and starts one run so diffCommand has an

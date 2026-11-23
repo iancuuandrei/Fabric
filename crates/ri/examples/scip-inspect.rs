@@ -4,7 +4,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .nth(1)
         .ok_or("expected SCIP file path")?;
     let bytes = std::fs::read(path)?;
-    let index = engorch_ri::scip::decode(&bytes)?;
+    let index = fabric_ri::scip::decode(&bytes)?;
     let metadata = index.metadata.ok_or("missing metadata")?;
     let tool = metadata.tool_info.ok_or("missing tool info")?;
     let documents: Vec<_> = index

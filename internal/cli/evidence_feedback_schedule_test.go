@@ -10,10 +10,10 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/control"
-	"harness.local/engorch/internal/evidencevalue"
-	"harness.local/engorch/internal/taskscheduler"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/control"
+	"github.com/iancuuandrei/fabric/internal/evidencevalue"
+	"github.com/iancuuandrei/fabric/internal/taskscheduler"
 )
 
 func TestEvidenceFeedbackScheduleArgumentStrict(t *testing.T) {

@@ -6,11 +6,11 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/effects"
-	"harness.local/engorch/internal/hostenvironment"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/ri"
-	"harness.local/engorch/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/hostenvironment"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/ri"
+	"github.com/iancuuandrei/fabric/internal/runtime"
 )
 
 type hostVerifierFunc func(context.Context) (hostenvironment.VerifiedSandbox, error)

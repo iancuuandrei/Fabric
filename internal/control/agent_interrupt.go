@@ -6,10 +6,10 @@ import (
 	"sync"
 	"time"
 
-	"harness.local/engorch/internal/agentcontrol"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/opencoderuntime"
-	"harness.local/engorch/internal/taskscheduler"
+	"github.com/iancuuandrei/fabric/internal/agentcontrol"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/opencoderuntime"
+	"github.com/iancuuandrei/fabric/internal/taskscheduler"
 )
 
 const scheduledInterruptPollInterval = 100 * time.Millisecond

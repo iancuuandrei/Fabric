@@ -6,11 +6,11 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/engineeringplan"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/worktree"
-	"harness.local/engorch/internal/writercontract"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/engineeringplan"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/writercontract"
 )
 
 func TestAnchoredContentCorrectionCapturesExactPreimagesAndReplaysWithoutFilesystem(t *testing.T) {

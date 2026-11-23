@@ -7,10 +7,10 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/repository"
-	"harness.local/engorch/internal/safepath"
-	"harness.local/engorch/internal/taskcontext"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/taskcontext"
 )
 
 const (

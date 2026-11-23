@@ -1,6 +1,6 @@
 package control
 
-import "harness.local/engorch/internal/canonical"
+import "github.com/iancuuandrei/fabric/internal/canonical"
 
 // agentToolCallerIdentity binds transport receipts to the durable admission and
 // scheduler claim. Paths and the transient recovery flag are deliberately not

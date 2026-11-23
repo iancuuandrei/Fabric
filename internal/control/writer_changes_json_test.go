@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/writercontract"
+	"github.com/iancuuandrei/fabric/internal/writercontract"
 )
 
 func changesJSONOuter(t *testing.T, candidate string, inner string) string {

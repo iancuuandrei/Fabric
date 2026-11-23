@@ -10,10 +10,10 @@ import (
 	"sort"
 	"strings"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/safepath"
-	"harness.local/engorch/internal/worktree"
-	"harness.local/engorch/internal/writercontract"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/writercontract"
 )
 
 // Change describes one regular-file state transition. Null before means absent;

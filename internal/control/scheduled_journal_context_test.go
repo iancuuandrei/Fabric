@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/taskscheduler"
+	"github.com/iancuuandrei/fabric/internal/taskscheduler"
 )
 
 type scheduledJournalCaptureAdapter struct {

@@ -4,15 +4,21 @@ import (
 	"context"
 	"errors"
 	"io"
+	"os"
+	"os/exec"
+	"strings"
 
-	"harness.local/engorch/internal/config"
-	"harness.local/engorch/internal/control"
-	"harness.local/engorch/internal/hostenvironment"
-	"harness.local/engorch/internal/memoryadmission"
-	"harness.local/engorch/internal/repository"
-	"harness.local/engorch/internal/ri"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/verification"
+	"github.com/iancuuandrei/fabric/internal/acpruntime"
+	"github.com/iancuuandrei/fabric/internal/clauderuntime"
+	"github.com/iancuuandrei/fabric/internal/config"
+	"github.com/iancuuandrei/fabric/internal/control"
+	"github.com/iancuuandrei/fabric/internal/directapi"
+	"github.com/iancuuandrei/fabric/internal/hostenvironment"
+	"github.com/iancuuandrei/fabric/internal/memoryadmission"
+	"github.com/iancuuandrei/fabric/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/ri"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/verification"
 )
 
 type hostObserver func(context.Context) (hostenvironment.Observation, error)
@@ -96,12 +102,74 @@ func doctorExecutionPlan(identity repository.Identity, cfg config.Config) (map[s
 		}
 		checks = append(checks, map[string]string{"name": check.Name, "readiness": readiness})
 	}
-	return map[string]any{"roles": roles, "verification_checks": checks,
+	plan := map[string]any{"roles": roles, "verification_checks": checks,
 		"scope_replan": map[string]any{"configured_roles_available": cfg.Writer != nil && cfg.Explorer != nil, "default_topology": "serial_writer", "serial_policy_version": 1, "cohort_policy_version": 2, "max_replans": 2, "runtime_execution": "NOT_RUN"},
 		"topology":     "serial_default", "context": "source_bounded_default",
 		"run_options": "NOT_SELECTED", "provider_qualification": "NOT_RUN",
 		"runtime_support": map[string]bool{"parallel_writers": parallelSupported, "auto_compaction": compactSupported},
-		"resources":       resources, "cache": "RUN_OPTIONS_NOT_SELECTED"}, nil
+		"resources":       resources, "cache": "RUN_OPTIONS_NOT_SELECTED"}
+	if readiness := doctorExternalRuntimes(cfg); len(readiness) > 0 {
+		plan["external_runtimes"] = readiness
+	}
+	if len(cfg.Hooks) > 0 {
+		hookChecks := make([]map[string]string, 0, len(cfg.Hooks))
+		for _, h := range cfg.Hooks {
+			status := "AVAILABLE_NOT_RUN"
+			if _, lookErr := exec.LookPath(h.Argv[0]); lookErr != nil {
+				status = "UNAVAILABLE"
+			}
+			hookChecks = append(hookChecks, map[string]string{"name": h.Name, "event": h.Event, "readiness": status})
+		}
+		plan["hooks"] = hookChecks
+	}
+	return plan, nil
+}
+
+func doctorExternalRuntimes(cfg config.Config) map[string]any {
+	out := map[string]any{}
+	if cfg.Claude != nil {
+		status := "READY"
+		if hash, err := clauderuntime.HashFile(cfg.Claude.Executable); err != nil {
+			status = "EXECUTABLE_UNAVAILABLE"
+		} else if cfg.Claude.ExecutableHash != "" && hash != cfg.Claude.ExecutableHash {
+			status = "EXECUTABLE_HASH_MISMATCH"
+		}
+		out["claude-cli"] = map[string]any{"executable": cfg.Claude.Executable, "status": status}
+	}
+	if cfg.ACP != nil {
+		status := "READY"
+		if hash, err := acpruntime.HashFile(cfg.ACP.Executable); err != nil {
+			status = "EXECUTABLE_UNAVAILABLE"
+		} else if cfg.ACP.ExecutableHash != "" && hash != cfg.ACP.ExecutableHash {
+			status = "EXECUTABLE_HASH_MISMATCH"
+		}
+		out["acp-stdio"] = map[string]any{"executable": cfg.ACP.Executable, "status": status}
+	}
+	if cfg.DirectAPI != nil {
+		keyEnv := strings.TrimSpace(cfg.DirectAPI.APIKeyEnv)
+		if keyEnv == "" {
+			keyEnv = directapi.DefaultAPIKeyEnv(cfg.DirectAPI.Dialect)
+		}
+		baseURL := strings.TrimSpace(cfg.DirectAPI.BaseURL)
+		if baseURL == "" {
+			baseURL = directapi.DefaultBaseURL(cfg.DirectAPI.Dialect)
+		}
+		hasKey := os.Getenv(keyEnv) != ""
+		status := "READY"
+		lower := strings.ToLower(baseURL)
+		loopback := strings.HasPrefix(lower, "http://127.0.0.1") || strings.HasPrefix(lower, "http://localhost") || strings.HasPrefix(lower, "http://[::1]")
+		if !hasKey && !loopback {
+			status = "API_KEY_MISSING"
+		}
+		out["direct-api"] = map[string]any{
+			"dialect":        cfg.DirectAPI.Dialect,
+			"base_url":       baseURL,
+			"api_key_env":    keyEnv,
+			"api_key_present": hasKey,
+			"status":         status,
+		}
+	}
+	return out
 }
 
 func doctorMemoryResources(observation memoryadmission.Observation) map[string]any {

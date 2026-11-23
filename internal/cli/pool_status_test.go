@@ -8,8 +8,8 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/config"
-	"harness.local/engorch/internal/taskpool"
+	"github.com/iancuuandrei/fabric/internal/config"
+	"github.com/iancuuandrei/fabric/internal/taskpool"
 )
 
 func TestPoolStatusRetainsActiveAttemptsAndRejectsLimitDrift(t *testing.T) {

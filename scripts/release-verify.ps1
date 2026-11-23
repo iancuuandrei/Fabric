@@ -113,9 +113,9 @@ foreach ($artifact in $release.artifacts) {
         $allowed = @{'manifest.json' = $true}
         # Exact platform-specific name+path identities, each unique.
         if ($platform -eq 'windows/amd64') {
-            $expectedComponents = @{ 'fabric' = 'fabric.exe'; 'engorch-ri' = 'engorch-ri.exe' }
+            $expectedComponents = @{ 'fabric' = 'fabric.exe'; 'fabric-ri' = 'fabric-ri.exe' }
         } else {
-            $expectedComponents = @{ 'fabric' = 'fabric'; 'engorch-ri' = 'engorch-ri' }
+            $expectedComponents = @{ 'fabric' = 'fabric'; 'fabric-ri' = 'fabric-ri' }
         }
         $seenNames = @{}
         foreach ($component in $manifest.components) {

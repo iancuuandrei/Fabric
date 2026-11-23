@@ -1,11 +1,11 @@
 //! Admission tests against the captured SCIP range and role contracts.
-use engorch_ri::occurrence::{Encoding, SourceText, Span};
-use engorch_ri::scip::{Roles, TypedRange, span};
+use fabric_ri::occurrence::{Encoding, SourceText, Span};
+use fabric_ri::scip::{Roles, TypedRange, span};
 
 #[test]
 #[allow(deprecated)]
 fn document_locations_validate_source_and_enclosing_ranges() {
-    use engorch_ri::scip::{locate_document, wire};
+    use fabric_ri::scip::{locate_document, wire};
     let text = "a😀b";
     let mut doc = wire::Document {
         relative_path: "test.rs".into(),
@@ -43,7 +43,7 @@ fn document_locations_validate_source_and_enclosing_ranges() {
 
 #[test]
 fn binary_scip_decoding_preserves_schema_fields() {
-    use engorch_ri::scip::{decode, wire};
+    use fabric_ri::scip::{decode, wire};
     use prost::Message;
     let index = wire::Index {
         metadata: Some(wire::Metadata {

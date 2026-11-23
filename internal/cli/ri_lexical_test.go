@@ -13,10 +13,10 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/control"
-	"harness.local/engorch/internal/effects"
-	"harness.local/engorch/internal/fileeffects"
-	"harness.local/engorch/internal/ri"
+	"github.com/iancuuandrei/fabric/internal/control"
+	"github.com/iancuuandrei/fabric/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/fileeffects"
+	"github.com/iancuuandrei/fabric/internal/ri"
 )
 
 func TestLexicalLifecycleActualRustCLI(t *testing.T) {

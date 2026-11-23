@@ -7,11 +7,11 @@ import (
 	"errors"
 	"os"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/draftpr"
-	"harness.local/engorch/internal/effects"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/draftpr"
+	"github.com/iancuuandrei/fabric/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 // PreparedDraftLease is the exact approval target for abandoned-lease recovery.

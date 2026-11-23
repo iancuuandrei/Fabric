@@ -3,8 +3,8 @@ package ri
 import (
 	"context"
 	"errors"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/repository"
 )
 
 // ChangePage is a finite comparison bound to two ordered snapshot IDs.

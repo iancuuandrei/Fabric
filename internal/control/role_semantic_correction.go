@@ -4,12 +4,12 @@ import (
 	"context"
 	"errors"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/taskscheduler"
-	"harness.local/engorch/internal/worktree"
-	"harness.local/engorch/internal/writercontract"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/taskscheduler"
+	"github.com/iancuuandrei/fabric/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/writercontract"
 )
 
 // RoleSemanticCorrection retains a completed rejection and grants one new

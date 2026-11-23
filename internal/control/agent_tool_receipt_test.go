@@ -6,9 +6,9 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/taskscheduler"
-	"harness.local/engorch/internal/toolbridge"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/taskscheduler"
+	"github.com/iancuuandrei/fabric/internal/toolbridge"
 )
 
 func TestAgentToolReceiptVerifiesAllOperationSourcesAndOlderPrefix(t *testing.T) {

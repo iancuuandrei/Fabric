@@ -4,9 +4,9 @@ import (
 	"errors"
 	"reflect"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/config"
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/config"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 // Plan freezes the complete ordered check set for one run and candidate.

@@ -3,7 +3,7 @@ package control
 import (
 	"context"
 	"errors"
-	"harness.local/engorch/internal/codexruntime"
+	"github.com/iancuuandrei/fabric/internal/codexruntime"
 )
 
 func selectRoleRuntimeLexical(ctx context.Context, path string, s Snapshot) (*codexruntime.LexicalBinding, error) {

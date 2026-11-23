@@ -6,8 +6,8 @@ import (
 	"io"
 	"os"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/modelpolicy"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/modelpolicy"
 )
 
 const modelPolicyMaxBytes = 128 << 10

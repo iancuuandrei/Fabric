@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/opencode"
+	"github.com/iancuuandrei/fabric/internal/opencode"
 )
 
 func TestAutonomousFailureIncludesSanitizedRuntimeStage(t *testing.T) {

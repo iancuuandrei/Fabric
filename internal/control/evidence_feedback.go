@@ -5,9 +5,9 @@ import (
 	"sort"
 	"strconv"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/codexusage"
-	"harness.local/engorch/internal/evidencevalue"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/codexusage"
+	"github.com/iancuuandrei/fabric/internal/evidencevalue"
 )
 
 // Evidence feedback scopes over the exact receipt-verified token basis. The

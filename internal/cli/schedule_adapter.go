@@ -3,8 +3,8 @@ package cli
 import (
 	"context"
 
-	"harness.local/engorch/internal/control"
-	"harness.local/engorch/internal/taskscheduler"
+	"github.com/iancuuandrei/fabric/internal/control"
+	"github.com/iancuuandrei/fabric/internal/taskscheduler"
 )
 
 // repositoryScheduleAdapter rechecks every selected task, including tasks added

@@ -1,145 +1,38 @@
-# Fabric documentation
+# Fabric Documentation
 
-This hub is the map for using, understanding and evaluating Fabric. Start with
-the row that matches your question; follow the linked source for the details.
+Choose the path that matches what you need right now.
 
-## Choose a path
+## 1. Start Here
 
-| If you need to… | Start here | What it covers |
-|---|---|---|
-| Choose a published package | [Release guide](guides/release.md#published-packages) | Current v1.1.0 package, exact hashes and version-specific acceptance |
-| Follow the recorded installation example | [Windows installed-task guide](getting-started/installed-autonomous-task.md) | Preserved v1.0.0 download, setup, bounded task and result inspection |
-| Build the current source and run a task | [Autonomous task guide](guides/autonomous-task.md) | Prerequisites, model configuration, checks, run, inspect and resume |
-| Exercise local planning without a provider | [Local plan guide](getting-started/local-plan.md) | Approval, replay and failure behavior for the fake planning route |
-| Read the earlier source-built first-task record | [Real-task guide](getting-started/real-task.md) | The workflow accepted at its recorded source identity |
-| Understand the product shape | [System architecture](architecture/system.md) | Control flow, authority boundaries, candidate gates and evidence |
-| See what is implemented | [Capabilities](guides/features.md) | Capability map, entry points, limits and qualification links |
-| Inspect a failed candidate | [Repair diagnosis](guides/repair-diagnosis.md) | Typed evidence and exact admitted repair scope, without dispatch |
-| Localize a native failure | [Coverage localization](guides/repair-localization.md) | Bounded per-test Go spectra, exact Ochiai counts, source validation and explicit scoped fixer admission |
-| Experiment with retained agent reasoning | [Editable working context](guides/working-context.md) | Opt-in dynamic explorer retention, immutable task inputs and historical pilot evidence |
-| Compare optional evidence costs | [Evidence value inspection](guides/evidence-value.md) | Finite snapshot-bound advisory selection, unknown costs and research stopping proposals |
-| Use a command or flag | [CLI reference](reference/cli.md) | Generated command and option reference |
-| Understand a contract or design choice | [Specifications](specifications/) and [ADRs](adr/) | Normative invariants and accepted architectural decisions |
-| Contribute code or docs | [Contributing](../CONTRIBUTING.md) and [documentation standard](contributing/documentation-standard.md) | Local workflow, evidence rules, links, references and documentation structure |
-| Check the public source history | [Source history policy](contributing/source-history.md) | Full `dev` history, rolling `main` snapshots, tags and trusted synchronization |
+| Goal | Guide | What You Get |
+| --- | --- | --- |
+| **Run your first task in 5 minutes** | [5-Minute Quickstart](guides/quickstart.md) | Build, `fabric init --auto`, `fabric agent`, inspect Packet, apply cleanly |
+| **Use Fabric in daily production** | [Production Agent Runtime](guides/production-agent-runtime.md) | `agent`, `--resume`, live steering, `tournament`, `graph`, `memory`, `skills`, `issue`/`pr`/`review-pr`, `bench`, `[budget]`, `[sandbox]`, 32 skills |
+| **Integrate Jira, Linear, GitLab & Chat** | [Engineering Integrations](guides/integrations.md) | `fabric ticket`, `fabric notify`, `fabric integrations`, Slack/Discord/Teams alerts, HMAC webhooks |
+| **Connect UI, API, Go SDK, or IDE MCP** | [Mission Control, API & MCP](guides/api-and-mcp.md) | Embedded Web UI, OpenAPI 3.1 + SSE routes, 17-tool MCP config, `pkg/fabric` SDK |
+| **Look up a CLI flag or command** | [CLI Reference](reference/cli.md) | Full command and option catalog |
 
-## Read claims at the right level
+---
 
-Fabric distinguishes product behavior from evidence about a particular source,
-candidate, run or package. A check result applies to the exact item and scope
-that was executed.
+## 2. Core Architecture & Research
 
-| Evidence | What it establishes | What it does not establish by itself |
-|---|---|---|
-| Source tests | The tested code paths passed in that checkout | Provider quality, an accepted candidate or release readiness |
-| Candidate verification and review | That exact candidate passed its configured gates | A commit, merge, package or later-source result |
-| Task-coverage ledger | The listed task identities have accepted evidence, with each cohort clearly named | One unchanged cohort if attempts came from separate runs |
-| Package reproduction and installed task | The named artifact and installed workflow passed the recorded checks | Other platforms, source commits or later artifacts |
-| Historical checkpoint | What was observed at the checkpoint's pinned source and time | Current implementation status when newer evidence exists |
+- **[System Architecture](architecture/system.md)** — Control flow, write-ownership isolation, verification gates, and evidence boundaries.
+- **[Security Trust Boundary](security/trust-boundary.md)** — Isolation guarantees, secret scrubbing, CapScope enforcement, and known limits.
+- **[Normative Specifications](specifications/)** & **[Architecture Decision Records (ADRs)](adr/)** — Authority, journal effects, and RI boundaries.
+- **[2025–2026 Harness Research & Donors](research/harness-best-practices-2026.md)** — Empirical arXiv findings and donor mechanisms shipped in Fabric.
+- **[Research Provenance](research/oss-mechanisms.md)** & **[v2 Product Roadmap](roadmap/v2-product-plan.md)**.
 
-Use **PASS**, **FAIL**, **NOT RUN**, **BLOCKED** and **UNKNOWN** as distinct
-states. Missing usage, timing or provider evidence is unavailable; it is not
-zero. Historical reports remain unchanged. Current summaries link newer
-evidence rather than rewriting old observations.
+---
 
-## Source and snapshot map
+## 3. Classic Controller Internals & Historical Archives
 
-```mermaid
-flowchart LR
-  dev["dev · full incremental history"] -->|trusted push · exact source tree| sync["automation:fabric-v1-sol-supervisor"]
-  sync -->|force-with-lease| main["main · one rolling checkpoint per major/minor line"]
-  main -->|newer line only| next["new line checkpoint · previous main parent"]
-  tags["Published tags and packages"] -. immutable .-> release["Release-specific acceptance"]
-  classDef navy fill:#14283f,color:#fff,stroke:#14283f,stroke-width:2px
-  classDef teal fill:#d9f1ec,color:#123b43,stroke:#167d83,stroke-width:2px
-  classDef amber fill:#fff0d8,color:#563b12,stroke:#b97819,stroke-width:2px
-  class dev,sync,main,next navy
-  class tags,release teal
-```
+- **[Classic Controller, Provider & RI Guides](guides/classic-internals.md)** — All ~40 deep-dive guides for the deterministic v1 task-graph controller (`fabric run --autonomous`), `fabric-ri`, Codex confinement, and OpenCode/Responses protocols.
+- **Getting Started Records (v1 history):** [Windows installed-task guide](getting-started/installed-autonomous-task.md) · [Local plan route](getting-started/local-plan.md) · [Real-task record](getting-started/real-task.md)
+- **Evaluations & Releases:** [Release guide](guides/release.md) · [Evaluation status ledger](evaluation/status.md) · [v1 product gate](development/v1-product-gate.md) · [v1.0.0 release acceptance](evaluation/v1-release-acceptance.md) · [Real-repo eval harness](../evals/v1/README.md)
+- **Integrations & Contributing:** [Codex integration](../integrations/codex/fabric/README.md) · [Contributing](../CONTRIBUTING.md) · [Documentation standard](contributing/documentation-standard.md) · [Source history policy](contributing/source-history.md)
 
-The exact `dev` SHA is the source identity for current development claims. A
-same-line snapshot may receive a new tree while retaining its original title,
-parent and author/committer dates. The `v0.0.0` and `v0.0.1` checkpoints remain
-historical; published tags are not rewritten. See the
-[source history policy](contributing/source-history.md) for the operational
-rules and exceptions.
+---
 
-## Documentation authority
+## 4. Evidence Vocabulary
 
-```mermaid
-flowchart TB
-  question["Reader question"] --> hub["This documentation hub"]
-  hub --> current["Current behavior"]
-  hub --> contract["Normative contract"]
-  hub --> decision["Design decision"]
-  hub --> evidence["Pinned evidence"]
-  current --> guide["Guide or CLI reference"]
-  contract --> spec["Specification"]
-  decision --> adr["Accepted ADR"]
-  evidence --> eval["Evaluation or release record"]
-  classDef navy fill:#14283f,color:#fff,stroke:#14283f,stroke-width:2px
-  classDef teal fill:#d9f1ec,color:#123b43,stroke:#167d83,stroke-width:2px
-  classDef slate fill:#edf1f5,color:#27384a,stroke:#8393a4,stroke-width:1px
-  class question,hub navy
-  class guide,spec,adr,eval teal
-  class current,contract,decision,evidence slate
-```
-
-| Document kind | Use it for | Authority boundary |
-|---|---|---|
-| Guide or CLI reference | How to use the current implementation | Must agree with source and parser behavior |
-| Specification | Required behavior and invariants | A contract is not proof that implementation or qualification exists |
-| ADR | Why a consequential design was selected | Historical rationale does not override a later accepted decision |
-| Evaluation or release record | Exact source, candidate, artifact and observed checks | Evidence stays scoped to its recorded identities and methods |
-| Roadmap or status ledger | Current direction, open work and links to evidence | Summaries do not replace the underlying acceptance record |
-
-## Browse by topic
-
-### Architecture and contracts
-
-- [System architecture](architecture/system.md)
-- [Run journal](specifications/run-journal.md)
-- [Authority and effects](adr/0002-authority.md) · [journal effects](adr/0003-journal-effects.md) · [repository intelligence boundary](adr/0004-ri-boundary.md)
-- [Security trust boundary](security/trust-boundary.md)
-
-### Engineering capabilities
-
-- [Autonomous task graphs](guides/graph-autonomous-task.md)
-- [Repository intelligence and semantic queries](guides/engineering-orientation.md)
-- [Go file facts](guides/go-file-facts.md)
-- [Context and planner contracts](guides/planner-contract.md) · [Context selection](guides/context-selection.md)
-- [Parallel and isolated writers](guides/isolated-writers.md)
-- [Impact-aware review](guides/reviewer-impact-context.md)
-- [Model allocation](guides/model-allocation.md)
-- [Usage accounting](guides/provider-token-accounting.md) · [Codex observations](guides/codex-native-usage-observations.md)
-- [Checkpoints and continuation](guides/checkpoints.md) · [verified fresh rounds](guides/verified-fresh-rounds.md)
-- [Runtime capability limits](guides/graceful-capabilities.md) · [Codex confinement](guides/codex-capability-confinement.md)
-- [Task schedules](guides/task-schedules.md) · [prompt-cache recipes](guides/prompt-cache-recipes.md) · [deterministic Go formatting](guides/deterministic-go-format-observation.md)
-- [Native compaction](guides/native-auto-compaction.md) · [file changes](guides/file-changes.md) · [local packaging](guides/local-packaging.md)
-- [Agent context resolution](guides/agent-context.md) · [Engineering skills](guides/procedures.md) · [Codex CLI integration](../integrations/codex/engorch/README.md)
-
-### Development and qualification
-
-- [v1 product gate](development/v1-product-gate.md)
-- [v2 product roadmap](roadmap/v2-product-plan.md)
-- [Historical evaluation ledger](evaluation/status.md)
-- [Eight-task coverage closure](evaluation/v112-eight-task-closure.md)
-- [Real-repository comparison](evaluation/v1-real-repository-comparison.md)
-- [v1.0.0 release acceptance](evaluation/v1-release-acceptance.md)
-- [Real-repository evaluation harness](../evals/v1/README.md)
-- [Research provenance](research/oss-mechanisms.md)
-
-### Historical records
-
-- [v0.0.0 bootstrap checkpoint](evaluation/v0.0.0.md)
-- [v0.0.1 trusted bootstrap checkpoint](evaluation/v0.0.1.md)
-- [WP05/WP06 program history](evaluation/wp05-wp06-history.md)
-- [v1.0.0 Windows distribution acceptance](evaluation/v1-release-acceptance.md)
-
-## Maintenance
-
-When behavior changes, update its guide or contract in the same source
-increment. Keep a single authoritative explanation for each rule and link to
-it from navigation pages. Preserve historical evaluation records; append a
-clearly dated current note or link when later evidence changes the status.
-Follow the [documentation standard](contributing/documentation-standard.md).
+Fabric separates implemented behavior from pinned run/package evidence using **PASS**, **FAIL**, **NOT RUN**, **BLOCKED**, and **UNKNOWN**. Missing timing, usage, or provider telemetry is recorded as unavailable — never zero.

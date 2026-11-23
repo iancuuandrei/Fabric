@@ -5,10 +5,10 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/effects"
-	"harness.local/engorch/internal/gitpush"
-	"harness.local/engorch/internal/repository"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/gitpush"
+	"github.com/iancuuandrei/fabric/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 func fixturePlan(t *testing.T) Plan {

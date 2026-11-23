@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/repository"
 )
 
 func fixture(t testing.TB) (string, Request) {

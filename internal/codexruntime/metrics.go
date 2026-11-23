@@ -4,9 +4,9 @@ import (
 	"errors"
 	"sort"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/runtime"
 )
 
 // ToolUsage accounts exact journaled UTF-8 bytes, not estimated model tokens.

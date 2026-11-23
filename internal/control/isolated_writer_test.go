@@ -5,8 +5,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/engineeringplan"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/engineeringplan"
 )
 
 func isolatedWriterCreation(t *testing.T) Creation {

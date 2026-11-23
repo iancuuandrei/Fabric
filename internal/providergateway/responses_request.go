@@ -12,7 +12,7 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 )
 
 // ResponsesModelCapabilities is the protocol-specific portion of a model

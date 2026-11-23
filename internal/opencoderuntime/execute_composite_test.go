@@ -8,10 +8,10 @@ import (
 	"testing"
 	"time"
 
-	"harness.local/engorch/internal/contextmcp"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/toolbridge"
-	"harness.local/engorch/internal/toolreceipts"
+	"github.com/iancuuandrei/fabric/internal/contextmcp"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/toolbridge"
+	"github.com/iancuuandrei/fabric/internal/toolreceipts"
 )
 
 func TestExecutionCompositeCatalogRequiresExactAdmittedBinding(t *testing.T) {

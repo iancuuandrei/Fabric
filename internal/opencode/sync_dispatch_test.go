@@ -12,7 +12,7 @@ import (
 	"testing"
 	"time"
 
-	"harness.local/engorch/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/journal"
 )
 
 func TestSynchronousDispatchPersistsBeforeSinglePostAndValidatesReadback(t *testing.T) {

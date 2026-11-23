@@ -5,14 +5,14 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/access"
-	"harness.local/engorch/internal/agentcontrol"
-	"harness.local/engorch/internal/agenttree"
-	"harness.local/engorch/internal/config"
-	"harness.local/engorch/internal/providergateway"
-	"harness.local/engorch/internal/repository"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/taskscheduler"
+	"github.com/iancuuandrei/fabric/internal/access"
+	"github.com/iancuuandrei/fabric/internal/agentcontrol"
+	"github.com/iancuuandrei/fabric/internal/agenttree"
+	"github.com/iancuuandrei/fabric/internal/config"
+	"github.com/iancuuandrei/fabric/internal/providergateway"
+	"github.com/iancuuandrei/fabric/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/taskscheduler"
 )
 
 func TestAgentDispatchOrdersAdmissionAndExactResultAroundLifecycle(t *testing.T) {

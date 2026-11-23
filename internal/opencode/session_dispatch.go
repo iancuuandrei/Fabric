@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/journal"
 )
 
 type sessionCreationState struct {

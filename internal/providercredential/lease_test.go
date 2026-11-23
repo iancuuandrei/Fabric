@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
-	"harness.local/engorch/internal/access"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/providergateway"
+	"github.com/iancuuandrei/fabric/internal/access"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/providergateway"
 )
 
 type leaseFixture struct {

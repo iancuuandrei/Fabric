@@ -113,6 +113,6 @@ return [pscustomobject]@{
     state = $state.state
     review = $verdict.decision
     workspace = $workspace
-    inspect = "engorch --root `"$Repository`" inspect $RunId"
-    export = "engorch --root `"$Repository`" inspect $RunId --export-jsonl"
+    inspect = "fabric --root `"$Repository`" inspect $RunId"
+    export = "fabric --root `"$Repository`" inspect $RunId --export-jsonl"
 }

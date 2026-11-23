@@ -7,13 +7,13 @@ import (
 	"path/filepath"
 	"time"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/codexhost"
-	"harness.local/engorch/internal/codexruntime"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/safepath"
-	"harness.local/engorch/internal/taskscheduler"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/codexhost"
+	"github.com/iancuuandrei/fabric/internal/codexruntime"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/taskscheduler"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 // RunReview runs or resumes a configured Codex proposal invocation, then records
@@ -75,6 +75,24 @@ func RunReview(ctx context.Context, path string) (ReviewRecord, error) {
 	}
 	if s.Review != nil && s.Review.Invocation == invocation {
 		return ReviewRecord{}, errors.New("review proposal already recorded; inspect its provenance rather than dispatch again")
+	}
+	if isExternalRuntime(invocation.Profile.Runtime) {
+		result, err := executeExternalRole(ctx, path, s, invocation)
+		if err != nil {
+			return ReviewRecord{}, err
+		}
+		record := ReviewRecord{invocation, result}
+		_, err = RecordReview(path, record)
+		return finishReviewSemanticResult(ctx, path, record, err)
+	}
+	if invocation.Profile.Runtime == "provider-api" {
+		result, err := executeDirectProviderRole(ctx, path, s, invocation, "")
+		if err != nil {
+			return ReviewRecord{}, err
+		}
+		record := ReviewRecord{invocation, result}
+		_, err = RecordReview(path, record)
+		return finishReviewSemanticResult(ctx, path, record, err)
 	}
 	if invocation.Profile.Runtime == "opencode-http" {
 		result, err := executeOpenCodeRole(ctx, path, s, invocation, "")

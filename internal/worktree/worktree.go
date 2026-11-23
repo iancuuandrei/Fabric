@@ -14,9 +14,9 @@ import (
 	"strings"
 	"time"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/repository"
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 // Request fixes the only admitted workspace destination and branch for a run.

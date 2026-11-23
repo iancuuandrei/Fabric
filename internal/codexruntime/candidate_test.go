@@ -8,13 +8,13 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/anchoredit"
-	"harness.local/engorch/internal/candidatetools"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/testsupport"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/anchoredit"
+	"github.com/iancuuandrei/fabric/internal/candidatetools"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/testsupport"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 func TestCandidateBrokerReadsModifiedStateAndRejectsDrift(t *testing.T) {

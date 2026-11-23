@@ -3,7 +3,7 @@ package control
 import (
 	"testing"
 
-	"harness.local/engorch/internal/gitpush"
+	"github.com/iancuuandrei/fabric/internal/gitpush"
 )
 
 func TestPushCredentialSelection(t *testing.T) {

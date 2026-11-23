@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/control"
+	"github.com/iancuuandrei/fabric/internal/control"
 )
 
 func TestAutonomousContextSelectorRejectsUnknownPreRun(t *testing.T) {

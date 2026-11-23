@@ -11,9 +11,9 @@ import (
 	"testing"
 	"time"
 
-	"harness.local/engorch/internal/codexrpc"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/codexrpc"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/runtime"
 )
 
 func TestRetainedSemanticResultRejectsSubstitutionAndPreservesLegacyReplay(t *testing.T) {

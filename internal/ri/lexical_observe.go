@@ -5,14 +5,14 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"errors"
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 	"io"
 	"path/filepath"
 	"sort"
 	"strings"
 
-	"harness.local/engorch/internal/repository"
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 // LexicalFile matches the Rust exact-byte manifest schema.

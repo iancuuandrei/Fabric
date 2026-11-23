@@ -14,7 +14,7 @@ import (
 	"time"
 
 	"github.com/google/go-github/v89/github"
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 )
 
 const githubAPIVersion = "2026-03-10"

@@ -8,12 +8,12 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/config"
-	"harness.local/engorch/internal/draftpr"
-	"harness.local/engorch/internal/effects"
-	"harness.local/engorch/internal/gitlocal"
-	"harness.local/engorch/internal/gitpush"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/config"
+	"github.com/iancuuandrei/fabric/internal/draftpr"
+	"github.com/iancuuandrei/fabric/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/gitlocal"
+	"github.com/iancuuandrei/fabric/internal/gitpush"
 )
 
 type fixtureDraftHost struct {

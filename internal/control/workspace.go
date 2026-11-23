@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 // WorkspaceReceipt binds the actual admitted workspace and pristine candidate.

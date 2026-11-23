@@ -11,14 +11,14 @@ import (
 	"testing"
 	"time"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/config"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/opencode"
-	"harness.local/engorch/internal/providercredential"
-	"harness.local/engorch/internal/providergateway"
-	"harness.local/engorch/internal/providertransport"
-	"harness.local/engorch/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/config"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/opencode"
+	"github.com/iancuuandrei/fabric/internal/providercredential"
+	"github.com/iancuuandrei/fabric/internal/providergateway"
+	"github.com/iancuuandrei/fabric/internal/providertransport"
+	"github.com/iancuuandrei/fabric/internal/runtime"
 )
 
 func TestPrepareExecutionRejectsNonSSEProviderFramingBeforeResources(t *testing.T) {

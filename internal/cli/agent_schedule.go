@@ -6,10 +6,10 @@ import (
 	"io"
 	"path/filepath"
 
-	"harness.local/engorch/internal/agentcontrol"
-	"harness.local/engorch/internal/agenttree"
-	"harness.local/engorch/internal/control"
-	"harness.local/engorch/internal/taskscheduler"
+	"github.com/iancuuandrei/fabric/internal/agentcontrol"
+	"github.com/iancuuandrei/fabric/internal/agenttree"
+	"github.com/iancuuandrei/fabric/internal/control"
+	"github.com/iancuuandrei/fabric/internal/taskscheduler"
 )
 
 type explorerSpawnRequest struct {

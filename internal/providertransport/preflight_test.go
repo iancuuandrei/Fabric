@@ -15,8 +15,8 @@ import (
 	"testing"
 	"time"
 
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/providergateway"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/providergateway"
 )
 
 func TestExecuteValidationRejectionStoresBoundedEvidenceWithoutGatewayEffect(t *testing.T) {

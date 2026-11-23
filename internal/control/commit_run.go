@@ -5,9 +5,9 @@ import (
 	"errors"
 	"time"
 
-	"harness.local/engorch/internal/effects"
-	"harness.local/engorch/internal/gitlocal"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/gitlocal"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 // ExecuteCommit executes a new, explicitly authorized local commit attempt.

@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"harness.local/engorch/internal/toolbridge"
+	"github.com/iancuuandrei/fabric/internal/toolbridge"
 )
 
 func TestNewOwnedWithQueueValidatesDepth(t *testing.T) {

@@ -11,7 +11,7 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/control"
+	"github.com/iancuuandrei/fabric/internal/control"
 )
 
 func TestExternalControllerStateRoutesRunLifecycleOutsideRepository(t *testing.T) {

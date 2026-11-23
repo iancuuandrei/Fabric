@@ -3,8 +3,8 @@ package ri
 import (
 	"context"
 	"errors"
-	"harness.local/engorch/internal/repository"
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 	"os"
 	"path/filepath"
 )

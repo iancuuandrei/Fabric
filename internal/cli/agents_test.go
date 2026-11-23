@@ -9,11 +9,11 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/access"
-	"harness.local/engorch/internal/agentcontrol"
-	"harness.local/engorch/internal/agenttree"
-	"harness.local/engorch/internal/control"
-	"harness.local/engorch/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/access"
+	"github.com/iancuuandrei/fabric/internal/agentcontrol"
+	"github.com/iancuuandrei/fabric/internal/agenttree"
+	"github.com/iancuuandrei/fabric/internal/control"
+	"github.com/iancuuandrei/fabric/internal/runtime"
 )
 
 func checkAgentCLI(t *testing.T, root string, state control.Snapshot, run func(...string) []byte) {

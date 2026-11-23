@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/codexruntime"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/codexruntime"
 )
 
 const explorerCapacityRetrySuffix = " | provider-capacity-retry: 1"

@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"harness.local/engorch/internal/contextbroker"
-	"harness.local/engorch/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/contextbroker"
+	"github.com/iancuuandrei/fabric/internal/repository"
 )
 
 func TestOwnedRunningBindsExactBrokerPointerAndBearer(t *testing.T) {

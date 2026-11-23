@@ -3,8 +3,8 @@ package opencode
 import (
 	"errors"
 
-	"harness.local/engorch/internal/access"
-	"harness.local/engorch/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/access"
+	"github.com/iancuuandrei/fabric/internal/runtime"
 )
 
 // DispatchForInvocation binds the controller's immutable routing to explicit

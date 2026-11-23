@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/worktree"
-	"harness.local/engorch/internal/writercontract"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/writercontract"
 )
 
 // AnchoredSemanticRejection retains exact bounded preimages for pure replay of

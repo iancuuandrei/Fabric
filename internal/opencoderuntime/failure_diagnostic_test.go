@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/opencode"
-	"harness.local/engorch/internal/providergateway"
+	"github.com/iancuuandrei/fabric/internal/opencode"
+	"github.com/iancuuandrei/fabric/internal/providergateway"
 )
 
 func diagnosticCause(t *testing.T) (error, opencode.DispatchDiagnostic) {

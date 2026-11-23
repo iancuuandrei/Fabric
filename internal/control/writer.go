@@ -9,11 +9,11 @@ import (
 	"fmt"
 	"strings"
 
-	"harness.local/engorch/internal/engineeringplan"
-	"harness.local/engorch/internal/fileeffects"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/worktree"
-	"harness.local/engorch/internal/writercontract"
+	"github.com/iancuuandrei/fabric/internal/engineeringplan"
+	"github.com/iancuuandrei/fabric/internal/fileeffects"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/writercontract"
 )
 
 // WriterProposal is untrusted model output, not permission to mutate files.

@@ -1,6 +1,6 @@
 //! Measure verified loading and occurrence queries for an explicitly bound snapshot.
 
-use engorch_ri::{
+use fabric_ri::{
     canonical,
     manifest::Source,
     query::{OccurrenceQuery, Snapshot},

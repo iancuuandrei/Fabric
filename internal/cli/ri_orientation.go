@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"io"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/ri"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/ri"
 )
 
 // readRIOrientationQuery shares the bounded, regular-file reader with the

@@ -6,8 +6,8 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/runtime"
 )
 
 // ReviewFindingRecheck is explicit reviewer judgment on an original concern.

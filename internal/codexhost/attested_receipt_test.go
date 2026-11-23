@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/codexrpc"
+	"github.com/iancuuandrei/fabric/internal/codexrpc"
 )
 
 func receiptFixture(t *testing.T) (Launch, Receipt) {

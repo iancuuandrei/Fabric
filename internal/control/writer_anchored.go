@@ -11,12 +11,12 @@ import (
 	"sort"
 	"unicode/utf8"
 
-	"harness.local/engorch/internal/anchoredit"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/fileeffects"
-	"harness.local/engorch/internal/safepath"
-	"harness.local/engorch/internal/worktree"
-	"harness.local/engorch/internal/writercontract"
+	"github.com/iancuuandrei/fabric/internal/anchoredit"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/fileeffects"
+	"github.com/iancuuandrei/fabric/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/writercontract"
 )
 
 const anchoredEditPreimagesMaxBytes = 256 << 10

@@ -3,8 +3,8 @@ package control
 import (
 	"bytes"
 	"context"
-	"harness.local/engorch/internal/effects"
-	"harness.local/engorch/internal/ri"
+	"github.com/iancuuandrei/fabric/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/ri"
 	"os"
 	"path/filepath"
 	"strings"

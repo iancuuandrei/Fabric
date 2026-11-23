@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"testing"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/providergateway"
-	"harness.local/engorch/internal/providertransport"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/providergateway"
+	"github.com/iancuuandrei/fabric/internal/providertransport"
 )
 
 func newResponsesPromptCacheFixture(t *testing.T, initial string) proxyFixture {

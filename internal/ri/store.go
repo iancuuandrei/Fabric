@@ -8,7 +8,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 // Store publishes opaque RI artifacts without replacing an existing name.

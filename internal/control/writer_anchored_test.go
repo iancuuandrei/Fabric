@@ -9,15 +9,15 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/candidatetools"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/codexruntime"
-	"harness.local/engorch/internal/config"
-	"harness.local/engorch/internal/fileeffects"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/worktree"
-	"harness.local/engorch/internal/writercontract"
+	"github.com/iancuuandrei/fabric/internal/candidatetools"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/codexruntime"
+	"github.com/iancuuandrei/fabric/internal/config"
+	"github.com/iancuuandrei/fabric/internal/fileeffects"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/writercontract"
 )
 
 func anchoredWriterFixture(t *testing.T) (string, runtime.Invocation, string, string) {

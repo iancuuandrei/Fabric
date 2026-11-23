@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/agenttree"
+	"github.com/iancuuandrei/fabric/internal/agenttree"
 )
 
 // BenchmarkMailbox measures durable control-plane work, not model latency or

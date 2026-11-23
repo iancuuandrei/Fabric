@@ -4,7 +4,7 @@ import (
 	"errors"
 	"strings"
 
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 )
 
 // Intent binds a proposed effect to its run, exact approval and input artifact.

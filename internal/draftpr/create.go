@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/google/go-github/v89/github"
-	"harness.local/engorch/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/effects"
 )
 
 // Create sends one authorized draft request and independently reads its returned

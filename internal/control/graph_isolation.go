@@ -6,11 +6,11 @@ import (
 	"path/filepath"
 	"sort"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/engineeringplan"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/safepath"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/engineeringplan"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 // GraphIsolationIntent binds one ready implementation task to a distinct,

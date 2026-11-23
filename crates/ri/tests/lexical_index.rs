@@ -1,5 +1,5 @@
 //! Verified source indexing, deterministic matching and explicit truncation.
-use engorch_ri::{
+use fabric_ri::{
     lexical::LexicalQuery,
     lexical_index::ResidentIndex,
     lexical_manifest::{LexicalFile, LexicalManifest},
@@ -10,7 +10,7 @@ use std::collections::BTreeMap;
 
 #[test]
 fn stdio_overlay_shadows_base_and_binds_cursor() {
-    use engorch_ri::{canonical, lexical_disk::build_shards};
+    use fabric_ri::{canonical, lexical_disk::build_shards};
     use serde_json::{Value, json};
     use std::{
         io::Write,
@@ -58,7 +58,7 @@ fn stdio_overlay_shadows_base_and_binds_cursor() {
         "overlay":{"candidate":"e".repeat(64),"manifest_path":changed_path,
             "manifest_id":changed.id().unwrap(),"source_root":source_root,"deleted":["b.rs"]}});
     let invoke = |request: &Value| {
-        let mut child = Command::new(env!("CARGO_BIN_EXE_engorch-ri"))
+        let mut child = Command::new(env!("CARGO_BIN_EXE_fabric-ri"))
             .arg("--stdio")
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
@@ -95,7 +95,7 @@ fn stdio_overlay_shadows_base_and_binds_cursor() {
 
 #[test]
 fn disk_overlay_matches_resident_view_and_never_reads_shadowed_base() {
-    use engorch_ri::{
+    use fabric_ri::{
         lexical_disk::{DiskIndex, DiskOverlay, build_shards},
         lexical_index::CandidateOverlay,
     };
@@ -194,7 +194,7 @@ fn disk_overlay_matches_resident_view_and_never_reads_shadowed_base() {
 
 #[test]
 fn disk_matching_pages_equal_resident_and_reject_source_substitution() {
-    use engorch_ri::lexical_disk::{DiskIndex, build_shards};
+    use fabric_ri::lexical_disk::{DiskIndex, build_shards};
     let (m, sources) = inputs();
     let temp = tempfile::tempdir().unwrap();
     let output = temp.path().join("index");
@@ -249,7 +249,7 @@ fn disk_matching_pages_equal_resident_and_reject_source_substitution() {
 
 #[test]
 fn disk_build_shards_exact_sources_without_reusing_output() {
-    use engorch_ri::lexical_disk::build_shards;
+    use fabric_ri::lexical_disk::build_shards;
     let (m, sources) = inputs();
     let temp = tempfile::tempdir().unwrap();
     let output = temp.path().join("index");
@@ -297,7 +297,7 @@ fn disk_build_shards_exact_sources_without_reusing_output() {
 
 #[test]
 fn disk_reader_rejects_changed_bytes_and_scope() {
-    use engorch_ri::lexical_disk::{DiskIndex, build_shards};
+    use fabric_ri::lexical_disk::{DiskIndex, build_shards};
     let (m, sources) = inputs();
     let temp = tempfile::tempdir().unwrap();
     let output = temp.path().join("index");
@@ -333,7 +333,7 @@ fn disk_reader_rejects_changed_bytes_and_scope() {
 
 #[test]
 fn overlay_shadows_before_limits_and_preserves_base() {
-    use engorch_ri::lexical_index::CandidateOverlay;
+    use fabric_ri::lexical_index::CandidateOverlay;
     let (m, sources) = inputs();
     let base = ResidentIndex::build(m.clone(), &m.source, sources).unwrap();
     let mut changed = m.clone();

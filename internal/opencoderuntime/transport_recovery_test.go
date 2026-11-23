@@ -11,8 +11,8 @@ import (
 	"testing"
 	"time"
 
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/opencode"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/opencode"
 )
 
 func TestSynchronousTransportFailurePersistsUnknownThenUsesOneGET(t *testing.T) {

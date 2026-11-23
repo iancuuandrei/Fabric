@@ -1,6 +1,6 @@
 package control
 
-import "harness.local/engorch/internal/canonical"
+import "github.com/iancuuandrei/fabric/internal/canonical"
 
 type writerReview struct {
 	EvidenceHash       string          `json:"evidence_hash"`

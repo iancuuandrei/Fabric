@@ -8,10 +8,10 @@ import (
 	"testing"
 	"time"
 
-	"harness.local/engorch/internal/config"
-	"harness.local/engorch/internal/memoryadmission"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/taskscheduler"
+	"github.com/iancuuandrei/fabric/internal/config"
+	"github.com/iancuuandrei/fabric/internal/memoryadmission"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/taskscheduler"
 )
 
 func deadlineTestSnapshot(host *config.OpenCodeHost, writerRuntime string, isolatedVersion int) Snapshot {

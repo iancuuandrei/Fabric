@@ -13,7 +13,7 @@ import (
 	"strings"
 	"time"
 
-	"harness.local/engorch/internal/gitexec"
+	"github.com/iancuuandrei/fabric/internal/gitexec"
 )
 
 // VisitSourceDigests enumerates the exact committed tree and hashes regular

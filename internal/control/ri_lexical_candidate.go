@@ -7,10 +7,10 @@ import (
 	"os"
 	"sort"
 
-	"harness.local/engorch/internal/gitlocal"
-	"harness.local/engorch/internal/ri"
-	"harness.local/engorch/internal/safepath"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/gitlocal"
+	"github.com/iancuuandrei/fabric/internal/ri"
+	"github.com/iancuuandrei/fabric/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 // LexicalCandidate is a leased observation, not a persisted staging receipt.

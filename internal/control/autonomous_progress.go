@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 // autonomousProgress observes already validated history. A journal head is

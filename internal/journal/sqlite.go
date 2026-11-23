@@ -11,7 +11,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 	_ "modernc.org/sqlite"
 )
 
@@ -190,15 +190,14 @@ func readSQLiteEvents(ctx context.Context, q rowQueryer) ([]Event, int, error) {
 		if normalizeErr != nil || !bytes.Equal(normal, e.Payload) {
 			return nil, 0, errors.New("noncanonical SQLite event payload")
 		}
-		h, hashErr := digest(e)
+		h, lineLen, hashErr := fastDigestAndLineLen(e)
 		if hashErr != nil || h != e.Hash {
 			return nil, 0, errors.New("SQLite event hash mismatch")
 		}
-		line, encodeErr := canonical.Bytes(e)
-		if encodeErr != nil || len(line)+1 > canonical.MaxBytes {
+		if lineLen+1 > canonical.MaxBytes {
 			return nil, 0, errors.New("SQLite event exceeds size bound")
 		}
-		total += len(line) + 1
+		total += lineLen + 1
 		if total > maxJournal {
 			return nil, 0, errors.New("SQLite journal exceeds size bound")
 		}

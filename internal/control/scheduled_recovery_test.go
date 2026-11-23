@@ -6,10 +6,10 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/codexruntime"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/taskscheduler"
+	"github.com/iancuuandrei/fabric/internal/codexruntime"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/taskscheduler"
 )
 
 func TestScheduledReconcileRefusesMissingRuntimeHistory(t *testing.T) {

@@ -5,8 +5,8 @@ import (
 	"errors"
 	"time"
 
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 // ActivityPage binds a bounded activity projection to the exact control

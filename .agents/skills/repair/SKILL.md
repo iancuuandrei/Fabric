@@ -1,19 +1,27 @@
 ---
 name: repair
-description: Repair a candidate after a concrete failed check or requested review change. Use when supplied failure evidence and declared write ownership bound a correction.
+description: Diagnose and fix a concrete failed verification check or review finding within declared write ownership using minimal root-cause patches and exact closure oracles. Use when repairing a candidate after failed tests or requested review changes.
 metadata:
   fabric.roles: "fixer"
 ---
 
-# Repair
+# Structured Repair (Donor: SWE-agent + Agentless + Alibaba OpenCodeReview)
 
-Start from the supplied failed-gate evidence and current candidate. Distinguish
-a source defect from an unavailable dependency or unresolved provider effect.
-Find the smallest correction within the declared write paths; preserve public
-behavior outside the requested change. Address the actual finding without
-weakening tests, acceptance criteria or the role's output contract.
+Fix the root cause with the smallest coherent patch inside declared write ownership. Never mask a failure by weakening tests or bypassing checks.
 
-Use exact current file hashes and checked edits. Identify the regression that
-would distinguish this failure from nearby valid behavior. Report only checks
-that have recorded observations. Do not widen scope, reset evidence, repeat
-uncertain effects or exceed the controller's repair budget.
+## 1. Classify the Failure Before Editing
+From the supplied candidate, verification output, and review findings, classify the failure:
+- **Environment/Tooling:** Missing binary, network/sandbox block, or unresolved provider effect → report clearly; do not invent code workarounds.
+- **Anchor/Contract Defect:** Stale preimage hash or non-unique edit anchor → re-read exact current candidate bytes and re-anchor cleanly.
+- **Logic/Contract Defect:** Failing test, panic, wrong edge-case behavior, or review finding → proceed to root-cause repair.
+- **Out-of-Scope Dependency:** Fix genuinely requires editing a file outside declared ownership → request an explicit scope replan; never silently edit unowned paths.
+
+## 2. Root-Cause Minimal Patch
+- Trace the failing assertion or review finding back to the violated invariant (use `fault-localization` if the failure site differs from the defect site).
+- Form **one concrete hypothesis** and apply the smallest edit that fixes the defect while preserving unrelated public behavior.
+- If a prior repair attempt drifted or introduced secondary failures, compare against the clean pre-write base instead of stacking workarounds.
+
+## 3. Closure & Regression Guard
+- Pair every logic fix with a discriminating regression test that fails without the fix and passes with it.
+- Never delete, skip, relax, or narrow existing assertions to force a green build.
+- Map each historical finding or reviewer concern to its exact closure oracle and report only recorded observations.

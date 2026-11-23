@@ -1,7 +1,7 @@
 //! Provenance admission tests, including source and producer substitution.
 
-use engorch_ri::graph::*;
-use engorch_ri::manifest::*;
+use fabric_ri::graph::*;
+use fabric_ri::manifest::*;
 
 fn manifest() -> Manifest {
     Manifest {

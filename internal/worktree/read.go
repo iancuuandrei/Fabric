@@ -7,7 +7,7 @@ import (
 	"os"
 	"unicode/utf8"
 
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 // SourceChunk binds a bounded byte page to the entire admitted candidate.

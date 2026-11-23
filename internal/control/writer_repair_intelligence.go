@@ -5,10 +5,10 @@ import (
 	"encoding/hex"
 	"errors"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/faultlocalization"
-	"harness.local/engorch/internal/taskcontext"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/faultlocalization"
+	"github.com/iancuuandrei/fabric/internal/taskcontext"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 // writerRepairIntelligence is a pure projection of existing durable records.

@@ -5,8 +5,8 @@ import (
 	"errors"
 	"strings"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/workingcontext"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/workingcontext"
 )
 
 // ExplorerOutputSchema declares the advisory explorer result's existing shape.

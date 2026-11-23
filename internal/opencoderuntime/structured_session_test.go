@@ -9,10 +9,10 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/opencode"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/writercontract"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/opencode"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/writercontract"
 )
 
 func TestResolvedWriterBindsNativePermissionThroughProductionSessionAndConfig(t *testing.T) {

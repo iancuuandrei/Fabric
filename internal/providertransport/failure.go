@@ -9,8 +9,8 @@ import (
 	"net"
 	"net/http"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/providergateway"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/providergateway"
 )
 
 const maximumErrorBodyBytes = 16 << 10

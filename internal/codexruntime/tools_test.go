@@ -8,12 +8,12 @@ import (
 	"path/filepath"
 	"testing"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/codexrpc"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/repository"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/sourcetools"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/codexrpc"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/sourcetools"
 )
 
 func sourceAdapter(t *testing.T) *Adapter {

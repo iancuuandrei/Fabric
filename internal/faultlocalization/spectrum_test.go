@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 )
 
 func fixture() Spectrum {

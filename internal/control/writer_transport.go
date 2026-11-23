@@ -4,9 +4,9 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/fileeffects"
-	"harness.local/engorch/internal/writercontract"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/fileeffects"
+	"github.com/iancuuandrei/fabric/internal/writercontract"
 )
 
 // utf8WireChange is one validated UTF-8 wire item shared by the utf8-v2,

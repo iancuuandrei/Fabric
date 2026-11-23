@@ -8,10 +8,10 @@ import (
 	"strings"
 	"unicode"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/codexruntime"
-	"harness.local/engorch/internal/ri"
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/codexruntime"
+	"github.com/iancuuandrei/fabric/internal/ri"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 const (

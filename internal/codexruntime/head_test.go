@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"harness.local/engorch/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/journal"
 )
 
 func TestRuntimeStateAndHeadShareValidatedRead(t *testing.T) {

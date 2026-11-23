@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 // LexicalShard binds the three reader input files in a generated shard.

@@ -1,6 +1,6 @@
 //! Canonical rejection and exact encoding tests shared with the Go wire rules.
 
-use engorch_ri::canonical::{decode, encode, hash};
+use fabric_ri::canonical::{decode, encode, hash};
 use serde_json::{Value, json};
 
 #[test]

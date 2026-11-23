@@ -11,8 +11,8 @@ import (
 	"sort"
 	"strings"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 // Metadata authorities, patch classifications, and violation codes bound how pinned patch parts are interpreted.

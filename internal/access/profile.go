@@ -4,7 +4,7 @@ import (
 	"errors"
 	"slices"
 
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 )
 
 // Class is an operator-selected data classification, never inferred from text.

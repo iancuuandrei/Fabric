@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 )
 
 const m1bProviderItemID = ProviderItemID("rs_6aa03c8e2d7ed1b42826448b:rs_01a081ec8bcf77328c39da85cda512ba")

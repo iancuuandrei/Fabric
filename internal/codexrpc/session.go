@@ -8,10 +8,10 @@ import (
 	"path/filepath"
 	"strings"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/engineeringplan"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/writercontract"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/engineeringplan"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/writercontract"
 )
 
 // ThreadSettings records selected server settings, not proof of OS isolation.

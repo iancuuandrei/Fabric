@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 
-	"harness.local/engorch/internal/engineeringplan"
-	"harness.local/engorch/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/engineeringplan"
+	"github.com/iancuuandrei/fabric/internal/runtime"
 )
 
 // agentContextPromptBytes adds committed guidance before route selection so

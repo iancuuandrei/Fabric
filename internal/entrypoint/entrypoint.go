@@ -9,8 +9,8 @@ import (
 	"os/signal"
 	"time"
 
-	"harness.local/engorch/internal/cli"
-	engtelemetry "harness.local/engorch/internal/telemetry"
+	"github.com/iancuuandrei/fabric/internal/cli"
+	engtelemetry "github.com/iancuuandrei/fabric/internal/telemetry"
 )
 
 // executeFunc runs one CLI invocation without exiting the process.
@@ -28,7 +28,11 @@ func Run(name string, args []string, execute executeFunc) {
 	}
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer stop()
-	ctx, telemetryRuntime, err := engtelemetry.New(ctx, engtelemetry.Config{OTLPTracesEndpoint: os.Getenv("ENGORCH_OTLP_TRACES_ENDPOINT")})
+	otlpEndpoint := os.Getenv("FABRIC_OTLP_TRACES_ENDPOINT")
+	if otlpEndpoint == "" {
+		otlpEndpoint = os.Getenv("ENGORCH_OTLP_TRACES_ENDPOINT")
+	}
+	ctx, telemetryRuntime, err := engtelemetry.New(ctx, engtelemetry.Config{OTLPTracesEndpoint: otlpEndpoint})
 	if err == nil {
 		cwd, cwdErr := os.Getwd()
 		err = cwdErr

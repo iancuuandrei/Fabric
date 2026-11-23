@@ -4,9 +4,9 @@ import (
 	"errors"
 	"slices"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 // ResultFromSealedCompositeToolTurn projects a replay-validated composite seal

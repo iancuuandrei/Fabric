@@ -6,9 +6,9 @@ import (
 	"testing"
 	"time"
 
-	"harness.local/engorch/internal/engineeringplan"
-	"harness.local/engorch/internal/memoryadmission"
-	"harness.local/engorch/internal/taskscheduler"
+	"github.com/iancuuandrei/fabric/internal/engineeringplan"
+	"github.com/iancuuandrei/fabric/internal/memoryadmission"
+	"github.com/iancuuandrei/fabric/internal/taskscheduler"
 )
 
 // TestGraphMemoryStaleCandidateDoesNotBlockSecondWorker is a deterministic

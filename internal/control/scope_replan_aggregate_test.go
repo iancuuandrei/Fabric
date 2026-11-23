@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/fileeffects"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/fileeffects"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 // This is an already-replayed projection fixture for the pure aggregate seam.

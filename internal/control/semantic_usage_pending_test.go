@@ -7,13 +7,13 @@ import (
 	"path/filepath"
 	"testing"
 
-	"harness.local/engorch/internal/access"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/codexrpc"
-	"harness.local/engorch/internal/codexruntime"
-	"harness.local/engorch/internal/codexusage"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/access"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/codexrpc"
+	"github.com/iancuuandrei/fabric/internal/codexruntime"
+	"github.com/iancuuandrei/fabric/internal/codexusage"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/runtime"
 )
 
 func TestSemanticUsagePendingKeepsReservationAndBlocksNextInvocation(t *testing.T) {

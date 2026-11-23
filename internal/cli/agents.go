@@ -8,9 +8,9 @@ import (
 	"strconv"
 	"time"
 
-	"harness.local/engorch/internal/agentcontrol"
-	"harness.local/engorch/internal/agenttree"
-	"harness.local/engorch/internal/control"
+	"github.com/iancuuandrei/fabric/internal/agentcontrol"
+	"github.com/iancuuandrei/fabric/internal/agenttree"
+	"github.com/iancuuandrei/fabric/internal/control"
 )
 
 func agentCommand(ctx context.Context, root, command string, args []string, out io.Writer) error {

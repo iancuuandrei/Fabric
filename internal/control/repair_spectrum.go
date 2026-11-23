@@ -9,8 +9,8 @@ import (
 	"sort"
 	"unicode/utf8"
 
-	"harness.local/engorch/internal/faultlocalization"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/faultlocalization"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 // DiagnoseRepairSpectrum adds an advisory imported Ochiai ranking only after

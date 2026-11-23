@@ -1,5 +1,5 @@
 //! Source and producer substitution tests for binary index admission.
-use engorch_ri::{
+use fabric_ri::{
     manifest::{Input, Manifest, Producer, Source},
     scip::{admit, wire},
 };
@@ -119,7 +119,7 @@ fn duplicate_documents_and_ambiguous_encodings_fail_even_with_matching_hash() {
 
 #[test]
 fn symbol_identity_scopes_locals_without_normalizing_globals() {
-    use engorch_ri::scip::SymbolIdentity as S;
+    use fabric_ri::scip::SymbolIdentity as S;
     let a = S::new("p", "local 1", Some("a.rs")).unwrap();
     let b = S::new("p", "local 1", Some("b.rs")).unwrap();
     assert_ne!(a.id, b.id);
@@ -167,8 +167,8 @@ fn admitted_symbols_include_external_relationship_targets() {
     assert!(symbols.iter().all(|s| s.document.is_none()));
     let edges = admitted.relationship_edges().unwrap();
     assert_eq!(edges.len(), 1);
-    assert_eq!(edges[0].relation, engorch_ri::graph::Relation::Implements);
-    assert_eq!(edges[0].quality, engorch_ri::graph::Quality::Declared);
+    assert_eq!(edges[0].relation, fabric_ri::graph::Relation::Implements);
+    assert_eq!(edges[0].quality, fabric_ri::graph::Quality::Declared);
     let from = symbols.iter().find(|s| s.raw == global).unwrap();
     let to = symbols.iter().find(|s| s.raw == target).unwrap();
     assert_eq!(edges[0].from, from.id);
@@ -218,7 +218,7 @@ fn relationship_flags_are_distinct_and_duplicate_declarations_coalesce() {
     let edges = admitted.relationship_edges().unwrap();
     assert_eq!(edges.len(), 4);
     let categories: std::collections::BTreeSet<_> = edges.iter().map(|e| e.relation).collect();
-    use engorch_ri::graph::Relation::*;
+    use fabric_ri::graph::Relation::*;
     assert_eq!(
         categories,
         [
@@ -273,10 +273,10 @@ fn binary_index_to_snapshot_preserves_local_scope_roles_and_source_binding() {
     .unwrap();
     let artifact = admitted.snapshot(&sources).unwrap();
     let loaded =
-        engorch_ri::snapshot::read(&artifact.bytes, &artifact.id, &manifest.source).unwrap();
+        fabric_ri::snapshot::read(&artifact.bytes, &artifact.id, &manifest.source).unwrap();
     assert_eq!(loaded.occurrences().records().len(), 4);
-    let a = engorch_ri::scip::SymbolIdentity::new("semantic", "local 1", Some("a.rs")).unwrap();
-    let b = engorch_ri::scip::SymbolIdentity::new("semantic", "local 1", Some("b.rs")).unwrap();
+    let a = fabric_ri::scip::SymbolIdentity::new("semantic", "local 1", Some("a.rs")).unwrap();
+    let b = fabric_ri::scip::SymbolIdentity::new("semantic", "local 1", Some("b.rs")).unwrap();
     assert_ne!(a.id, b.id);
     assert_eq!(loaded.occurrences().definitions(&a.id).len(), 1);
     assert_eq!(loaded.occurrences().references(&a.id).len(), 1);
@@ -286,7 +286,7 @@ fn binary_index_to_snapshot_preserves_local_scope_roles_and_source_binding() {
     assert_eq!(name.symbol, "local 1");
     assert_eq!(name.producer, "semantic");
     let handle =
-        engorch_ri::query::Snapshot::read(&artifact.bytes, &artifact.id, &manifest.source).unwrap();
+        fabric_ri::query::Snapshot::read(&artifact.bytes, &artifact.id, &manifest.source).unwrap();
     assert_eq!(
         handle
             .scip_symbol("semantic", "local 1", Some("a.rs"))
@@ -325,11 +325,11 @@ fn binary_index_to_snapshot_preserves_local_scope_roles_and_source_binding() {
         if record["kind"] == "node" && record["value"]["id"] == a.id {
             record["value"]["scip"]["symbol"] = "local 2".into();
         }
-        altered.extend(engorch_ri::canonical::encode(&record).unwrap());
+        altered.extend(fabric_ri::canonical::encode(&record).unwrap());
         altered.push(b'\n');
     }
-    let altered_hash = engorch_ri::canonical::hash("harness.ri.snapshot.v1", &altered);
-    assert!(engorch_ri::snapshot::read(&altered, &altered_hash, &manifest.source).is_err());
+    let altered_hash = fabric_ri::canonical::hash("harness.ri.snapshot.v1", &altered);
+    assert!(fabric_ri::snapshot::read(&altered, &altered_hash, &manifest.source).is_err());
     assert_eq!(artifact.bytes, admitted.snapshot(&sources).unwrap().bytes);
     sources.insert("a.rs".into(), b"fn z() {}".to_vec());
     assert!(admitted.snapshot(&sources).is_err());

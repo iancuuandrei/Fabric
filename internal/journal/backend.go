@@ -9,7 +9,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 )
 
 var sqliteHeader = []byte("SQLite format 3\x00")

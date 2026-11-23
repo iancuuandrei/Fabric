@@ -1,5 +1,5 @@
 //! Disk admission uses explicit artifact selection and exact input hashes.
-use engorch_ri::{
+use fabric_ri::{
     import::{self, Policy, Request},
     manifest::{Input, Manifest, Producer, Source},
     scip::wire,
@@ -59,16 +59,16 @@ fn explicit_disk_import_preserves_binding_and_rejects_substitution() {
         },
     };
     let artifact = import::build(make()).unwrap();
-    engorch_ri::query::Snapshot::read(&artifact.bytes, &artifact.id, &source).unwrap();
+    fabric_ri::query::Snapshot::read(&artifact.bytes, &artifact.id, &source).unwrap();
     let staging = root.join("snapshot.staging");
-    let message = engorch_ri::canonical::encode(&serde_json::json!({
+    let message = fabric_ri::canonical::encode(&serde_json::json!({
         "operation": "scip_import", "request": make(), "output_path": staging.to_str().unwrap()
     }))
     .unwrap();
     let invoke = || {
         use std::io::Write;
         use std::process::{Command, Stdio};
-        let mut child = Command::new(env!("CARGO_BIN_EXE_engorch-ri"))
+        let mut child = Command::new(env!("CARGO_BIN_EXE_fabric-ri"))
             .arg("--stdio")
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())

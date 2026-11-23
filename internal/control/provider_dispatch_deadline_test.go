@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"harness.local/engorch/internal/config"
+	"github.com/iancuuandrei/fabric/internal/config"
 )
 
 func TestOpenCodeProviderRuntimeContextAddsFiniteTotalDeadline(t *testing.T) {

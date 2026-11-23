@@ -5,7 +5,7 @@ import (
 	"errors"
 	"strings"
 
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 // RecoveryState describes an exact observation, not permission to retry writes.

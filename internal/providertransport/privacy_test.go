@@ -8,9 +8,9 @@ import (
 	"testing"
 	"time"
 
-	"harness.local/engorch/internal/access"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/providergateway"
+	"github.com/iancuuandrei/fabric/internal/access"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/providergateway"
 )
 
 func TestFiniteAdaptersRejectPrivacyDriftBeforeDispatch(t *testing.T) {

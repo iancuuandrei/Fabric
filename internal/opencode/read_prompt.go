@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 )
 
 // ReadPrompt establishes that the exact submitted user message is present.

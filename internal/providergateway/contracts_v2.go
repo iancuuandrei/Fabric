@@ -14,9 +14,9 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"harness.local/engorch/internal/access"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/access"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 // ErrCapabilityUnavailable is the stable fail-closed class returned when the

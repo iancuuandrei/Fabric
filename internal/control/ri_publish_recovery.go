@@ -3,10 +3,10 @@ package control
 import (
 	"context"
 	"errors"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/effects"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/ri"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/ri"
 )
 
 // RIPublishRecovery authorizes one explicit completion of exact pending bytes.

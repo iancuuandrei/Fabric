@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/runtime"
 )
 
 func TestExplorerSchemaRequiresStringSummaryOnWire(t *testing.T) {

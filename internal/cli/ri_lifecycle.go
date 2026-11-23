@@ -3,10 +3,10 @@ package cli
 import (
 	"context"
 	"errors"
-	"harness.local/engorch/internal/config"
-	"harness.local/engorch/internal/control"
-	"harness.local/engorch/internal/effects"
-	"harness.local/engorch/internal/ri"
+	"github.com/iancuuandrei/fabric/internal/config"
+	"github.com/iancuuandrei/fabric/internal/control"
+	"github.com/iancuuandrei/fabric/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/ri"
 	"io"
 	"path/filepath"
 )

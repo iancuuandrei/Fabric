@@ -5,7 +5,7 @@ import (
 	"errors"
 	"strings"
 
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 )
 
 // SnapshotRef binds a local artifact location to expected immutable provenance.

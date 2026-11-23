@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 )
 
 // PathQuery defines one producer/relation traversal and its resource limits.

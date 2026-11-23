@@ -34,7 +34,7 @@ impl std::error::Error for IdentifierTooLong {}
 ///
 /// # Examples
 /// ```
-/// use engorch_ri::identifiers::segments;
+/// use fabric_ri::identifiers::segments;
 /// assert_eq!(segments("HTMLParser_base64Encode").unwrap(),
 ///            ["html", "parser", "base64", "encode"]);
 /// ```

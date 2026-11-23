@@ -8,8 +8,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"harness.local/engorch/internal/repository"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 func TestCollectCandidateGoCorpusActualPinnedRI(t *testing.T) {

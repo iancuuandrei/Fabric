@@ -7,9 +7,9 @@ import (
 	"io"
 	"path/filepath"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/control"
-	"harness.local/engorch/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/control"
+	"github.com/iancuuandrei/fabric/internal/journal"
 )
 
 func inspectExport(ctx context.Context, root, id string, out io.Writer) error {

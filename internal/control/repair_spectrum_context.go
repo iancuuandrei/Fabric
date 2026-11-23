@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"strings"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/faultlocalization"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/faultlocalization"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 const repairContextSpectrumMaxBytes = 128 << 10

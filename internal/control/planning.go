@@ -9,12 +9,12 @@ import (
 	"strings"
 	"time"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/codexhost"
-	"harness.local/engorch/internal/codexruntime"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/codexhost"
+	"github.com/iancuuandrei/fabric/internal/codexruntime"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 // PlannerReceipt binds admitted planning output or a classified terminal
@@ -220,6 +220,16 @@ func ResumePlanning(ctx context.Context, path string) (snapshot Snapshot, err er
 		f := &runtime.Fake{}
 		defer f.Close()
 		r, err := f.Execute(ctx, i)
+		if err != nil {
+			return s, err
+		}
+		if err := Append(path, "plan.recorded", r); err != nil {
+			return s, err
+		}
+		return Inspect(path)
+	}
+	if isExternalRuntime(i.Profile.Runtime) {
+		r, err := executeExternalRole(ctx, path, s, i)
 		if err != nil {
 			return s, err
 		}

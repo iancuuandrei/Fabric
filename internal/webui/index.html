@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Fabric — Mission Control</title>
+<style>
+  :root {
+    --bg: #0b0e14;
+    --panel: #111622;
+    --panel-2: #161d2e;
+    --border: #232d45;
+    --text: #e6edf7;
+    --muted: #8b9bb4;
+    --accent: #6366f1;
+    --accent-hi: #818cf8;
+    --green: #22c55e;
+    --amber: #f59e0b;
+    --red: #ef4444;
+    --cyan: #06b6d4;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.45; }
+  button { font-family: inherit; cursor: pointer; border: 1px solid var(--border); background: var(--panel-2); color: var(--text); border-radius: 7px; padding: 7px 12px; font-size: 13px; transition: all .15s; }
+  button:hover { border-color: var(--accent-hi); background: #1d263d; }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+  button.primary:hover { background: var(--accent-hi); }
+  button.danger { border-color: rgba(239,68,68,.5); color: #fca5a5; }
+  button.danger:hover { background: rgba(239,68,68,.15); border-color: var(--red); }
+  button.success { background: rgba(34,197,94,.16); border-color: rgba(34,197,94,.5); color: #86efac; font-weight: 600; }
+  button.success:hover { background: rgba(34,197,94,.26); }
+  input, textarea, select { width: 100%; background: #0c1018; border: 1px solid var(--border); color: var(--text); border-radius: 7px; padding: 8px 10px; font-family: inherit; font-size: 13px; }
+  input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent-hi); }
+  code, pre { font-family: var(--mono); }
+
+  header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 22px; background: var(--panel); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 20; flex-wrap: wrap; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 16px; letter-spacing: -.01em; }
+  .logo { width: 26px; height: 26px; border-radius: 7px; background: linear-gradient(135deg, #6366f1, #06b6d4); display: grid; place-items: center; font-family: var(--mono); font-size: 13px; font-weight: 800; color: #fff; }
+  .pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; border: 1px solid var(--border); background: var(--panel-2); }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); }
+  .dot.ok { background: var(--green); box-shadow: 0 0 8px var(--green); }
+  .dot.warn { background: var(--amber); }
+  .dot.err { background: var(--red); }
+  .header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+  .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap: 12px; padding: 16px 22px 6px; }
+  .metric { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
+  .metric .label { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+  .metric .value { font-size: 22px; font-weight: 700; margin-top: 4px; font-family: var(--mono); }
+  .metric .sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  .board { display: grid; grid-template-columns: repeat(4, minmax(240px, 1fr)); gap: 14px; padding: 14px 22px 28px; overflow-x: auto; }
+  @media (max-width: 1080px) { .board { grid-template-columns: repeat(2, minmax(240px, 1fr)); } }
+  @media (max-width: 640px) { .board { grid-template-columns: 1fr; } }
+  .col { background: var(--panel); border: 1px solid var(--border); border-radius: 11px; display: flex; flex-direction: column; min-height: 420px; }
+  .col-head { display: flex; align-items: center; justify-content: space-between; padding: 11px 14px; border-bottom: 1px solid var(--border); font-weight: 600; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+  .col-count { background: var(--panel-2); border: 1px solid var(--border); border-radius: 999px; padding: 1px 8px; font-family: var(--mono); color: var(--text); }
+  .col-body { padding: 10px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+
+  .card { background: var(--panel-2); border: 1px solid var(--border); border-radius: 9px; padding: 11px 12px; cursor: pointer; transition: border-color .15s, transform .1s; }
+  .card:hover { border-color: var(--accent-hi); transform: translateY(-1px); }
+  .card.selected { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+  .card-top { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 6px; }
+  .id-tag { font-family: var(--mono); font-size: 11px; color: var(--cyan); }
+  .kind-badge { font-size: 10px; text-transform: uppercase; padding: 2px 6px; border-radius: 5px; font-weight: 700; border: 1px solid var(--border); }
+  .kind-agent { background: rgba(99,102,241,.18); color: #a5b4fc; border-color: rgba(99,102,241,.4); }
+  .kind-classic { background: rgba(6,182,212,.14); color: #67e8f9; border-color: rgba(6,182,212,.35); }
+  .card-title { font-weight: 600; font-size: 13px; color: var(--text); margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .card-meta { display: flex; flex-wrap: wrap; gap: 8px; font-size: 11px; color: var(--muted); font-family: var(--mono); }
+  .status-chip { padding: 1px 6px; border-radius: 4px; font-weight: 700; font-size: 10px; }
+  .st-ready { background: rgba(34,197,94,.16); color: #86efac; }
+  .st-warn { background: rgba(245,158,11,.16); color: #fcd34d; }
+  .st-err { background: rgba(239,68,68,.16); color: #fca5a5; }
+  .st-run { background: rgba(99,102,241,.22); color: #c7d2fe; }
+
+  .drawer-backdrop { position: fixed; inset: 0; background: rgba(4,6,11,.7); z-index: 40; display: none; justify-content: flex-end; }
+  .drawer-backdrop.open { display: flex; }
+  .drawer { width: min(760px, 100vw); height: 100vh; background: var(--panel); border-left: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
+  .drawer-head { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+  .drawer-tabs { display: flex; gap: 6px; padding: 10px 20px; border-bottom: 1px solid var(--border); background: #0e131e; flex-wrap: wrap; }
+  .tab { padding: 6px 11px; font-size: 12px; font-weight: 600; border-radius: 6px; border: 1px solid transparent; background: transparent; color: var(--muted); }
+  .tab.active { background: var(--panel-2); border-color: var(--border); color: var(--text); }
+  .drawer-body { padding: 18px 20px; overflow-y: auto; flex: 1; }
+  .drawer-foot { padding: 12px 20px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; background: #0e131e; }
+
+  .kv-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 16px; }
+  .kv { background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; padding: 9px 11px; }
+  .kv .k { font-size: 10px; text-transform: uppercase; color: var(--muted); }
+  .kv .v { font-size: 14px; font-weight: 700; font-family: var(--mono); margin-top: 2px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 16px; font-size: 12px; }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 600; font-size: 11px; text-transform: uppercase; }
+
+  pre.diff { background: #080b10; border: 1px solid var(--border); border-radius: 8px; padding: 12px; overflow-x: auto; font-size: 12px; line-height: 1.5; margin: 0; }
+  .d-add { color: #86efac; background: rgba(34,197,94,.11); display: block; }
+  .d-del { color: #fca5a5; background: rgba(239,68,68,.11); display: block; }
+  .d-hunk { color: #93c5fd; display: block; }
+  .d-ctx { color: #cbd5e1; display: block; }
+
+  .timeline { display: flex; flex-direction: column; gap: 8px; }
+  .ev-row { background: var(--panel-2); border: 1px solid var(--border); border-radius: 7px; padding: 8px 11px; display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 12px; }
+  .ev-kind { font-family: var(--mono); font-weight: 700; color: var(--accent-hi); }
+
+  .modal-backdrop { position: fixed; inset: 0; background: rgba(4,6,11,.76); z-index: 60; display: none; align-items: center; justify-content: center; padding: 16px; }
+  .modal-backdrop.open { display: flex; }
+  .modal { width: min(680px, 100%); max-height: 88vh; overflow-y: auto; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+  .modal h3 { margin: 0 0 14px; font-size: 16px; }
+  .field { margin-bottom: 12px; }
+  .field label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 4px; font-weight: 600; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .checks { display: flex; gap: 16px; margin: 10px 0 14px; flex-wrap: wrap; }
+  .checks label { display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; }
+  .checks input[type="checkbox"] { width: auto; }
+  .toast { position: fixed; bottom: 18px; right: 18px; background: var(--panel-2); border: 1px solid var(--accent); color: var(--text); padding: 10px 14px; border-radius: 8px; z-index: 90; display: none; font-size: 13px; box-shadow: 0 10px 30px rgba(0,0,0,.5); }
+  .empty { color: var(--muted); font-size: 12px; text-align: center; padding: 26px 10px; border: 1px dashed var(--border); border-radius: 8px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }
+</style>
+</head>
+<body id="app">
+<header>
+  <div class="brand">
+    <div class="logo">F</div>
+    <div>Fabric <span style="color:var(--muted);font-weight:500;">Mission Control</span></div>
+    <span id="doctorPill" class="pill" title="Click to inspect Fabric Doctor" style="cursor:pointer;"><span class="dot" id="doctorDot"></span><span id="doctorText">checking...</span></span>
+  </div>
+  <div class="header-actions">
+    <button type="button" id="graphBtn">Code Graph</button>
+    <button type="button" id="tokenBtn" title="Set in-memory Bearer token if server requires auth">Auth Token</button>
+    <button type="button" id="autoBtn">Auto-refresh: ON</button>
+    <button type="button" id="refreshBtn">Refresh</button>
+    <button type="button" class="primary" id="newRunBtn">+ New Agent Run</button>
+  </div>
+</header>
+
+<section class="metrics">
+  <div class="metric"><div class="label">Agent Episodes</div><div class="value" id="mEpisodes">0</div><div class="sub" id="mReadyRate">0% READY</div></div>
+  <div class="metric"><div class="label">Classic Runs</div><div class="value" id="mRuns">0</div><div class="sub">Replay-validated journals</div></div>
+  <div class="metric"><div class="label">Total Spend (Est.)</div><div class="value" id="mCost">$0.00</div><div class="sub" id="mTokens">0 tokens</div></div>
+  <div class="metric"><div class="label">Context Saved</div><div class="value" id="mSaved">0 KB</div><div class="sub">Observation masking</div></div>
+</section>
+
+<main class="board">
+  <section class="col"><div class="col-head"><span>Running / Active</span><span class="col-count" id="cActive">0</span></div><div class="col-body" id="colActive"></div></section>
+  <section class="col"><div class="col-head"><span>Verifying / Attention</span><span class="col-count" id="cAttention">0</span></div><div class="col-body" id="colAttention"></div></section>
+  <section class="col"><div class="col-head"><span>Ready to Merge</span><span class="col-count" id="cReady">0</span></div><div class="col-body" id="colReady"></div></section>
+  <section class="col"><div class="col-head"><span>Blocked / Failed</span><span class="col-count" id="cFailed">0</span></div><div class="col-body" id="colFailed"></div></section>
+</main>
+
+<div class="drawer-backdrop" id="drawerBg">
+  <aside class="drawer">
+    <div class="drawer-head">
+      <div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+          <span class="id-tag" id="dId"></span>
+          <span class="status-chip" id="dStatus"></span>
+        </div>
+        <div style="font-weight:700;font-size:15px;" id="dTitle"></div>
+      </div>
+      <button type="button" id="closeDrawer">Close</button>
+    </div>
+    <div class="drawer-tabs">
+      <button type="button" class="tab active" data-tab="packet">Review Packet</button>
+      <button type="button" class="tab" data-tab="diff">Diff</button>
+      <button type="button" class="tab" data-tab="checkpoints">Checkpoints &amp; Rewind</button>
+      <button type="button" class="tab" data-tab="events">Live Events</button>
+    </div>
+    <div class="drawer-body" id="drawerBody"></div>
+    <div class="drawer-foot" id="drawerFoot"></div>
+  </aside>
+</div>
+
+<div class="modal-backdrop" id="newModal">
+  <div class="modal">
+    <h3>Launch Production Agent Run</h3>
+    <div class="field"><label for="fObjective">Objective</label><textarea id="fObjective" rows="3" placeholder="Describe the concrete engineering task, bug fix, or feature..."></textarea></div>
+    <div class="row2">
+      <div class="field"><label for="fDialect">API Dialect (optional override)</label><select id="fDialect"><option value="">Use fabric.toml default</option><option value="anthropic">Anthropic</option><option value="openai">OpenAI / Compatible</option></select></div>
+      <div class="field"><label for="fModel">Model (optional override)</label><input id="fModel" placeholder="e.g. claude-sonnet-4-5 or gpt-5" /></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label for="fMaxUSD">Max Cost Budget (USD)</label><input id="fMaxUSD" type="number" step="0.25" value="2.00" /></div>
+      <div class="field"><label for="fMaxTurns">Max Turns</label><input id="fMaxTurns" type="number" value="24" /></div>
+    </div>
+    <div class="checks">
+      <label><input type="checkbox" id="fAllowCmd" checked /> Allow bounded test commands</label>
+      <label><input type="checkbox" id="fMutate" /> Run diff-scoped mutation audit</label>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;">
+      <button type="button" id="cancelNew">Cancel</button>
+      <button type="button" class="primary" id="submitNew">Launch Isolated Agent</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="graphModal">
+  <div class="modal">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <h3 style="margin:0;">Code Knowledge Graph &amp; Blast-Radius Explorer</h3>
+      <button type="button" id="closeGraph">Close</button>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:14px;">
+      <label for="impactQuery" class="sr-only">Symbol or file blast radius query</label>
+      <input id="impactQuery" placeholder="Trace symbol or file blast radius (e.g. Server or internal/agentloop/loop.go)" />
+      <button type="button" class="primary" id="impactBtn">Trace</button>
+    </div>
+    <div id="graphBody"><div class="empty">Building local Code Knowledge Graph...</div></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="/app.js"></script>
+</body>
+</html>

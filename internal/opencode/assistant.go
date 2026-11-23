@@ -5,7 +5,7 @@ import (
 	"errors"
 	"strings"
 
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 )
 
 // Binding is the controller-selected identity expected from message readback.

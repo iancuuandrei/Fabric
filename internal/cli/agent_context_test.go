@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/control"
+	"github.com/iancuuandrei/fabric/internal/control"
 )
 
 func TestAgentContextCLIActivationAndOptOut(t *testing.T) {

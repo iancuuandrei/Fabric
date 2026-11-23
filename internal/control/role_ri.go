@@ -1,6 +1,6 @@
 package control
 
-import "harness.local/engorch/internal/codexruntime"
+import "github.com/iancuuandrei/fabric/internal/codexruntime"
 
 type roleRIContext struct {
 	Binding     codexruntime.RIBinding `json:"binding"`

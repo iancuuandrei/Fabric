@@ -1,5 +1,5 @@
 //! Persistent frame boundaries, correlated failures and actual process liveness.
-use engorch_ri::{canonical, transport};
+use fabric_ri::{canonical, transport};
 use serde_json::{Value, json};
 use std::io::{Read, Write};
 
@@ -50,7 +50,7 @@ fn actual_process_responds_before_eof_and_continues_after_operation_error() {
         sync::mpsc,
         time::Duration,
     };
-    let mut child = Command::new(env!("CARGO_BIN_EXE_engorch-ri"))
+    let mut child = Command::new(env!("CARGO_BIN_EXE_fabric-ri"))
         .arg("--stdio-stream")
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())

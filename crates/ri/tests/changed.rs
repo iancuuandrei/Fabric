@@ -1,5 +1,5 @@
 //! Exact source/producer change separation tests.
-use engorch_ri::{changed, manifest::*};
+use fabric_ri::{changed, manifest::*};
 
 #[test]
 fn change_pages_stop_at_byte_budget_without_losing_continuation() {
@@ -71,12 +71,12 @@ fn source_changes_are_separate_from_producer_configuration() {
     assert!(second.next.is_none());
     assert!(diff.page(0, None).is_err());
     assert!(diff.page(129, None).is_err());
-    let old = engorch_ri::snapshot::build(before.clone(), &before.source, vec![], vec![], vec![])
-        .unwrap();
+    let old =
+        fabric_ri::snapshot::build(before.clone(), &before.source, vec![], vec![], vec![]).unwrap();
     let new =
-        engorch_ri::snapshot::build(after.clone(), &after.source, vec![], vec![], vec![]).unwrap();
-    let old = engorch_ri::query::Snapshot::read(&old.bytes, &old.id, &before.source).unwrap();
-    let new = engorch_ri::query::Snapshot::read(&new.bytes, &new.id, &after.source).unwrap();
+        fabric_ri::snapshot::build(after.clone(), &after.source, vec![], vec![], vec![]).unwrap();
+    let old = fabric_ri::query::Snapshot::read(&old.bytes, &old.id, &before.source).unwrap();
+    let new = fabric_ri::query::Snapshot::read(&new.bytes, &new.id, &after.source).unwrap();
     let page = old.changed_page(&new, 1, None).unwrap();
     let cursor = page["next_after"].as_str().unwrap();
     let next = old.changed_page(&new, 1, Some(cursor)).unwrap();

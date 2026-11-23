@@ -3,8 +3,8 @@ package control
 import (
 	"errors"
 
-	"harness.local/engorch/internal/access"
-	"harness.local/engorch/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/access"
+	"github.com/iancuuandrei/fabric/internal/runtime"
 )
 
 // ErrUsageQualification denies new calls whose enforced accounting is unqualified.

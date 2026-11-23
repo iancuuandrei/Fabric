@@ -7,10 +7,10 @@ import (
 	"sort"
 	"strings"
 
-	"harness.local/engorch/internal/engineeringplan"
-	"harness.local/engorch/internal/fileeffects"
-	"harness.local/engorch/internal/ri"
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/engineeringplan"
+	"github.com/iancuuandrei/fabric/internal/fileeffects"
+	"github.com/iancuuandrei/fabric/internal/ri"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 // observedCouplingReason names the two trustworthy derivation classes. C1/C3

@@ -3,7 +3,7 @@ package codexrpc
 import (
 	"context"
 	"encoding/json"
-	"harness.local/engorch/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/runtime"
 	"testing"
 )
 

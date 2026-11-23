@@ -10,7 +10,7 @@ import (
 	"sync/atomic"
 	"testing"
 
-	"harness.local/engorch/internal/providergateway"
+	"github.com/iancuuandrei/fabric/internal/providergateway"
 )
 
 func providerConfigurationFixture(protocol ProviderProtocol) ProviderConfigurationSpec {

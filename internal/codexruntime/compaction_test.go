@@ -13,9 +13,9 @@ import (
 	"testing"
 	"time"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/codexrpc"
-	"harness.local/engorch/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/codexrpc"
+	"github.com/iancuuandrei/fabric/internal/journal"
 )
 
 func makeCompactionNotification(method, threadID, turnID, itemID string) codexrpc.Message {

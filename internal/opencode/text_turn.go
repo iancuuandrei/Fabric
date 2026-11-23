@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 )
 
 // ReadTextTurn validates a dedicated session's single text-only turn. Tool-loop

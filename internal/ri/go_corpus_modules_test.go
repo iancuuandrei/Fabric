@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"harness.local/engorch/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/repository"
 )
 
 func TestGoCommittedCorpusExplicitModulesPreservesLegacyAndNestedOwnership(t *testing.T) {

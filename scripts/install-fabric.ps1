@@ -60,7 +60,7 @@ try {
         try { $manifest = $reader.ReadToEnd() | ConvertFrom-Json } finally { $reader.Dispose() }
         if ($manifest.version -ne $release.version -or $manifest.commit -ne $release.commit -or [long]$manifest.source_date_epoch -ne [long]$release.source_date_epoch -or $manifest.release_qualified -ne $false) { throw 'archive identity mismatch' }
         if ($manifest.platform.os + '/' + $manifest.platform.arch -ne $platform) { throw 'archive platform mismatch' }
-        $expectedComponents = @{ 'fabric' = 'fabric.exe'; 'engorch-ri' = 'engorch-ri.exe' }
+        $expectedComponents = @{ 'fabric' = 'fabric.exe'; 'fabric-ri' = 'fabric-ri.exe' }
         if (@($manifest.components).Count -ne 2) { throw 'archive component set is invalid' }
         $seenNames = @{}
         $seenPaths = @{}
@@ -84,7 +84,7 @@ try {
         }
     } finally { $zip.Dispose() }
     $stagedFiles = @(Get-ChildItem -LiteralPath $resolvedStage -Force | ForEach-Object { $_.Name })
-    if ($stagedFiles.Count -ne 2 -or -not ($stagedFiles -contains 'fabric.exe') -or -not ($stagedFiles -contains 'engorch-ri.exe')) { throw 'staged payload is incomplete' }
+    if ($stagedFiles.Count -ne 2 -or -not ($stagedFiles -contains 'fabric.exe') -or -not ($stagedFiles -contains 'fabric-ri.exe')) { throw 'staged payload is incomplete' }
     # Atomically rename the whole staging directory to the target; never move
     # individual binaries into place (avoids partial installs on failure).
     Move-Item -LiteralPath $resolvedStage -Destination $installRoot

@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"harness.local/engorch/internal/repository"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 // CandidateWorkspace creates a leased worktree, applies fixture files, and

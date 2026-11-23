@@ -6,8 +6,8 @@ import (
 	"errors"
 	"sort"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/writercontract"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/writercontract"
 )
 
 const promptRecipeCachePrefixV1 = "cache-prefix-v1"

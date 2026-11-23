@@ -10,8 +10,8 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/control"
-	"harness.local/engorch/internal/taskscheduler"
+	"github.com/iancuuandrei/fabric/internal/control"
+	"github.com/iancuuandrei/fabric/internal/taskscheduler"
 )
 
 func TestUsageScheduleArgument(t *testing.T) {

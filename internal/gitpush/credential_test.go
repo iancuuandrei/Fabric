@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/effects"
 )
 
 func TestCredentialScopeAndGitEnvironment(t *testing.T) {

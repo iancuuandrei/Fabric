@@ -1,5 +1,5 @@
 //! Lexical scope identity and exact byte admission regression tests.
-use engorch_ri::{
+use fabric_ri::{
     lexical_manifest::{LexicalFile, LexicalManifest},
     manifest::Source,
 };
@@ -7,7 +7,7 @@ use sha2::{Digest, Sha256};
 
 #[test]
 fn record_transport_exceeds_single_request_bound_and_rejects_torn_tail() {
-    use engorch_ri::{canonical, lexical_manifest::read_manifest};
+    use fabric_ri::{canonical, lexical_manifest::read_manifest};
     let mut manifest = fixture();
     let file = manifest.files[0].clone();
     manifest.files = (0..6000)
@@ -28,17 +28,16 @@ fn record_transport_exceeds_single_request_bound_and_rejects_torn_tail() {
     let id = manifest.id().unwrap();
     let decoded = read_manifest(bytes.as_slice(), &id, &manifest.source).unwrap();
     assert_eq!(decoded, manifest);
-    engorch_ri::lexical_manifest::verify_manifest(bytes.as_slice(), &manifest).unwrap();
+    fabric_ri::lexical_manifest::verify_manifest(bytes.as_slice(), &manifest).unwrap();
     assert!(
-        engorch_ri::lexical_manifest::verify_manifest(&bytes[..bytes.len() - 1], &manifest)
-            .is_err()
+        fabric_ri::lexical_manifest::verify_manifest(&bytes[..bytes.len() - 1], &manifest).is_err()
     );
     let mut extended = bytes.clone();
     extended.extend(b"{}\n");
-    assert!(engorch_ri::lexical_manifest::verify_manifest(extended.as_slice(), &manifest).is_err());
+    assert!(fabric_ri::lexical_manifest::verify_manifest(extended.as_slice(), &manifest).is_err());
     let mut substituted = manifest.clone();
     substituted.files[3000].bytes += 1;
-    assert!(engorch_ri::lexical_manifest::verify_manifest(bytes.as_slice(), &substituted).is_err());
+    assert!(fabric_ri::lexical_manifest::verify_manifest(bytes.as_slice(), &substituted).is_err());
     assert!(read_manifest(&bytes[..bytes.len() - 1], &id, &manifest.source).is_err());
     assert!(read_manifest(bytes.as_slice(), &"0".repeat(64), &manifest.source).is_err());
     let oversized = vec![b'a'; canonical::MAX_BYTES + 2];

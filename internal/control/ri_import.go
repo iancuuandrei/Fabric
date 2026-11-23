@@ -4,11 +4,11 @@ import (
 	"context"
 	"errors"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/effects"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/ri"
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/ri"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 // RIImportIntent binds the complete import payload to exact effect authorization.

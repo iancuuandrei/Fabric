@@ -8,9 +8,9 @@ import (
 	"testing"
 	"time"
 
-	"harness.local/engorch/internal/codexruntime"
-	"harness.local/engorch/internal/effects"
-	"harness.local/engorch/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/codexruntime"
+	"github.com/iancuuandrei/fabric/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/journal"
 )
 
 func qualifyLiveRIRoles(t *testing.T, path, store string) {

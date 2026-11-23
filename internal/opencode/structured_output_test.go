@@ -12,8 +12,8 @@ import (
 	"testing"
 	"time"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/contextbroker"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/contextbroker"
 )
 
 func TestStructuredOutputExpectationBindsCanonicalSchemaAndFormat(t *testing.T) {

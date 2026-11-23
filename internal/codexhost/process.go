@@ -13,9 +13,9 @@ import (
 	"sync"
 	"time"
 
-	"harness.local/engorch/internal/codexrpc"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/codexrpc"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 // Receipt records the configuration/feature/MCP admission subset read by audit.

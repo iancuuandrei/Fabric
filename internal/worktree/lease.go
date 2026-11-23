@@ -8,7 +8,7 @@ import (
 	"os"
 	"sync"
 
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 // Lease is an exclusive process-owned writer lock. It must span admission,

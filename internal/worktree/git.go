@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"harness.local/engorch/internal/gitexec"
+	"github.com/iancuuandrei/fabric/internal/gitexec"
 )
 
 type capture struct {

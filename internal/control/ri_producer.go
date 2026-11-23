@@ -3,12 +3,12 @@ package control
 import (
 	"context"
 	"errors"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/effects"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/repository"
-	"harness.local/engorch/internal/ri"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/ri"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 	"path/filepath"
 	"strings"
 )

@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
-	"harness.local/engorch/internal/effects"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 // Recover executes a separately authorized recovery from its exact observed

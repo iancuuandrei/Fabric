@@ -1,10 +1,10 @@
 [package]
-name = "engorch-ri"
+name = "fabric-ri"
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
-description = "Immutable repository evidence and navigation for EngOrch"
+description = "Immutable repository evidence and navigation for Fabric"
 
 [lints]
 workspace = true

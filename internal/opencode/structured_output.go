@@ -7,7 +7,7 @@ import (
 	"errors"
 	"strings"
 
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 )
 
 // StructuredOutputToolName is the stock OpenCode synthetic tool used for a

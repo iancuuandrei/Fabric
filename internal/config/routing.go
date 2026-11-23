@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"sort"
 
-	"harness.local/engorch/internal/modelpolicy"
-	"harness.local/engorch/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/modelpolicy"
+	"github.com/iancuuandrei/fabric/internal/runtime"
 )
 
 // Route returns only the explicitly configured role; it never borrows another

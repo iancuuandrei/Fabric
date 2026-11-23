@@ -9,7 +9,7 @@ import (
 	"slices"
 	"unicode/utf8"
 
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 )
 
 // AnthropicMessagesModelCapabilities is the model-bound subset implemented by

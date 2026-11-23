@@ -6,10 +6,10 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/evidencevalue"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/taskcontext"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/evidencevalue"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/taskcontext"
 )
 
 func taskSelectedFile(path string) taskcontext.SelectedFile {

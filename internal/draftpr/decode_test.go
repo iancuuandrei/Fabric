@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 )
 
 func TestDecodeHostedResponse(t *testing.T) {

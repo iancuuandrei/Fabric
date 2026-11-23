@@ -8,10 +8,10 @@ import (
 	"sort"
 	"testing"
 
-	"harness.local/engorch/internal/codexruntime"
-	"harness.local/engorch/internal/engineeringplan"
-	"harness.local/engorch/internal/taskscheduler"
-	"harness.local/engorch/internal/writercontract"
+	"github.com/iancuuandrei/fabric/internal/codexruntime"
+	"github.com/iancuuandrei/fabric/internal/engineeringplan"
+	"github.com/iancuuandrei/fabric/internal/taskscheduler"
+	"github.com/iancuuandrei/fabric/internal/writercontract"
 )
 
 func TestParallelSemanticCorrectionThenScopeReplanUsesSettledCorrection(t *testing.T) {

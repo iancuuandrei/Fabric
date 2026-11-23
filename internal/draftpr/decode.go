@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 )
 
 // DecodeObservation projects a complete GitHub pull response. It requires exact

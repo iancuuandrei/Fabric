@@ -7,10 +7,10 @@ import (
 	"sort"
 	"unicode/utf8"
 
-	"harness.local/engorch/internal/repository"
-	"harness.local/engorch/internal/safepath"
-	"harness.local/engorch/internal/taskcontext"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/taskcontext"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 const goCandidateModulePageBytes = 32 << 10

@@ -47,7 +47,7 @@ function Invoke-GoPackageBuild([string]$SelectedGo, [string]$SourceRoot, [string
     $oldGoOS, $oldGoArch, $oldCGO = $env:GOOS, $env:GOARCH, $env:CGO_ENABLED
     try {
         $env:GOOS, $env:GOARCH, $env:CGO_ENABLED = $Windows, $Amd64, '0'
-        Invoke-Checked $SelectedGo @('-C', $SourceRoot, 'build', '-trimpath', '-buildvcs=false', '-o', $OutputGo, './cmd/harness')
+        Invoke-Checked $SelectedGo @('-C', $SourceRoot, 'build', '-trimpath', '-buildvcs=false', '-o', $OutputGo, './cmd/fabric')
     } finally {
         $env:GOOS, $env:GOARCH, $env:CGO_ENABLED = $oldGoOS, $oldGoArch, $oldCGO
     }
@@ -60,7 +60,7 @@ function Invoke-RustPackageBuild([string]$SelectedCargo, [string]$SelectedRustc,
         $env:RUSTC = $SelectedRustc
         $env:RUSTC_WRAPPER = $null
         $env:RUSTC_WORKSPACE_WRAPPER = $null
-        Invoke-Checked $SelectedCargo @('build', '--locked', '--release', '--manifest-path', $manifestPath, '--config', "build.rustc-wrapper=''", '--config', "build.rustc-workspace-wrapper=''", '--target-dir', $TargetDir, '--target', $TestTarget, '--bin', 'engorch-ri')
+        Invoke-Checked $SelectedCargo @('build', '--locked', '--release', '--manifest-path', $manifestPath, '--config', "build.rustc-wrapper=''", '--config', "build.rustc-workspace-wrapper=''", '--target-dir', $TargetDir, '--target', $TestTarget, '--bin', 'fabric-ri')
     } finally {
         $env:RUSTC, $env:RUSTC_WRAPPER, $env:RUSTC_WORKSPACE_WRAPPER = $oldRustc, $oldWrapper, $oldWsWrapper
     }
@@ -184,10 +184,10 @@ if ($LASTEXITCODE -ne 0) { throw 'cargo metadata failed' }
 $metadata = $metadataText | ConvertFrom-Json
 $workspaceRoot = [System.IO.Path]::GetFullPath([string]$metadata.workspace_root)
 if ($workspaceRoot -ne $root) { throw 'Cargo workspace root differs from package source root' }
-$riPackage = @($metadata.packages | Where-Object { $_.targets.name -contains 'engorch-ri' })
-if ($riPackage.Count -ne 1) { throw 'Cargo metadata must identify exactly one engorch-ri package' }
-$goName = if ($GoOS -eq 'windows') { 'engorch.exe' } else { 'engorch' }
-$riName = if ($RustTarget -match 'windows') { 'engorch-ri.exe' } else { 'engorch-ri' }
+$riPackage = @($metadata.packages | Where-Object { $_.targets.name -contains 'fabric-ri' })
+if ($riPackage.Count -ne 1) { throw 'Cargo metadata must identify exactly one fabric-ri package' }
+$goName = if ($GoOS -eq 'windows') { 'fabric.exe' } else { 'fabric' }
+$riName = if ($RustTarget -match 'windows') { 'fabric-ri.exe' } else { 'fabric-ri' }
 $goOutput = Join-Path $bin.FullName $goName
 $riOutput = Join-Path $bin.FullName $riName
 Invoke-GoPackageBuild $goExe $root $goOutput $GoOS $GoArch
@@ -198,9 +198,9 @@ Copy-Item -LiteralPath $builtRI -Destination $riOutput
 $payload = @(
     'LICENSE', 'NOTICE', 'THIRD_PARTY.md', 'docs/guides/local-packaging.md',
     'docs/provenance/go-module-license-inventory.md',
-    'integrations/codex/engorch/.codex-plugin/plugin.json',
-    'integrations/codex/engorch/README.md',
-    'integrations/codex/engorch/skills/engorch/SKILL.md'
+    'integrations/codex/fabric/.codex-plugin/plugin.json',
+    'integrations/codex/fabric/README.md',
+    'integrations/codex/fabric/skills/fabric/SKILL.md'
 )
 $thirdParty = @(
     'third_party/pi-subagent-tasks/LICENSE',
@@ -259,12 +259,12 @@ if ($dependencyLicenseManifest.qualification.dependency_evidence_qualified -ne $
     throw 'dependency license inventory returned unexpected qualification labels'
 }
 $help = & $goOutput help 2>&1
-if ($LASTEXITCODE -ne 0 -or (($help | Out-String).Trim()).Length -eq 0) { throw 'engorch help smoke failed' }
+if ($LASTEXITCODE -ne 0 -or (($help | Out-String).Trim()).Length -eq 0) { throw 'fabric help smoke failed' }
 $riWire = & $riOutput 2>$null
-if ($LASTEXITCODE -ne 2) { throw 'engorch-ri usage smoke returned an unexpected status' }
+if ($LASTEXITCODE -ne 2) { throw 'fabric-ri usage smoke returned an unexpected status' }
 $riEnvelope = (($riWire | Out-String).Trim()) | ConvertFrom-Json
 if ($riEnvelope.version -ne 1 -or $riEnvelope.ok -ne $false -or $riEnvelope.error -notmatch '^usage:') {
-    throw 'engorch-ri usage smoke returned an unexpected envelope'
+    throw 'fabric-ri usage smoke returned an unexpected envelope'
 }
 $sourceAfter = Get-SourceIdentity $root $gitExe
 if (($sourceBefore | ConvertTo-Json -Compress) -ne ($sourceAfter | ConvertTo-Json -Compress)) {
@@ -301,7 +301,7 @@ $manifest = [ordered]@{
         rust_binary = $riName
     }
     dependency_licenses = $dependencyLicenseManifest.qualification
-    smoke = [ordered]@{ engorch_help = 'PASS'; engorch_ri_usage_envelope = 'PASS'; platform = "$GoOS/$GoArch" }
+    smoke = [ordered]@{ fabric_help = 'PASS'; fabric_ri_usage_envelope = 'PASS'; platform = "$GoOS/$GoArch" }
     files = @($records | Sort-Object path)
     limitations = @(
         'Local package only; no release, signature, tag, publication or installation was performed.',

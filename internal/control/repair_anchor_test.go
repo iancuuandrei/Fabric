@@ -9,9 +9,9 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/config"
-	"harness.local/engorch/internal/faultlocalization"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/config"
+	"github.com/iancuuandrei/fabric/internal/faultlocalization"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 func anchorSource(candidate, text string) worktree.SourceFile {

@@ -7,8 +7,8 @@ import (
 	"errors"
 	"time"
 
-	"harness.local/engorch/internal/contextbroker"
-	"harness.local/engorch/internal/toolbridge"
+	"github.com/iancuuandrei/fabric/internal/contextbroker"
+	"github.com/iancuuandrei/fabric/internal/toolbridge"
 )
 
 // OwnedServer retains the exact broker and credential used to construct its

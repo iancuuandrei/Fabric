@@ -2,14 +2,17 @@ package journal
 
 import (
 	"bytes"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"os"
+	"strconv"
 	"strings"
 
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 )
 
 const maxJournal = 64 << 20
@@ -37,6 +40,58 @@ type unsigned struct {
 
 func digest(e Event) (string, error) {
 	return canonical.Hash("harness.event.v1", unsigned{e.Version, e.Sequence, e.Previous, e.Kind, e.Payload})
+}
+
+func isSimpleCanonicalASCII(s string) bool {
+	if s == "" {
+		return false
+	}
+	for i := 0; i < len(s); i++ {
+		c := s[i]
+		if c < 0x20 || c > 0x7e || c == '"' || c == '\\' || c == '<' || c == '>' || c == '&' {
+			return false
+		}
+	}
+	return true
+}
+
+// fastDigestAndLineLen computes the exact canonical event hash and serialized
+// line length directly from an already-validated canonical e.Payload, avoiding
+// redundant full-payload JSON parse/sort/encode passes on the hot replay path.
+func fastDigestAndLineLen(e Event) (string, int, error) {
+	if !isSimpleCanonicalASCII(e.Kind) || !isSimpleCanonicalASCII(e.Previous) || (e.Hash != "" && !isSimpleCanonicalASCII(e.Hash)) {
+		h, err := digest(e)
+		if err != nil {
+			return "", 0, err
+		}
+		line, err := canonical.Bytes(e)
+		if err != nil {
+			return "", 0, err
+		}
+		return h, len(line), nil
+	}
+	seq := strconv.Itoa(e.Sequence)
+	// Exact canonical key order for unsigned: kind, payload, previous, sequence, version.
+	unsignedLen := len(`{"kind":"`) + len(e.Kind) + len(`","payload":`) + len(e.Payload) +
+		len(`,"previous":"`) + len(e.Previous) + len(`","sequence":`) + len(seq) + len(`,"version":1}`)
+	if unsignedLen > canonical.MaxBytes {
+		return "", 0, errors.New("event exceeds size bound")
+	}
+	h := sha256.New()
+	h.Write([]byte("harness.event.v1\n"))
+	h.Write([]byte(`{"kind":"`))
+	h.Write([]byte(e.Kind))
+	h.Write([]byte(`","payload":`))
+	h.Write(e.Payload)
+	h.Write([]byte(`,"previous":"`))
+	h.Write([]byte(e.Previous))
+	h.Write([]byte(`","sequence":`))
+	h.Write([]byte(seq))
+	h.Write([]byte(`,"version":1}`))
+	sum := hex.EncodeToString(h.Sum(nil))
+	// Exact canonical Event adds `"hash":"<64hex>",` right after `{`.
+	lineLen := unsignedLen + len(`"hash":"",`) + len(e.Hash)
+	return sum, lineLen, nil
 }
 
 // Replay validates all records or returns an error without returning a partial
@@ -72,7 +127,7 @@ func Replay(data []byte) ([]Event, error) {
 		if e.Version != 1 || e.Sequence != i+1 || e.Previous != previous || e.Kind == "" || len(e.Payload) == 0 || e.Payload[0] != '{' {
 			return nil, errors.New("invalid event envelope")
 		}
-		h, err := digest(e)
+		h, _, err := fastDigestAndLineLen(e)
 		if err != nil || h != e.Hash {
 			return nil, errors.New("event hash mismatch")
 		}

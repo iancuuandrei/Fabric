@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/hostenvironment"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/hostenvironment"
 )
 
 // HostAdmission binds the historical host observation and explicit controller

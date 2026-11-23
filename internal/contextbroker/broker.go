@@ -14,12 +14,12 @@ import (
 	"sync"
 	"unicode/utf8"
 
-	"harness.local/engorch/internal/candidatetools"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/repository"
-	"harness.local/engorch/internal/safepath"
-	"harness.local/engorch/internal/sourcetools"
+	"github.com/iancuuandrei/fabric/internal/candidatetools"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/sourcetools"
 )
 
 const (

@@ -94,7 +94,7 @@ if (-not $work.StartsWith($workPrefix, [StringComparison]::OrdinalIgnoreCase) -o
 }
 New-Item -ItemType Directory -Path $work | Out-Null
 $sourceDate = $timestamp.UtcDateTime.ToString('yyyy-MM-ddTHH:mm:ssZ')
-$ldflags = "-s -w -X harness.local/engorch/internal/buildinfo.Version=$Version -X harness.local/engorch/internal/buildinfo.Commit=$commit -X harness.local/engorch/internal/buildinfo.Date=$sourceDate"
+$ldflags = "-s -w -X github.com/iancuuandrei/fabric/internal/buildinfo.Version=$Version -X github.com/iancuuandrei/fabric/internal/buildinfo.Commit=$commit -X github.com/iancuuandrei/fabric/internal/buildinfo.Date=$sourceDate"
 $supportedPlatforms = @('windows-amd64', 'linux-amd64')
 if ($null -eq $Platforms -or $Platforms.Count -eq 0) {
     # Default: native host only. Go reports e.g. "windows/amd64".
@@ -156,7 +156,7 @@ foreach ($platformSpec in $selectedPlatformSpecs) {
     $stage = Join-Path $work (Join-Path $platformSpec.Name 'fabric')
     New-Item -ItemType Directory -Path $stage -Force | Out-Null
     $fabric = Join-Path $stage ('fabric' + $platformSpec.Extension)
-    $ri = Join-Path $stage ('engorch-ri' + $platformSpec.Extension)
+    $ri = Join-Path $stage ('fabric-ri' + $platformSpec.Extension)
     $savedGoOS, $savedGoArch, $savedCGO = $env:GOOS, $env:GOARCH, $env:CGO_ENABLED
     try {
         $env:GOOS, $env:GOARCH, $env:CGO_ENABLED = $platformSpec.GoOS, $platformSpec.GoArch, '0'
@@ -181,7 +181,7 @@ foreach ($platformSpec in $selectedPlatformSpecs) {
             $env:CARGO_ENCODED_RUSTFLAGS = $savedEncodedRustFlags + $separator + $encodedReleaseRustFlags
         }
         Push-Location $root
-        try { Invoke-Checked $Cargo @('build', '--manifest-path', (Join-Path $root 'Cargo.toml'), '--locked', '--release', '--target', $platformSpec.RustTarget, '--bin', 'engorch-ri') }
+        try { Invoke-Checked $Cargo @('build', '--manifest-path', (Join-Path $root 'Cargo.toml'), '--locked', '--release', '--target', $platformSpec.RustTarget, '--bin', 'fabric-ri') }
         finally { Pop-Location }
     } finally {
         if ([string]::IsNullOrEmpty($savedRustFlags)) {
@@ -195,7 +195,7 @@ foreach ($platformSpec in $selectedPlatformSpecs) {
             $env:CARGO_ENCODED_RUSTFLAGS = $savedEncodedRustFlags
         }
     }
-    $builtRI = Join-Path $env:CARGO_TARGET_DIR (Join-Path $platformSpec.RustTarget (Join-Path 'release' ('engorch-ri' + $platformSpec.Extension)))
+    $builtRI = Join-Path $env:CARGO_TARGET_DIR (Join-Path $platformSpec.RustTarget (Join-Path 'release' ('fabric-ri' + $platformSpec.Extension)))
     Copy-Item -LiteralPath (Resolve-ExistingFile $builtRI 'Rust RI binary') -Destination $ri
     $manifest = [ordered]@{
         schema_version = 1; product = 'Fabric'; version = $Version; commit = $commit; source_date_epoch = $epoch; created_utc = $sourceDate
@@ -203,10 +203,10 @@ foreach ($platformSpec in $selectedPlatformSpecs) {
         toolchain = [ordered]@{ go = $goVersion; cargo = $cargoVersion; rustc = $rustcVersion }
         components = @(
             [ordered]@{ name = 'fabric'; path = ('fabric' + $platformSpec.Extension); sha256 = Get-Sha256 $fabric },
-            [ordered]@{ name = 'engorch-ri'; path = ('engorch-ri' + $platformSpec.Extension); sha256 = Get-Sha256 $ri }
+            [ordered]@{ name = 'fabric-ri'; path = ('fabric-ri' + $platformSpec.Extension); sha256 = Get-Sha256 $ri }
         )
         release_qualified = $false
-        artifact_boundary = 'The archive bundles Fabric and engorch-ri only. It does not include a provider executable, credentials, a signature, a tag, or publication evidence.'
+        artifact_boundary = 'The archive bundles Fabric and fabric-ri only. It does not include a provider executable, credentials, a signature, a tag, or publication evidence.'
     }
     [System.IO.File]::WriteAllText((Join-Path $stage 'manifest.json'), (($manifest | ConvertTo-Json -Depth 8 -Compress) + "`n"), [System.Text.UTF8Encoding]::new($false))
     $archiveName = "fabric_$($Version.TrimStart('v'))_$($platformSpec.GoOS)_$($platformSpec.GoArch).zip"

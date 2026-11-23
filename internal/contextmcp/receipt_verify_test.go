@@ -10,10 +10,10 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/contextbroker"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/repository"
-	"harness.local/engorch/internal/toolbridge"
+	"github.com/iancuuandrei/fabric/internal/contextbroker"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/toolbridge"
 )
 
 func TestVerifyBackendReceiptAfterLaterCallsAndClosure(t *testing.T) {

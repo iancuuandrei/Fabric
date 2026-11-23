@@ -7,8 +7,8 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/evidencevalue"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/evidencevalue"
 )
 
 // EvidenceAutoPolicy is an opt-in finite EVC source acquisition template frozen

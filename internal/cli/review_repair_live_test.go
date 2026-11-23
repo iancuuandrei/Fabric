@@ -6,9 +6,9 @@ import (
 	"encoding/json"
 	"testing"
 
-	"harness.local/engorch/internal/control"
-	"harness.local/engorch/internal/effects"
-	"harness.local/engorch/internal/fileeffects"
+	"github.com/iancuuandrei/fabric/internal/control"
+	"github.com/iancuuandrei/fabric/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/fileeffects"
 )
 
 func seedNegativeReview(t *testing.T, ctx context.Context, root string, snapshot *control.Snapshot) {

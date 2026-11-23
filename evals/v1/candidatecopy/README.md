@@ -16,5 +16,5 @@ godotenv failure was not copied or counted as accepted. See the
 - Verifies destination `FilesID` equals source `FilesHash` with per-file hash+mode comparison; final source still expected under the read lease.
 - Emits JSON `candidate_id/files_hash/file_count/destination/workspace/worktree_id`.
 
-Build: `go build -o <exe> ./evals/v1/candidatecopy` (module `harness.local/engorch`; no product files changed).
+Build: `go build -o <exe> ./evals/v1/candidatecopy` (module `github.com/iancuuandrei/fabric`; no product files changed).
 Test: `go test ./evals/v1/candidatecopy` (real worktree fixtures, no providers).

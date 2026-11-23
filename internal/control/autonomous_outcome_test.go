@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/codexhost"
+	"github.com/iancuuandrei/fabric/internal/codexhost"
 )
 
 func TestAutonomousFailureClassificationUsesTypesNotProviderText(t *testing.T) {

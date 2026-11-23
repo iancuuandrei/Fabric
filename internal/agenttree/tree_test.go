@@ -6,7 +6,7 @@ import (
 	"sync"
 	"testing"
 
-	"harness.local/engorch/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/journal"
 )
 
 func TestReserveAndCommitChildBindsOpaqueIdentityToCanonicalPath(t *testing.T) {

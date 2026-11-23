@@ -5,12 +5,12 @@ import (
 	"errors"
 	"time"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/contextbroker"
-	"harness.local/engorch/internal/contextmcp"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/opencode"
-	"harness.local/engorch/internal/providerproxy"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/contextbroker"
+	"github.com/iancuuandrei/fabric/internal/contextmcp"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/opencode"
+	"github.com/iancuuandrei/fabric/internal/providerproxy"
 )
 
 type interruptShutdownLive struct {
@@ -123,7 +123,7 @@ func verifyOwnedInterruptShutdown(cfg ExecuteConfig, live interruptShutdownLive,
 	// Initiate cancellation on the exact owned root before waiting for local
 	// handlers. OpenCode owns the client side of any in-flight proxy request;
 	// waiting for that handler first could otherwise consume the deadline.
-	kick, stopRoot := context.WithCancel(context.Background())
+	kick, stopRoot := context.WithCancel(ctx)
 	stopRoot()
 	_ = process.CloseContext(kick)
 	if err := contextRunning.Close(ctx); err != nil {

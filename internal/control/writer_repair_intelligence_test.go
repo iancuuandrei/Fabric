@@ -4,9 +4,9 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/taskcontext"
-	"harness.local/engorch/internal/verification"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/taskcontext"
+	"github.com/iancuuandrei/fabric/internal/verification"
 )
 
 func recordedRepairFixture(t *testing.T) (Snapshot, *writerImplementationContext, *TaskContextRecord) {

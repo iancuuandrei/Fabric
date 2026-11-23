@@ -5,7 +5,7 @@ import (
 	"math/bits"
 	"sort"
 
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 )
 
 // Task declares exact dependency IDs; human titles never resolve dependencies.

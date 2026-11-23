@@ -5,9 +5,9 @@ import (
 	"sort"
 	"strings"
 
-	"harness.local/engorch/internal/repository"
-	"harness.local/engorch/internal/ri"
-	"harness.local/engorch/internal/taskcontext"
+	"github.com/iancuuandrei/fabric/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/ri"
+	"github.com/iancuuandrei/fabric/internal/taskcontext"
 )
 
 // Reserve the exact final record-ID width before hashing or journal admission.

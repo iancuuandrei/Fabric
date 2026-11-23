@@ -6,10 +6,10 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/agentcontrol"
-	"harness.local/engorch/internal/contextbroker"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/taskscheduler"
+	"github.com/iancuuandrei/fabric/internal/agentcontrol"
+	"github.com/iancuuandrei/fabric/internal/contextbroker"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/taskscheduler"
 )
 
 func TestInterruptShutdownAcceptsAdmittedBrokerCompletionAfterOpenPrefix(t *testing.T) {

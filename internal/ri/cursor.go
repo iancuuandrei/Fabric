@@ -2,7 +2,7 @@ package ri
 
 import (
 	"errors"
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 )
 
 func cursorAfter(token *string, snapshot, query string) (string, error) {

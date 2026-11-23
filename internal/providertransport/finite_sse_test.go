@@ -1,6 +1,6 @@
 package providertransport
 
-import "harness.local/engorch/internal/providergateway"
+import "github.com/iancuuandrei/fabric/internal/providergateway"
 
 func finiteSSETextResponse(adapter string) []byte {
 	switch adapter {

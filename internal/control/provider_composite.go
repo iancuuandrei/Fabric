@@ -5,15 +5,15 @@ import (
 	"errors"
 	"time"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/contextbroker"
-	"harness.local/engorch/internal/contextmcp"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/opencode"
-	"harness.local/engorch/internal/opencoderuntime"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/toolbridge"
-	"harness.local/engorch/internal/toolreceipts"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/contextbroker"
+	"github.com/iancuuandrei/fabric/internal/contextmcp"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/opencode"
+	"github.com/iancuuandrei/fabric/internal/opencoderuntime"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/toolbridge"
+	"github.com/iancuuandrei/fabric/internal/toolreceipts"
 )
 
 // The bound transport remains serial; this is waiting HTTP requests, not agent

@@ -4,8 +4,8 @@ import (
 	"errors"
 	"path/filepath"
 
-	"harness.local/engorch/internal/config"
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/config"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 // openCodeStateRootError is a safe preflight diagnostic. Its message carries

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"sort"
 
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 // ErrSemanticVocabularyUnsupported means the requested semantic vocabulary is

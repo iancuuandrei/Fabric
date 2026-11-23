@@ -6,9 +6,9 @@ import (
 	"io"
 	"sort"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/config"
-	"harness.local/engorch/internal/taskpool"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/config"
+	"github.com/iancuuandrei/fabric/internal/taskpool"
 )
 
 func poolStatus(ctx context.Context, configured *config.TaskPool, out io.Writer) error {

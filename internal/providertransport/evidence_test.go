@@ -12,7 +12,7 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/providergateway"
+	"github.com/iancuuandrei/fabric/internal/providergateway"
 )
 
 func TestResponseEvidenceRetainsExactPrivateBytesBeforeDecode(t *testing.T) {

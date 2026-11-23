@@ -5,9 +5,9 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/contextmcp"
-	"harness.local/engorch/internal/toolbridge"
-	"harness.local/engorch/internal/toolreceipts"
+	"github.com/iancuuandrei/fabric/internal/contextmcp"
+	"github.com/iancuuandrei/fabric/internal/toolbridge"
+	"github.com/iancuuandrei/fabric/internal/toolreceipts"
 )
 
 func TestExecutionMCPQueueDepthValidatesFallback(t *testing.T) {

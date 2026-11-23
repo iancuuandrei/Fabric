@@ -16,8 +16,8 @@ import (
 	"sync"
 	"time"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 // Process owns one local OpenCode root process. It grants no dispatch authority

@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"harness.local/engorch/internal/access"
+	"github.com/iancuuandrei/fabric/internal/access"
 )
 
 func TestPlanningRestartPreflightBeforeFirstEffect(t *testing.T) {

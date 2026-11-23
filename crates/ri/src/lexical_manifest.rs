@@ -221,7 +221,7 @@ impl LexicalFile {
         let oid = match object_format {
             "sha1" => {
                 use sha1::Digest as Sha1Digest;
-                let mut hash = sha1::Sha1::new();
+                let mut hash = sha1::Sha1::new(); // NOSONAR: Git SHA-1 object_format compatibility; content integrity is already verified with SHA-256 above
                 hash.update(header.as_bytes());
                 hash.update(bytes);
                 hash.finalize()

@@ -6,9 +6,9 @@ import (
 	"os"
 	"sync"
 
-	"harness.local/engorch/internal/codexrpc"
-	"harness.local/engorch/internal/repository"
-	"harness.local/engorch/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/codexrpc"
+	"github.com/iancuuandrei/fabric/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/runtime"
 )
 
 // Adapter owns one initialized server connection and one durable invocation.

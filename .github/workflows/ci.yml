@@ -1,0 +1,47 @@
+name: Fabric CI
+
+on:
+  push:
+    branches: [dev, main, fabric-overhaul]
+  pull_request:
+    branches: [dev, main]
+
+jobs:
+  go-tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
+        with:
+          go-version-file: 'go.mod'
+      - name: Verify go vet
+        run: go vet ./...
+      - name: Run Fabric core & v2 test suites
+        run: >
+          go test -count=1
+          ./internal/cost ./internal/sandbox ./internal/rewind ./internal/mutation
+          ./internal/codegraph ./internal/diagnostics ./internal/memory
+          ./internal/githubflow ./internal/bench ./internal/agentloop
+          ./internal/tournament ./internal/packet ./internal/webui
+          ./internal/api ./internal/mcpserver ./internal/integrations ./internal/runtimeutil
+          ./internal/gitexec ./internal/toolbridge ./pkg/fabric ./cmd/fabric
+          ./internal/journal ./internal/directapi ./internal/clauderuntime
+          ./internal/acpruntime ./internal/hooks ./internal/config
+          ./internal/agentcontext ./internal/doccheck
+      - name: Build fabric binary
+        run: go build -trimpath ./cmd/fabric
+
+  rust-ri:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: dtolnay/rust-toolchain@39008827e6b4319a349e9a42dfc90579dd25f1ca # stable
+      - name: Run Rust workspace checks & tests
+        run: |
+          cargo fmt --all -- --check
+          cargo test --workspace --locked
+          cargo build --release --locked --bin fabric-ri

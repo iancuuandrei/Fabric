@@ -6,7 +6,7 @@ import (
 	"errors"
 	"time"
 
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 // ObserveFinalized reads exact post-commit state without writing objects, refs or

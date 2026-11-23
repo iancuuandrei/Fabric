@@ -52,16 +52,16 @@ function New-FixtureRelease([string]$Directory, [string]$Version, [string]$Commi
     $fixtureToolchain = [ordered]@{ go = 'go version go1.27.1 windows/amd64'; cargo = 'cargo 1.94.1'; rustc = 'rustc 1.94.1' }
     foreach ($p in $selectedPlatformSpecs) {
         $fabricBytes = [System.Text.Encoding]::UTF8.GetBytes("fabric-stub $($p.Os)`n")
-        $riBytes = [System.Text.Encoding]::UTF8.GetBytes("engorch-ri-stub $($p.Os)`n")
+        $riBytes = [System.Text.Encoding]::UTF8.GetBytes("fabric-ri-stub $($p.Os)`n")
         $fabricName = 'fabric' + $p.Ext
-        $riName = 'engorch-ri' + $p.Ext
+        $riName = 'fabric-ri' + $p.Ext
         $manifest = [ordered]@{
             schema_version = 1; product = 'Fabric'; version = $Version; commit = $Commit; source_date_epoch = $Epoch
             platform = [ordered]@{ os = $p.Os; arch = $p.Arch; rust_target = $p.Rust }
             toolchain = [ordered]@{ go = $fixtureToolchain.go; cargo = $fixtureToolchain.cargo; rustc = $fixtureToolchain.rustc }
             components = @(
                 [ordered]@{ name = 'fabric'; path = $fabricName; sha256 = (Get-BytesSha256 $fabricBytes) },
-                [ordered]@{ name = 'engorch-ri'; path = $riName; sha256 = (Get-BytesSha256 $riBytes) }
+                [ordered]@{ name = 'fabric-ri'; path = $riName; sha256 = (Get-BytesSha256 $riBytes) }
             )
             release_qualified = $false
             artifact_boundary = 'test fixture only'
@@ -275,16 +275,16 @@ try {
         toolchain = [ordered]@{ go = 'go version go1.27.1 windows/amd64'; cargo = 'cargo 1.94.1'; rustc = 'rustc 1.94.1' }
         components = @(
             [ordered]@{ name = 'fabric'; path = 'fabric.exe'; sha256 = $fabricHash },
-            [ordered]@{ name = 'engorch-ri'; path = 'engorch-ri.exe'; sha256 = $riHash }
+            [ordered]@{ name = 'fabric-ri'; path = 'fabric-ri.exe'; sha256 = $riHash }
         )
         release_qualified = $false; artifact_boundary = 'test fixture only'
     }
     $wrongBytes = [System.Text.Encoding]::UTF8.GetBytes((($wrongManifest | ConvertTo-Json -Depth 8 -Compress) + "`n"))
     $fz = [System.Text.Encoding]::UTF8.GetBytes("fabric-stub windows`n")
-    $rz = [System.Text.Encoding]::UTF8.GetBytes("engorch-ri-stub windows`n")
+    $rz = [System.Text.Encoding]::UTF8.GetBytes("fabric-ri-stub windows`n")
     New-TinyZip $badZipPath @(
         @{ Name = 'fabric.exe'; Bytes = $fz },
-        @{ Name = 'engorch-ri.exe'; Bytes = $rz },
+        @{ Name = 'fabric-ri.exe'; Bytes = $rz },
         @{ Name = 'manifest.json'; Bytes = $wrongBytes }
     )
     $rebased = [System.IO.File]::ReadAllBytes($badZipPath)
@@ -302,7 +302,7 @@ try {
     $installTarget = Join-Path $fixtureRoot 'install-good-target'
     $installOut = & $installPsScript -ReleaseDirectory $good -InstallDirectory $installTarget 2>&1 | Out-String
     if ($installOut -notmatch 'PASS installed Fabric') { throw "legitimate install failed: $installOut" }
-    foreach ($name in @('fabric.exe', 'engorch-ri.exe')) {
+    foreach ($name in @('fabric.exe', 'fabric-ri.exe')) {
         if (-not (Test-Path -LiteralPath (Join-Path $installTarget $name) -PathType Leaf)) { throw "installed payload missing $name" }
     }
     $leftovers = @(Get-ChildItem -LiteralPath $fixtureRoot -Force -Filter '.fabric-install-*')
@@ -318,20 +318,20 @@ try {
     $winZip = Join-Path $traversal ("fabric_" + $version.Substring(1) + "_windows_amd64.zip")
     Remove-Item -LiteralPath $winZip -Force
     $fabricBytes = [System.Text.Encoding]::UTF8.GetBytes("fabric-stub windows`n")
-    $riBytes = [System.Text.Encoding]::UTF8.GetBytes("engorch-ri-stub windows`n")
+    $riBytes = [System.Text.Encoding]::UTF8.GetBytes("fabric-ri-stub windows`n")
     $manifestObj = [ordered]@{
         schema_version = 1; product = 'Fabric'; version = $version; commit = $commit; source_date_epoch = $epoch
         platform = [ordered]@{ os = 'windows'; arch = 'amd64'; rust_target = 'x86_64-pc-windows-gnu' }
         components = @(
             [ordered]@{ name = 'fabric'; path = 'fabric.exe'; sha256 = (Get-BytesSha256 $fabricBytes) },
-            [ordered]@{ name = 'engorch-ri'; path = 'engorch-ri.exe'; sha256 = (Get-BytesSha256 $riBytes) }
+            [ordered]@{ name = 'fabric-ri'; path = 'fabric-ri.exe'; sha256 = (Get-BytesSha256 $riBytes) }
         )
         release_qualified = $false; artifact_boundary = 'test fixture only'
     }
     $manifestBytes = [System.Text.Encoding]::UTF8.GetBytes((($manifestObj | ConvertTo-Json -Depth 8 -Compress) + "`n"))
     New-TinyZip $winZip @(
         @{ Name = 'fabric.exe'; Bytes = $fabricBytes },
-        @{ Name = 'engorch-ri.exe'; Bytes = $riBytes },
+        @{ Name = 'fabric-ri.exe'; Bytes = $riBytes },
         @{ Name = 'manifest.json'; Bytes = $manifestBytes },
         @{ Name = '../evil.exe'; Bytes = [System.Text.Encoding]::UTF8.GetBytes('evil') }
     )
@@ -354,7 +354,7 @@ try {
     New-TinyZip $dupZip @(
         @{ Name = 'fabric.exe'; Bytes = $fabricBytes },
         @{ Name = 'fabric.exe'; Bytes = $fabricBytes },
-        @{ Name = 'engorch-ri.exe'; Bytes = $riBytes },
+        @{ Name = 'fabric-ri.exe'; Bytes = $riBytes },
         @{ Name = 'manifest.json'; Bytes = $manifestBytes }
     )
     $dupBytes = [System.IO.File]::ReadAllBytes($dupZip)
@@ -377,15 +377,15 @@ try {
         schema_version = 1; product = 'Fabric'; version = $version; commit = $commit; source_date_epoch = $epoch
         platform = [ordered]@{ os = 'windows'; arch = 'amd64'; rust_target = 'x86_64-pc-windows-gnu' }
         components = @(
-            [ordered]@{ name = 'fabric'; path = 'engorch-ri.exe'; sha256 = (Get-BytesSha256 $riBytes) },
-            [ordered]@{ name = 'engorch-ri'; path = 'fabric.exe'; sha256 = (Get-BytesSha256 $fabricBytes) }
+            [ordered]@{ name = 'fabric'; path = 'fabric-ri.exe'; sha256 = (Get-BytesSha256 $riBytes) },
+            [ordered]@{ name = 'fabric-ri'; path = 'fabric.exe'; sha256 = (Get-BytesSha256 $fabricBytes) }
         )
         release_qualified = $false; artifact_boundary = 'test fixture only'
     }
     $swapManifestBytes = [System.Text.Encoding]::UTF8.GetBytes((($swapManifest | ConvertTo-Json -Depth 8 -Compress) + "`n"))
     New-TinyZip $swapZip @(
         @{ Name = 'fabric.exe'; Bytes = $fabricBytes },
-        @{ Name = 'engorch-ri.exe'; Bytes = $riBytes },
+        @{ Name = 'fabric-ri.exe'; Bytes = $riBytes },
         @{ Name = 'manifest.json'; Bytes = $swapManifestBytes }
     )
     $swapBytes = [System.IO.File]::ReadAllBytes($swapZip)
@@ -451,7 +451,7 @@ try {
         $shellTarget = Join-Path $fixtureRoot 'install-shell-target'
         & sh $installShScript $good $shellTarget
         if ($LASTEXITCODE -ne 0) { throw 'shell installer failed on legitimate fixture' }
-        foreach ($name in @('fabric', 'engorch-ri')) {
+        foreach ($name in @('fabric', 'fabric-ri')) {
             if (-not (Test-Path -LiteralPath (Join-Path $shellTarget $name) -PathType Leaf)) { throw "shell install missing $name" }
         }
         Write-Output 'PASS shell installer legitimate install'

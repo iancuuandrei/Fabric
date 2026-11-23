@@ -7,7 +7,7 @@ import (
 	"sort"
 	"strings"
 
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 // TreeEntry describes one immediate child, not a slash-separated full path.

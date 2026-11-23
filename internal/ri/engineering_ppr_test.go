@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/taskcontext"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/taskcontext"
 )
 
 // pprFixtureIDs returns fixed source/producer identities for PPR fixtures.

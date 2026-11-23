@@ -12,8 +12,8 @@ import (
 	"testing"
 	"time"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/gitlocal"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/gitlocal"
 )
 
 func TestStreamRejectsUncorrelatedAndInvalidFrames(t *testing.T) {

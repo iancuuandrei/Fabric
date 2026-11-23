@@ -5,8 +5,8 @@ import (
 	"errors"
 	"sort"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/engineeringplan"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/engineeringplan"
 )
 
 // RunCheckpoint is a payload-free projection of one validated controller

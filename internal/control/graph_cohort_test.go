@@ -1,7 +1,7 @@
 package control
 
 import (
-	"harness.local/engorch/internal/taskscheduler"
+	"github.com/iancuuandrei/fabric/internal/taskscheduler"
 	"testing"
 )
 

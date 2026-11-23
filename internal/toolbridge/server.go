@@ -493,44 +493,33 @@ func (s *Server) callTool(w http.ResponseWriter, request *http.Request, message 
 	// handle for disconnects, MCP notifications, and shutdown.
 	callParent, cancelParent := context.WithTimeout(request.Context(), s.callTimeout)
 	queueCtx := callParent
-	var cancelQueue context.CancelFunc
 	if s.queueWaitTimeout > 0 {
 		cancelParent()
 		callParent, cancelParent = context.WithCancel(request.Context())
+		var cancelQueue context.CancelFunc
 		queueCtx, cancelQueue = context.WithTimeout(callParent, s.queueWaitTimeout)
+		defer cancelQueue()
 	}
 	key := string(canonicalID)
 	admission, status := s.admitCall(key, cancelParent, queueCtx)
 	if status == callAdmissionFull {
 		cancelParent()
-		if cancelQueue != nil {
-			cancelQueue()
-		}
 		s.writeRPCError(w, http.StatusTooManyRequests, message.ID, -32000, "tool call concurrency limit reached")
 		return
 	}
 	if status == callAdmissionDuplicate {
 		cancelParent()
-		if cancelQueue != nil {
-			cancelQueue()
-		}
 		s.writeRPCError(w, http.StatusOK, message.ID, -32600, "duplicate active request id")
 		return
 	}
 	if status == callAdmissionClosing {
 		cancelParent()
-		if cancelQueue != nil {
-			cancelQueue()
-		}
 		http.Error(w, "server closing", http.StatusServiceUnavailable)
 		return
 	}
 	defer func() {
 		s.finishCall(admission)
 		cancelParent()
-		if cancelQueue != nil {
-			cancelQueue()
-		}
 	}()
 	if !s.waitForCall(admission) {
 		s.writeRPCError(w, http.StatusOK, message.ID, -32800, "request cancelled or timed out")

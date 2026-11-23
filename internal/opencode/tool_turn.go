@@ -11,11 +11,11 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"harness.local/engorch/internal/candidatetools"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/contextbroker"
-	"harness.local/engorch/internal/providergateway"
-	"harness.local/engorch/internal/sourcetools"
+	"github.com/iancuuandrei/fabric/internal/candidatetools"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/contextbroker"
+	"github.com/iancuuandrei/fabric/internal/providergateway"
+	"github.com/iancuuandrei/fabric/internal/sourcetools"
 )
 
 const toolTurnMaximumExactInteger = int64(9007199254740991)

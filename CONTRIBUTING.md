@@ -23,9 +23,11 @@ or demonstrated normal-use blockers. Avoid governance-only work packages and
 repeated benchmarks. The [roadmap](docs/roadmap/v2-product-plan.md) records the
 current product priorities.
 
-Use subagents only when explicitly requested or authorized for delegation.
-For implementation, independent review, and repair, use Muse Spark 1.3 Contributor High through OpenCode, exact route opencode-go/muse-spark-1.3-contributor with --variant high; do not use subscription Luna agents for these roles. Give writers explicit ownership
-and warn that other agents share the checkout. An uncertain route failure never permits repeating an effect or claiming success. If this route is unavailable, report the blocker rather than silently switching model or repeating an uncertain effect.
+Before calling it complete, challenge ownership, unnecessary abstractions,
+duplicated authority, explicit errors, reproducible failure, uncertainty and
+performance regressions. Use [AGENTS.md](AGENTS.md) and the
+[v2 product roadmap](docs/roadmap/v2-product-plan.md) for current architecture
+and component boundaries.
 
 ## Formatting and verification
 
@@ -61,14 +63,14 @@ errors, reproducible failure, uncertainty and performance regressions.
 
 Historical Muse recursive qualification uses a separately provisioned pinned
 OpenCode binary and S0 checkout. Its offline scaffolding preflight is opt-in with
-`ENGORCH_MUSE_RECURSIVE_PREFLIGHT=1`; live qualification has its own existing
+`FABRIC_MUSE_RECURSIVE_PREFLIGHT=1` (`ENGORCH_MUSE_RECURSIVE_PREFLIGHT=1` remains
+a fallback); live qualification has its own existing
 `ENGORCH_MUSE_RECURSIVE_LIVE` gate. Default source tests do not establish either
-qualification. Product first-run acceptance uses the stock Codex route described
-in the [real-task guide](docs/getting-started/real-task.md).
+qualification.
 
-Regenerate [CLI reference](docs/reference/cli.md) from `harness reference`; preserve
-UTF-8 and LF. Test fixtures create temporary independent repositories and never
-change the developer's checkout. [The documentation hub](docs/README.md)
-separates current guides, contracts, decisions and retained evidence.
-Security limitations are documented in the
-[trust boundary](docs/security/trust-boundary.md).
+Regenerate [CLI reference](docs/reference/cli.md) from `fabric reference` (using
+canonical JSON/markdown generation); preserve UTF-8 and LF. Test fixtures create
+temporary independent repositories and never change the developer's checkout.
+[The documentation hub](docs/README.md) separates human quickstarts, runtime
+guides, contracts, decisions and retained evidence. Security limitations are
+documented in the [trust boundary](docs/security/trust-boundary.md).

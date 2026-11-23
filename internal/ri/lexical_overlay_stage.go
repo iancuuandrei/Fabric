@@ -9,8 +9,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"harness.local/engorch/internal/gitlocal"
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/gitlocal"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 // StageLexicalOverlay writes verified changed bytes and a manifest into a fresh

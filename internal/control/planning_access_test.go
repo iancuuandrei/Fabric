@@ -5,10 +5,10 @@ import (
 	"path/filepath"
 	"testing"
 
-	"harness.local/engorch/internal/access"
-	"harness.local/engorch/internal/config"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/access"
+	"github.com/iancuuandrei/fabric/internal/config"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/runtime"
 )
 
 func accessCreation(t *testing.T) Creation {

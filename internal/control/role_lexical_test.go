@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/fileeffects"
+	"github.com/iancuuandrei/fabric/internal/fileeffects"
 )
 
 func TestRoleLexicalFallsBackToBaseForReviewAfterConfirmedCandidateChange(t *testing.T) {

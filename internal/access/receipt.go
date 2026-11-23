@@ -3,8 +3,8 @@ package access
 import (
 	"errors"
 
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 // Receipt records a controller-admitted terminal observation. RouteID binds the

@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	"harness.local/engorch/internal/effects"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 func TestDraftCrashWorker(t *testing.T) {

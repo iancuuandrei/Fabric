@@ -17,7 +17,7 @@ import (
 	"syscall"
 	"time"
 
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 )
 
 // Client reads a controller-selected local OpenCode server. It grants no model

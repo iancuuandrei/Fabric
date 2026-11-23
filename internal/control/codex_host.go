@@ -4,10 +4,10 @@ import (
 	"context"
 	"errors"
 
-	"harness.local/engorch/internal/codexhost"
-	"harness.local/engorch/internal/codexrpc"
-	"harness.local/engorch/internal/config"
-	"harness.local/engorch/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/codexhost"
+	"github.com/iancuuandrei/fabric/internal/codexrpc"
+	"github.com/iancuuandrei/fabric/internal/config"
+	"github.com/iancuuandrei/fabric/internal/runtime"
 )
 
 // startCodexRoleHost centralizes the controller's Codex admission order for

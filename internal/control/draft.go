@@ -3,11 +3,11 @@ package control
 import (
 	"errors"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/draftpr"
-	"harness.local/engorch/internal/effects"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/draftpr"
+	"github.com/iancuuandrei/fabric/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 // PreparedDraft binds the complete hosted proposal to its effect envelope.

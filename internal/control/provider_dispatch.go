@@ -11,23 +11,23 @@ import (
 	"sort"
 	"time"
 
-	"harness.local/engorch/internal/access"
-	"harness.local/engorch/internal/candidatetools"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/config"
-	"harness.local/engorch/internal/contextbroker"
-	"harness.local/engorch/internal/contextmcp"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/opencode"
-	"harness.local/engorch/internal/opencoderuntime"
-	"harness.local/engorch/internal/providercredential"
-	"harness.local/engorch/internal/providergateway"
-	"harness.local/engorch/internal/providerruntime"
-	"harness.local/engorch/internal/providertransport"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/safepath"
-	"harness.local/engorch/internal/toolbridge"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/access"
+	"github.com/iancuuandrei/fabric/internal/candidatetools"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/config"
+	"github.com/iancuuandrei/fabric/internal/contextbroker"
+	"github.com/iancuuandrei/fabric/internal/contextmcp"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/opencode"
+	"github.com/iancuuandrei/fabric/internal/opencoderuntime"
+	"github.com/iancuuandrei/fabric/internal/providercredential"
+	"github.com/iancuuandrei/fabric/internal/providergateway"
+	"github.com/iancuuandrei/fabric/internal/providerruntime"
+	"github.com/iancuuandrei/fabric/internal/providertransport"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/toolbridge"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 // staticExplorerQueueDepth grants the bounded serial FIFO transport queue
@@ -580,10 +580,12 @@ func replayPlannerProvider(s *Snapshot, event journal.Event) error {
 }
 
 func requireExecutableRoleRuntime(profile runtime.Profile) error {
-	if profile.Runtime == "provider-api" && profile.Role != "planner" {
+	switch profile.Runtime {
+	case "fake", "codex-app-server", "opencode-http", "provider-api", "claude-cli", "acp-stdio", "direct-api":
+		return nil
+	default:
 		return providergateway.ErrCapabilityUnavailable
 	}
-	return nil
 }
 
 type controllerCandidateLease interface {

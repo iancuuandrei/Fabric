@@ -11,8 +11,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"harness.local/engorch/internal/providergateway"
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/providergateway"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 const (

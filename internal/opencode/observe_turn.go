@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"harness.local/engorch/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/journal"
 )
 
 // TextTurnObservation is a validated persisted snapshot. It deliberately has no

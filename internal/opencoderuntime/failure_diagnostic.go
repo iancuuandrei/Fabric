@@ -5,8 +5,8 @@ import (
 	"errors"
 	"os"
 
-	"harness.local/engorch/internal/opencode"
-	"harness.local/engorch/internal/providergateway"
+	"github.com/iancuuandrei/fabric/internal/opencode"
+	"github.com/iancuuandrei/fabric/internal/providergateway"
 )
 
 // A sidecar preserves explanatory labels after the process exits. It is never

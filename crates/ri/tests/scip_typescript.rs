@@ -1,5 +1,5 @@
 //! Admission tests for the explicit scip-typescript 0.4.0 UTF-16 profile.
-use engorch_ri::{
+use fabric_ri::{
     manifest::{Input, Manifest, Producer, Source},
     scip::{self, wire},
 };
@@ -124,7 +124,7 @@ fn typescript_unspecified_maps_to_utf16_with_astral_coordinates() {
     .unwrap();
     assert_eq!(admitted.index().documents[0].position_encoding, 2);
     let artifact = admitted.snapshot(&sources).unwrap();
-    let loaded = engorch_ri::snapshot::read(&artifact.bytes, &artifact.id, &expected).unwrap();
+    let loaded = fabric_ri::snapshot::read(&artifact.bytes, &artifact.id, &expected).unwrap();
     let records = loaded.occurrences().records();
     assert_eq!(records.len(), 2);
     // UTF-16 columns [0,25,33] cross one astral surrogate pair, so the UTF-8
@@ -136,7 +136,7 @@ fn typescript_unspecified_maps_to_utf16_with_astral_coordinates() {
     assert_eq!(definition.spelling, "Greeting");
     assert_eq!(
         definition.span,
-        engorch_ri::occurrence::Span { start: 27, end: 35 }
+        fabric_ri::occurrence::Span { start: 27, end: 35 }
     );
     assert_eq!(
         &sources["library.ts"][definition.span.start..definition.span.end],
@@ -150,7 +150,7 @@ fn typescript_unspecified_maps_to_utf16_with_astral_coordinates() {
     let line0_len = LINE0.as_bytes().len() + 1;
     assert_eq!(
         reference.span,
-        engorch_ri::occurrence::Span {
+        fabric_ri::occurrence::Span {
             start: line0_len + 22,
             end: line0_len + 30
         }
@@ -278,7 +278,7 @@ fn typescript_synthetic_file_marker_drops_advisory_enclosing() {
     assert_eq!(raw.range, vec![0, 0, 0]);
     assert_eq!(raw.enclosing_range, vec![0, 9, 2, 0]);
     let artifact = admitted.snapshot(&sources).unwrap();
-    let loaded = engorch_ri::snapshot::read(&artifact.bytes, &artifact.id, &expected).unwrap();
+    let loaded = fabric_ri::snapshot::read(&artifact.bytes, &artifact.id, &expected).unwrap();
     let records = loaded.occurrences().records();
     assert_eq!(records.len(), 3);
     let expected_marker_id =
@@ -292,7 +292,7 @@ fn typescript_synthetic_file_marker_drops_advisory_enclosing() {
     // Exact byte coordinates are untouched: zero-length anchor at file start.
     assert_eq!(
         marker.span,
-        engorch_ri::occurrence::Span { start: 0, end: 0 }
+        fabric_ri::occurrence::Span { start: 0, end: 0 }
     );
     assert_eq!(marker.spelling, "");
     assert_eq!(

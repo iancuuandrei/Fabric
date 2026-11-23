@@ -8,12 +8,12 @@ import (
 	"sync"
 	"testing"
 
-	"harness.local/engorch/internal/access"
-	"harness.local/engorch/internal/agenttree"
-	"harness.local/engorch/internal/config"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/taskpool"
+	"github.com/iancuuandrei/fabric/internal/access"
+	"github.com/iancuuandrei/fabric/internal/agenttree"
+	"github.com/iancuuandrei/fabric/internal/config"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/taskpool"
 )
 
 func TestLifecycleUnresolvedIncludesGraphWriterHost(t *testing.T) {

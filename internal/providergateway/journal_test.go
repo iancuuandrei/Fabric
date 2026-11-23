@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/access"
+	"github.com/iancuuandrei/fabric/internal/access"
 )
 
 type gatewayFixture struct {

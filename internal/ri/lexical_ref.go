@@ -5,7 +5,7 @@ import (
 	"errors"
 	"path/filepath"
 
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 )
 
 // LexicalArtifactRef retains the manifest identity instead of its complete file

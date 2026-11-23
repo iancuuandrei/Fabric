@@ -1,9 +1,9 @@
 package cli
 
 import (
-	"harness.local/engorch/internal/config"
-	"harness.local/engorch/internal/control"
-	"harness.local/engorch/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/config"
+	"github.com/iancuuandrei/fabric/internal/control"
+	"github.com/iancuuandrei/fabric/internal/runtime"
 	"os"
 	"path/filepath"
 	"strings"

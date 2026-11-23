@@ -8,9 +8,9 @@ import (
 	"path/filepath"
 	"strconv"
 
-	"harness.local/engorch/internal/control"
-	"harness.local/engorch/internal/taskpool"
-	"harness.local/engorch/internal/taskscheduler"
+	"github.com/iancuuandrei/fabric/internal/control"
+	"github.com/iancuuandrei/fabric/internal/taskpool"
+	"github.com/iancuuandrei/fabric/internal/taskscheduler"
 )
 
 func schedulePath(root, id string) (string, error) {

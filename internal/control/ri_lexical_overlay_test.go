@@ -8,8 +8,8 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/effects"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 func TestJournaledLexicalOverlayAndLostObservationRecovery(t *testing.T) {

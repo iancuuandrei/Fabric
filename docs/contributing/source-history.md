@@ -2,7 +2,7 @@
 
 **Audience:** contributors and release operators.  
 **Authority:** this document defines repository history and publication policy.
-**Automation:** [`automation:fabric-v1-sol-supervisor`](../../.github/workflows/automation-pr.yml).
+**Automation:** historical v1 automation (`automation:fabric-v1-sol-supervisor`, retired in v2.0.0; `main` and `dev` are now synchronized directly).
 
 ## Two views of the same source
 

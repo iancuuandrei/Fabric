@@ -13,8 +13,8 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"harness.local/engorch/internal/gitexec"
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/gitexec"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 // SourceChunk preserves exact committed blob bytes as base64 and binds each

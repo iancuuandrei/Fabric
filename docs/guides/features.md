@@ -103,7 +103,7 @@ qualified by the earlier eight-task ledger.
 | Durable continuation | Candidate-bound checkpoints, fresh-context rounds and run-scoped pause/resume/cancel requests | [Checkpoints](checkpoints.md), [fresh rounds](verified-fresh-rounds.md); pause requests do not themselves terminate admitted processes or settle uncertain effects |
 | Native compaction | Explicit Codex runtime compaction threshold and observed lifecycle evidence | [Compaction](native-auto-compaction.md); Fabric does not make conversation summaries authoritative |
 | Agent coordination | Repository-local task schedules, resource ceilings, bounded messages and queued explorer spawn/follow-up | [Schedules](task-schedules.md), [CLI reference](../reference/cli.md); queued admission does not prove completed recursive execution |
-| Runtime integrations | Configured Codex, OpenCode and direct-provider routes; a source-local Codex skill | [Codex integration](../../integrations/codex/engorch/README.md), [OpenCode deadlines](opencode-deadlines.md); runtime/provider/host qualification is specific to the recorded route |
+| Runtime integrations | Configured Codex, OpenCode and direct-provider routes; a source-local Codex skill | [Codex integration](../../integrations/codex/fabric/README.md), [OpenCode deadlines](opencode-deadlines.md); runtime/provider/host qualification is specific to the recorded route |
 | Packaging | Windows release bundles, integrity verification, installation and version-specific upgrades | [Release guide](release.md); unsigned artifacts and a successful build do not establish release acceptance, Linux remains unqualified |
 
 ## Verified outcomes and remaining work

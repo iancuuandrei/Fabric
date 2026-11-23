@@ -10,6 +10,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"sync"
 )
 
@@ -123,4 +124,39 @@ func CommandContext(ctx context.Context, args ...string) *exec.Cmd {
 	// execution itself to the resolved absolute path.
 	command.Args[0] = "git"
 	return command
+}
+
+// DiffWorktreeWithTempIndex computes the complete diff against baseRef (including
+// untracked files) using an isolated temporary index so workDir/.git/index is
+// never modified.
+func DiffWorktreeWithTempIndex(ctx context.Context, workDir, baseRef string, extraDiffArgs ...string) ([]byte, error) {
+	if baseRef == "" {
+		baseRef = "HEAD"
+	}
+	tmpDir, err := os.MkdirTemp("", "fabric-git-idx-*")
+	if err != nil {
+		return nil, err
+	}
+	defer os.RemoveAll(tmpDir)
+
+	env := append(os.Environ(), "GIT_INDEX_FILE="+filepath.Join(tmpDir, "index"))
+	runEnv := func(args ...string) ([]byte, error) {
+		cmd := CommandContext(ctx, append([]string{"-C", workDir}, args...)...)
+		cmd.Env = env
+		return cmd.CombinedOutput()
+	}
+	if out, err := runEnv("read-tree", baseRef); err != nil {
+		return nil, fmt.Errorf("read-tree %s: %w: %s", baseRef, err, strings.TrimSpace(string(out)))
+	}
+	if out, err := runEnv("add", "-A"); err != nil {
+		return nil, fmt.Errorf("stage temp index: %w: %s", err, strings.TrimSpace(string(out)))
+	}
+	args := []string{"diff", "--cached"}
+	args = append(args, extraDiffArgs...)
+	args = append(args, baseRef, "--")
+	out, err := runEnv(args...)
+	if err != nil {
+		return nil, fmt.Errorf("git diff temp index: %w: %s", err, strings.TrimSpace(string(out)))
+	}
+	return out, nil
 }

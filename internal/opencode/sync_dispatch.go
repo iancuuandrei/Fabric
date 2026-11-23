@@ -6,8 +6,8 @@ import (
 	"errors"
 	"net/http"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/journal"
 )
 
 // SynchronousTextTurnObservation is a validated persisted snapshot. It is not

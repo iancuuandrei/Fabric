@@ -2,7 +2,7 @@ package control
 
 import (
 	"errors"
-	"harness.local/engorch/internal/ri"
+	"github.com/iancuuandrei/fabric/internal/ri"
 )
 
 // BindRIProducerImport attaches confirmed producer provenance to an import plan.

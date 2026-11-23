@@ -8,12 +8,12 @@ import (
 	"testing"
 	"time"
 
-	"harness.local/engorch/internal/agenttree"
-	"harness.local/engorch/internal/engineeringplan"
-	"harness.local/engorch/internal/memoryadmission"
-	"harness.local/engorch/internal/opencoderuntime"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/taskscheduler"
+	"github.com/iancuuandrei/fabric/internal/agenttree"
+	"github.com/iancuuandrei/fabric/internal/engineeringplan"
+	"github.com/iancuuandrei/fabric/internal/memoryadmission"
+	"github.com/iancuuandrei/fabric/internal/opencoderuntime"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/taskscheduler"
 )
 
 // Overlap regression: two disjoint isolated OpenCode writers must genuinely

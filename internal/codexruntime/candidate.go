@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 
-	"harness.local/engorch/internal/candidatetools"
+	"github.com/iancuuandrei/fabric/internal/candidatetools"
 )
 
 // CandidateBinding pins mutable workspace reads to an exact admitted candidate.

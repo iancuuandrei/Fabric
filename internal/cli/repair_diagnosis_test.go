@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/control"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/control"
 )
 
 func TestPreviousRepairAnchorsBindRunAndBoundFile(t *testing.T) {

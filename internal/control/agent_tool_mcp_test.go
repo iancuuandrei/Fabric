@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"harness.local/engorch/internal/agentcontrol"
-	"harness.local/engorch/internal/toolbridge"
+	"github.com/iancuuandrei/fabric/internal/agentcontrol"
+	"github.com/iancuuandrei/fabric/internal/toolbridge"
 )
 
 func TestAgentToolProjectionAcceptsMCPWireArguments(t *testing.T) {

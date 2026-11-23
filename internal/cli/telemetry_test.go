@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	engtelemetry "harness.local/engorch/internal/telemetry"
+	engtelemetry "github.com/iancuuandrei/fabric/internal/telemetry"
 )
 
 func TestExecuteExportsCommandSpanWithoutArguments(t *testing.T) {

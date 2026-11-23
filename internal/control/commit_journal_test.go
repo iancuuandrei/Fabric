@@ -6,9 +6,9 @@ import (
 	"os/exec"
 	"testing"
 
-	"harness.local/engorch/internal/config"
-	"harness.local/engorch/internal/effects"
-	"harness.local/engorch/internal/gitlocal"
+	"github.com/iancuuandrei/fabric/internal/config"
+	"github.com/iancuuandrei/fabric/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/gitlocal"
 )
 
 func TestCommitIntentIsDurableAndDoesNotExecute(t *testing.T) {

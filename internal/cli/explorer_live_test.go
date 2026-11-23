@@ -5,9 +5,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"harness.local/engorch/internal/codexruntime"
-	"harness.local/engorch/internal/control"
-	"harness.local/engorch/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/codexruntime"
+	"github.com/iancuuandrei/fabric/internal/control"
+	"github.com/iancuuandrei/fabric/internal/journal"
 )
 
 func assertExplorerReads(t *testing.T, s control.Snapshot) {

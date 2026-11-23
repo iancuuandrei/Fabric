@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/config"
-	"harness.local/engorch/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/config"
+	"github.com/iancuuandrei/fabric/internal/runtime"
 )
 
 func TestPlannerInvocationContractPreservesLegacyInput(t *testing.T) {

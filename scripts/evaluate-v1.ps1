@@ -90,7 +90,7 @@ are published.
 param(
     [ValidateSet('Prepare', 'Evaluate')][string]$Action = 'Prepare',
     [string]$FabricExe,
-    [string]$GoExe = 'D:\dev\EngOrch-toolchains\go\1.27.1\go\bin\go.exe',
+    [string]$GoExe = 'D:\dev\Fabric-toolchains\go\1.27.1\go\bin\go.exe',
     [string]$CodexExe,
     [string]$Model,
     [ValidateSet('Native', 'PR5Matched')][string]$EvalMode = 'Native',

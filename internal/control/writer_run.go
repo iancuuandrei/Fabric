@@ -7,15 +7,15 @@ import (
 	"path/filepath"
 	"time"
 
-	"harness.local/engorch/internal/candidatetools"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/codexhost"
-	"harness.local/engorch/internal/codexruntime"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/safepath"
-	"harness.local/engorch/internal/taskscheduler"
-	"harness.local/engorch/internal/worktree"
-	"harness.local/engorch/internal/writercontract"
+	"github.com/iancuuandrei/fabric/internal/candidatetools"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/codexhost"
+	"github.com/iancuuandrei/fabric/internal/codexruntime"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/taskscheduler"
+	"github.com/iancuuandrei/fabric/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/writercontract"
 )
 
 // RunWriter runs or resumes a configured Codex proposal invocation, then records
@@ -110,6 +110,20 @@ func RunWriter(ctx context.Context, path string) (WriterRecord, error) {
 		} else if invocation.Profile.Runtime != "codex-app-server" {
 			return WriterRecord{}, errors.New("parallel graph writers currently require the Codex app-server runtime")
 		}
+	}
+	if isExternalRuntime(invocation.Profile.Runtime) {
+		result, err := executeExternalRole(ctx, path, s, invocation)
+		if err != nil {
+			return WriterRecord{}, err
+		}
+		return RecordWriterProposal(ctx, path, invocation, result)
+	}
+	if invocation.Profile.Runtime == "provider-api" {
+		result, err := executeDirectProviderRole(ctx, path, s, invocation, "")
+		if err != nil {
+			return WriterRecord{}, err
+		}
+		return RecordWriterProposal(ctx, path, invocation, result)
 	}
 	if invocation.Profile.Runtime == "opencode-http" {
 		if taskID == "" {

@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/access"
-	"harness.local/engorch/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/access"
+	"github.com/iancuuandrei/fabric/internal/runtime"
 )
 
 func TestExplicitAccessConfiguration(t *testing.T) {

@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	"harness.local/engorch/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/runtime"
 )
 
 func TestTurnOutputRequiresCompletedFinalAnswer(t *testing.T) {

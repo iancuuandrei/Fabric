@@ -12,11 +12,11 @@ import (
 	"testing"
 
 	"github.com/pelletier/go-toml/v2"
-	"harness.local/engorch/internal/access"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/config"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/writercontract"
+	"github.com/iancuuandrei/fabric/internal/access"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/config"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/writercontract"
 )
 
 func TestCodexInitAddsOnlyExplicitIndependentFixerRoute(t *testing.T) {

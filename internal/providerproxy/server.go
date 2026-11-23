@@ -18,13 +18,13 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"harness.local/engorch/internal/access"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/opencode"
-	"harness.local/engorch/internal/providercredential"
-	"harness.local/engorch/internal/providergateway"
-	"harness.local/engorch/internal/providertransport"
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/access"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/opencode"
+	"github.com/iancuuandrei/fabric/internal/providercredential"
+	"github.com/iancuuandrei/fabric/internal/providergateway"
+	"github.com/iancuuandrei/fabric/internal/providertransport"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 const (

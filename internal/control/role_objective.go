@@ -3,7 +3,7 @@ package control
 import (
 	"encoding/json"
 	"errors"
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 	"strings"
 )
 

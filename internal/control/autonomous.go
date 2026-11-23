@@ -5,9 +5,9 @@ import (
 	"errors"
 	"fmt"
 
-	"harness.local/engorch/internal/agenttree"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/agenttree"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/effects"
 )
 
 // AutonomousRepair records a bounded, candidate-specific repair iteration.
@@ -235,6 +235,9 @@ func RunAutonomous(ctx context.Context, path string) (result Snapshot, failure e
 	defer func() {
 		if failure != nil {
 			failure = ClassifyAutonomousFailure(result, failure)
+			_ = runLifecycleHooks(context.WithoutCancel(ctx), result, "on_blocked")
+		} else if result.State == "READY" {
+			_ = runLifecycleHooks(context.WithoutCancel(ctx), result, "on_ready")
 		}
 	}()
 	s, err := Inspect(path)

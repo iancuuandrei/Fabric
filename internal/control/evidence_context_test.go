@@ -7,9 +7,9 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/evidencevalue"
-	"harness.local/engorch/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/evidencevalue"
+	"github.com/iancuuandrei/fabric/internal/journal"
 )
 
 func evidenceContextFixtureRequest(t *testing.T, path string) EvidenceContextRequest {

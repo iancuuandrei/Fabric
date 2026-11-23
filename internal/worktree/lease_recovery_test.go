@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/effects"
 )
 
 func TestLeaseAdoptionRequiresQuiescenceTokenAndKernelExclusion(t *testing.T) {

@@ -3,9 +3,9 @@ package opencoderuntime
 import (
 	"errors"
 
-	"harness.local/engorch/internal/contextmcp"
-	"harness.local/engorch/internal/toolbridge"
-	"harness.local/engorch/internal/toolreceipts"
+	"github.com/iancuuandrei/fabric/internal/contextmcp"
+	"github.com/iancuuandrei/fabric/internal/toolbridge"
+	"github.com/iancuuandrei/fabric/internal/toolreceipts"
 )
 
 func executionProviderTools(cfg ExecuteConfig, plan SessionPlan) ([]toolbridge.ToolDefinition, error) {

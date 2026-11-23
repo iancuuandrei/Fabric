@@ -7,8 +7,8 @@ import (
 	"testing"
 	"unicode/utf8"
 
-	"harness.local/engorch/internal/config"
-	"harness.local/engorch/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/config"
+	"github.com/iancuuandrei/fabric/internal/runtime"
 )
 
 func TestWriterReceivesExecutedVerificationFailure(t *testing.T) {

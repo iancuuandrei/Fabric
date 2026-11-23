@@ -13,18 +13,26 @@ import (
 	"strings"
 
 	"github.com/pelletier/go-toml/v2"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/config"
-	"harness.local/engorch/internal/modelpolicy"
-	"harness.local/engorch/internal/repository"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/writercontract"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/config"
+	"github.com/iancuuandrei/fabric/internal/modelpolicy"
+	"github.com/iancuuandrei/fabric/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/writercontract"
 )
 
 func initCommand(ctx context.Context, root string, args []string, out io.Writer) error {
 	flags := flag.NewFlagSet("init", flag.ContinueOnError)
 	flags.SetOutput(io.Discard)
 	binary := flags.String("codex", "", "Codex executable")
+	autoInit := flags.Bool("auto", false, "auto-detect best available local runtime (claude, api key, codex)")
+	useClaude := flags.Bool("claude", false, "configure local Claude Code CLI (auto-discovered on PATH)")
+	claudeBin := flags.String("claude-bin", "", "explicit Claude Code CLI executable path")
+	acpBin := flags.String("acp", "", "Agent Client Protocol (ACP) stdio agent executable")
+	acpArgs := flags.String("acp-args", "", "optional whitespace-separated arguments for ACP executable")
+	apiDialect := flags.String("api", "", "direct HTTP API dialect (anthropic or openai)")
+	apiBaseURL := flags.String("base-url", "", "custom base URL for --api (e.g. OpenRouter, Ollama, LiteLLM)")
+	apiKeyEnv := flags.String("api-key-env", "", "environment variable name holding the API key for --api")
 	model := flags.String("model", "", "model identifier")
 	effort := flags.String("effort", "medium", "reasoning effort")
 	writerModel := flags.String("writer-model", "", "writer model; defaults to --model")
@@ -44,6 +52,21 @@ func initCommand(ctx context.Context, root string, args []string, out io.Writer)
 	}
 	if flags.NArg() != 0 {
 		return errors.New("init accepts flags only")
+	}
+	smartOpts := smartInitOptions{
+		auto:       *autoInit,
+		useClaude:  *useClaude,
+		claudeBin:  *claudeBin,
+		acpBin:     *acpBin,
+		acpArgs:    *acpArgs,
+		apiDialect: *apiDialect,
+		apiBaseURL: *apiBaseURL,
+		apiKeyEnv:  *apiKeyEnv,
+		model:      *model,
+		effort:     *effort,
+	}
+	if smartOpts.active() {
+		return runSmartInit(ctx, root, smartOpts, out)
 	}
 	if *validateWriterEdits && *strictWriterEdits {
 		return errors.New("--validate-writer-edits and --strict-writer-edits are mutually exclusive")

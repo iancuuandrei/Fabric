@@ -5,9 +5,9 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/codexruntime"
-	"harness.local/engorch/internal/codexusage"
-	"harness.local/engorch/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/codexruntime"
+	"github.com/iancuuandrei/fabric/internal/codexusage"
+	"github.com/iancuuandrei/fabric/internal/runtime"
 )
 
 func tokenFeedbackEntry() RuntimeUsageEntry {

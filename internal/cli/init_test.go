@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/config"
+	"github.com/iancuuandrei/fabric/internal/config"
 )
 
 func TestCodexInitCreatesCompleteRolesAndPreservesExistingConfig(t *testing.T) {

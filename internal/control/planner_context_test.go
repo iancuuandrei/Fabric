@@ -8,9 +8,9 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/repository"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/taskcontext"
+	"github.com/iancuuandrei/fabric/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/taskcontext"
 )
 
 func plannerContextFixture(t *testing.T, objective string) (string, Creation) {

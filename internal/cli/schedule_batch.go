@@ -6,7 +6,7 @@ import (
 	"io"
 	"sync"
 
-	"harness.local/engorch/internal/taskscheduler"
+	"github.com/iancuuandrei/fabric/internal/taskscheduler"
 )
 
 type scheduleWorkerResult struct {

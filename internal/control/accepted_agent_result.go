@@ -5,12 +5,12 @@ import (
 	"errors"
 	"reflect"
 
-	"harness.local/engorch/internal/agentcontrol"
-	"harness.local/engorch/internal/agenttree"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/journal"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/taskscheduler"
+	"github.com/iancuuandrei/fabric/internal/agentcontrol"
+	"github.com/iancuuandrei/fabric/internal/agenttree"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/taskscheduler"
 )
 
 func acceptedExplorerResultReference(controllerPath, controllerHead string, snapshot Snapshot, invocation runtime.Invocation, turn *taskscheduler.AgentTurnBinding, exact *ExplorerRecord) (agentcontrol.AcceptedResultReference, bool, error) {

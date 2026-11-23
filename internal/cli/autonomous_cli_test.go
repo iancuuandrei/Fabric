@@ -13,10 +13,10 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/control"
-	"harness.local/engorch/internal/controllerstate"
-	"harness.local/engorch/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/control"
+	"github.com/iancuuandrei/fabric/internal/controllerstate"
+	"github.com/iancuuandrei/fabric/internal/repository"
 )
 
 func cliGit(t *testing.T, dir string, args ...string) {

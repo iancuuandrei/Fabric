@@ -6,7 +6,7 @@ import (
 	"sync/atomic"
 	"testing"
 
-	"harness.local/engorch/internal/contextbroker"
+	"github.com/iancuuandrei/fabric/internal/contextbroker"
 )
 
 type failingSealProxy struct {

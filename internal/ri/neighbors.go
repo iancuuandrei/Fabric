@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 )
 
 // NeighborQuery selects one exact adjacency scope and finite page size.

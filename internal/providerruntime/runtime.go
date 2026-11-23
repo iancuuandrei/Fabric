@@ -10,9 +10,9 @@ import (
 	"io"
 	"reflect"
 
-	"harness.local/engorch/internal/providergateway"
-	"harness.local/engorch/internal/providertransport"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/providergateway"
+	"github.com/iancuuandrei/fabric/internal/providertransport"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 // Run starts or deterministically recovers one direct structured inference.

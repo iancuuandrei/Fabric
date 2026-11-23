@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/journal"
 )
 
 func toolSessionFixture() ToolSessionBinding {

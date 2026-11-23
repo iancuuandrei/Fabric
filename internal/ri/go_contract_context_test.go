@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/taskcontext"
+	"github.com/iancuuandrei/fabric/internal/taskcontext"
 )
 
 func TestCompileGoContractContextSelectsTargetAndExampleContract(t *testing.T) {

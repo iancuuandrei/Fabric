@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
-	"harness.local/engorch/internal/effects"
-	"harness.local/engorch/internal/gitpush"
+	"github.com/iancuuandrei/fabric/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/gitpush"
 )
 
 func pushCredential(destination string, credentials []*gitpush.Credential) (*gitpush.Credential, error) {

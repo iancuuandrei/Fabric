@@ -6,9 +6,9 @@ import (
 	"encoding/hex"
 	"errors"
 
-	"harness.local/engorch/internal/effects"
-	"harness.local/engorch/internal/gitlocal"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/gitlocal"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 // PreparedCommit is a frozen local commit proposal and exact authorization target.

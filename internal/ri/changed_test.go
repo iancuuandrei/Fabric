@@ -2,7 +2,7 @@ package ri
 
 import (
 	"context"
-	"harness.local/engorch/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/repository"
 	"path/filepath"
 	"strings"
 	"testing"

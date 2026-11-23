@@ -7,9 +7,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"harness.local/engorch/internal/control"
-	"harness.local/engorch/internal/draftpr"
-	"harness.local/engorch/internal/effects"
+	"github.com/iancuuandrei/fabric/internal/control"
+	"github.com/iancuuandrei/fabric/internal/draftpr"
+	"github.com/iancuuandrei/fabric/internal/effects"
 )
 
 type draftPreview struct {

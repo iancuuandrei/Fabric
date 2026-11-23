@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"harness.local/engorch/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/canonical"
 )
 
 // LeaseIdentity is the immutable workspace request protected by a live lease.

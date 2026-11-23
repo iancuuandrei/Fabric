@@ -13,10 +13,10 @@ import (
 	"testing"
 	"time"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/codexrpc"
-	"harness.local/engorch/internal/codexusage"
-	"harness.local/engorch/internal/journal"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/codexrpc"
+	"github.com/iancuuandrei/fabric/internal/codexusage"
+	"github.com/iancuuandrei/fabric/internal/journal"
 )
 
 func usageParams(total int64) map[string]any {

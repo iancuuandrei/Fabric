@@ -13,14 +13,14 @@ import (
 	"path/filepath"
 	"strings"
 
-	"harness.local/engorch/internal/buildinfo"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/codexruntime"
-	"harness.local/engorch/internal/config"
-	"harness.local/engorch/internal/control"
-	"harness.local/engorch/internal/controllerstate"
-	"harness.local/engorch/internal/repository"
-	"harness.local/engorch/internal/taskscheduler"
+	"github.com/iancuuandrei/fabric/internal/buildinfo"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/codexruntime"
+	"github.com/iancuuandrei/fabric/internal/config"
+	"github.com/iancuuandrei/fabric/internal/control"
+	"github.com/iancuuandrei/fabric/internal/controllerstate"
+	"github.com/iancuuandrei/fabric/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/taskscheduler"
 )
 
 // Command describes an implemented CLI command; Reference uses this same table.
@@ -166,8 +166,16 @@ func outputSnapshot(w io.Writer, snapshot control.Snapshot) error {
 	return json.NewEncoder(w).Encode(snapshot)
 }
 
+func configFilePath(root string) string {
+	fabricPath := filepath.Join(root, "fabric.toml")
+	if _, err := os.Lstat(fabricPath); err == nil {
+		return fabricPath
+	}
+	return filepath.Join(root, "harness.toml")
+}
+
 func configuration(root string) (config.Config, error) {
-	f, err := os.Open(filepath.Join(root, "harness.toml"))
+	f, err := os.Open(configFilePath(root))
 	if err != nil {
 		return config.Config{}, err
 	}

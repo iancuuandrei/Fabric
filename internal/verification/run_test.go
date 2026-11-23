@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"harness.local/engorch/internal/config"
+	"github.com/iancuuandrei/fabric/internal/config"
 )
 
 func TestVerificationChild(t *testing.T) {

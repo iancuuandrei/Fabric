@@ -19,7 +19,7 @@ import (
 
 const (
 	serviceName          = "engorch"
-	instrumentationName  = "harness.local/engorch"
+	instrumentationName  = "github.com/iancuuandrei/fabric"
 	maximumEndpointBytes = 2048
 )
 

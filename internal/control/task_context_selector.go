@@ -6,8 +6,8 @@ import (
 	"sort"
 	"strings"
 
-	"harness.local/engorch/internal/taskcontext"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/taskcontext"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 // taskContextSelectorRRFCoverageV1 is the single experimental selector mode.

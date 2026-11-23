@@ -5,12 +5,12 @@ import (
 	"encoding/json"
 	"errors"
 
-	"harness.local/engorch/internal/candidatetools"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/repository"
-	"harness.local/engorch/internal/ri"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/sourcetools"
+	"github.com/iancuuandrei/fabric/internal/candidatetools"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/ri"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/sourcetools"
 )
 
 // ToolRequest records provider correlation and arguments before a source read.

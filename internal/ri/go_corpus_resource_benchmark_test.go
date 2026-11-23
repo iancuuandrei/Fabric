@@ -9,9 +9,9 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/repository"
-	"harness.local/engorch/internal/taskcontext"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/taskcontext"
 )
 
 const goCorpusResourceBenchmarkHumanizeCommit = "a1b4e66b9a6d890e9e15e7091cf16c8032367d6e"

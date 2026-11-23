@@ -7,17 +7,21 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/iancuuandrei/fabric/internal/access"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/cost"
+	"github.com/iancuuandrei/fabric/internal/hooks"
+	"github.com/iancuuandrei/fabric/internal/hostenvironment"
+	"github.com/iancuuandrei/fabric/internal/integrations"
+	"github.com/iancuuandrei/fabric/internal/modelpolicy"
+	"github.com/iancuuandrei/fabric/internal/opencode"
+	"github.com/iancuuandrei/fabric/internal/providergateway"
+	"github.com/iancuuandrei/fabric/internal/runtime"
+	"github.com/iancuuandrei/fabric/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/sandbox"
+	"github.com/iancuuandrei/fabric/internal/taskpool"
+	"github.com/iancuuandrei/fabric/internal/writercontract"
 	"github.com/pelletier/go-toml/v2"
-	"harness.local/engorch/internal/access"
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/hostenvironment"
-	"harness.local/engorch/internal/modelpolicy"
-	"harness.local/engorch/internal/opencode"
-	"harness.local/engorch/internal/providergateway"
-	"harness.local/engorch/internal/runtime"
-	"harness.local/engorch/internal/safepath"
-	"harness.local/engorch/internal/taskpool"
-	"harness.local/engorch/internal/writercontract"
 )
 
 // Check declares required verification. Argv is direct executable plus arguments,
@@ -46,7 +50,14 @@ type Config struct {
 	Explorer            *runtime.Profile        `toml:"explorer" json:"explorer,omitempty"`
 	Reviewer            *runtime.Profile        `toml:"reviewer" json:"reviewer,omitempty"`
 	Verification        []Check                 `toml:"verification" json:"verification"`
+	Hooks               []hooks.Hook            `toml:"hooks" json:"hooks,omitempty"`
+	Budget              *cost.Budget            `toml:"budget" json:"budget,omitempty"`
+	Sandbox             *sandbox.Config         `toml:"sandbox" json:"sandbox,omitempty"`
+	Integrations        *integrations.Config    `toml:"integrations" json:"integrations,omitempty"`
 	Codex               *Codex                  `toml:"codex" json:"codex"`
+	Claude              *ClaudeHost             `toml:"claude" json:"claude,omitempty"`
+	ACP                 *ACPHost                `toml:"acp" json:"acp,omitempty"`
+	DirectAPI           *DirectAPI              `toml:"direct_api" json:"direct_api,omitempty"`
 	Access              *Access                 `toml:"access" json:"access,omitempty"`
 	Provider            *Provider               `toml:"provider" json:"provider,omitempty"`
 	OpenCode            *OpenCodeHost           `toml:"opencode" json:"opencode,omitempty"`
@@ -116,6 +127,33 @@ type OpenCodeHost struct {
 	// the native StructuredOutput terminal tool. It is deliberately explicit so
 	// legacy utf8-v2 routes remain prompt-only unless an operator opts in.
 	NativeWriterOutput bool `toml:"native_writer_output" json:"native_writer_output,omitempty"`
+}
+
+// ClaudeHost configures the local Claude Code CLI executable for claude-cli roles.
+type ClaudeHost struct {
+	Executable     string   `toml:"executable" json:"executable"`
+	ExecutableHash string   `toml:"executable_hash" json:"executable_hash,omitempty"`
+	TimeoutSeconds int      `toml:"timeout_seconds" json:"timeout_seconds,omitempty"`
+	ExtraArgs      []string `toml:"extra_args" json:"extra_args,omitempty"`
+}
+
+// ACPHost configures a local Agent Client Protocol (ACP) stdio executable.
+type ACPHost struct {
+	Executable     string   `toml:"executable" json:"executable"`
+	ExecutableHash string   `toml:"executable_hash" json:"executable_hash,omitempty"`
+	Args           []string `toml:"args" json:"args,omitempty"`
+	TimeoutSeconds int      `toml:"timeout_seconds" json:"timeout_seconds,omitempty"`
+}
+
+// DirectAPI configures a zero-boilerplate HTTP LLM API (Anthropic, OpenAI, or
+// OpenAI-compatible) for direct-api roles. API keys are resolved from APIKeyEnv
+// at dispatch time and never stored in configuration or journals.
+type DirectAPI struct {
+	Dialect         string `toml:"dialect" json:"dialect"`
+	BaseURL         string `toml:"base_url" json:"base_url,omitempty"`
+	APIKeyEnv       string `toml:"api_key_env" json:"api_key_env,omitempty"`
+	MaxOutputTokens int64  `toml:"max_output_tokens" json:"max_output_tokens,omitempty"`
+	TimeoutSeconds  int    `toml:"timeout_seconds" json:"timeout_seconds,omitempty"`
 }
 
 // TaskPool fixes one shared cross-run capacity journal and its immutable
@@ -213,7 +251,7 @@ func (c Config) Validate() error {
 	if err := c.Planner.Validate(); err != nil {
 		return err
 	}
-	needsCodex, needsProvider, needsOpenCode := false, false, false
+	needsCodex, needsProvider, needsOpenCode, needsClaude, needsACP, needsDirectAPI := false, false, false, false, false, false
 	profiles := map[string]*runtime.Profile{"planner": &c.Planner, "writer": c.Writer, "fixer": c.Fixer, "explorer": c.Explorer, "reviewer": c.Reviewer}
 	for _, role := range []string{"planner", "writer", "fixer", "explorer", "reviewer"} {
 		p := profiles[role]
@@ -241,6 +279,12 @@ func (c Config) Validate() error {
 		case "opencode-http":
 			needsProvider = true
 			needsOpenCode = true
+		case "claude-cli":
+			needsClaude = true
+		case "acp-stdio":
+			needsACP = true
+		case "direct-api":
+			needsDirectAPI = true
 		default:
 			return errors.New("unsupported configured runtime")
 		}
@@ -318,6 +362,50 @@ func (c Config) Validate() error {
 	} else if c.OpenCode != nil {
 		return errors.New("OpenCode configuration supplied without an OpenCode runtime")
 	}
+	if needsClaude {
+		if c.Claude == nil || !filepath.IsAbs(c.Claude.Executable) {
+			return errors.New("absolute Claude CLI executable path required")
+		}
+		if c.Claude.ExecutableHash != "" {
+			if err := safepath.RequireDigest(c.Claude.ExecutableHash); err != nil {
+				return err
+			}
+		}
+		if c.Claude.TimeoutSeconds < 0 || c.Claude.TimeoutSeconds > 7200 {
+			return errors.New("Claude CLI timeout exceeds finite bounds")
+		}
+	} else if c.Claude != nil {
+		return errors.New("Claude configuration supplied without a claude-cli runtime")
+	}
+	if needsACP {
+		if c.ACP == nil || !filepath.IsAbs(c.ACP.Executable) {
+			return errors.New("absolute ACP executable path required")
+		}
+		if c.ACP.ExecutableHash != "" {
+			if err := safepath.RequireDigest(c.ACP.ExecutableHash); err != nil {
+				return err
+			}
+		}
+		if c.ACP.TimeoutSeconds < 0 || c.ACP.TimeoutSeconds > 7200 {
+			return errors.New("ACP timeout exceeds finite bounds")
+		}
+	} else if c.ACP != nil {
+		return errors.New("ACP configuration supplied without an acp-stdio runtime")
+	}
+	if needsDirectAPI {
+		if c.DirectAPI == nil {
+			return errors.New("direct_api configuration required for direct-api runtime")
+		}
+		dialect := strings.ToLower(strings.TrimSpace(c.DirectAPI.Dialect))
+		if dialect != "anthropic" && dialect != "openai" {
+			return errors.New("direct_api dialect must be anthropic or openai")
+		}
+		if c.DirectAPI.TimeoutSeconds < 0 || c.DirectAPI.TimeoutSeconds > 7200 {
+			return errors.New("direct_api timeout exceeds finite bounds")
+		}
+	} else if c.DirectAPI != nil {
+		return errors.New("direct_api configuration supplied without a direct-api runtime")
+	}
 	if err := c.validateModelPolicy(); err != nil {
 		return err
 	}
@@ -337,6 +425,34 @@ func (c Config) Validate() error {
 		}
 		if strings.TrimSpace(v.Argv[0]) == "" {
 			return errors.New("empty executable")
+		}
+	}
+	if len(c.Hooks) > 32 {
+		return errors.New("at most 32 lifecycle hooks supported")
+	}
+	seenHooks := map[string]bool{}
+	for _, h := range c.Hooks {
+		if err := h.Validate(); err != nil {
+			return err
+		}
+		if seenHooks[h.Name] {
+			return errors.New("duplicate hook name")
+		}
+		seenHooks[h.Name] = true
+	}
+	if c.Budget != nil {
+		if err := c.Budget.Validate(); err != nil {
+			return err
+		}
+	}
+	if c.Sandbox != nil {
+		if err := c.Sandbox.Validate(); err != nil {
+			return err
+		}
+	}
+	if c.Integrations != nil {
+		if err := c.Integrations.Validate(); err != nil {
+			return err
 		}
 	}
 	return nil

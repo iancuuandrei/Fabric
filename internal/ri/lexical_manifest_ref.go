@@ -7,7 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"harness.local/engorch/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/safepath"
 )
 
 // LexicalManifestRef is a compact immutable identity, not a hydrated file list.

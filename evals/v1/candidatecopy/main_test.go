@@ -9,13 +9,13 @@ import (
 	"strings"
 	"testing"
 
-	"harness.local/engorch/internal/canonical"
-	"harness.local/engorch/internal/config"
-	"harness.local/engorch/internal/control"
-	"harness.local/engorch/internal/repository"
-	"harness.local/engorch/internal/safepath"
-	"harness.local/engorch/internal/verification"
-	"harness.local/engorch/internal/worktree"
+	"github.com/iancuuandrei/fabric/internal/canonical"
+	"github.com/iancuuandrei/fabric/internal/config"
+	"github.com/iancuuandrei/fabric/internal/control"
+	"github.com/iancuuandrei/fabric/internal/repository"
+	"github.com/iancuuandrei/fabric/internal/safepath"
+	"github.com/iancuuandrei/fabric/internal/verification"
+	"github.com/iancuuandrei/fabric/internal/worktree"
 )
 
 func gitFixture(t *testing.T, root string, args ...string) {
